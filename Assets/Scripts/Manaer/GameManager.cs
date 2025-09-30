@@ -6,6 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public Transform respawnPoint;
+    public Transform[] canoePoss;
+
+    public GameObject player;
 
     private void Awake()
     {
