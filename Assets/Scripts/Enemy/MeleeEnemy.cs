@@ -4,18 +4,35 @@ using UnityEngine;
 
 public class MeleeEnemy : EnemyBase
 {
+    private int nextMove = 1;
+    public LayerMask checkLayer;
 
-
-    protected override void HandlePlayerDetected()
+    private void FixedUpdate()
     {
         Move();
+
     }
+  
+
 
     private void Move()
     {
-        Debug.Log("이동중");
-        direction.Normalize();
-        direction.y = 0f;
-        rb.MovePosition(rb.position + direction * moveSpeed * Time.deltaTime);
+        rb.velocity = new Vector2(nextMove, rb.velocity.y);
+
+        //바닥 체크
+        Vector2 downVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
+        Debug.DrawRay(downVec, Vector3.down * 1f, Color.green);
+        RaycastHit2D groundRayHit = Physics2D.Raycast(downVec, Vector3.down, 1f, LayerMask.GetMask("Ground"));
+
+        //앞 장애물 체크
+        Vector2 frontVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
+        Debug.DrawRay(frontVec, Vector2.right * nextMove * 0.4f, Color.red);
+        RaycastHit2D wallRayHit = Physics2D.Raycast(frontVec, Vector2.right * nextMove * 0.4f, 1f, checkLayer);
+
+     
+        if (groundRayHit.collider == null || wallRayHit.collider != null)
+        {
+            nextMove *= -1;
+        }
     }
 }
