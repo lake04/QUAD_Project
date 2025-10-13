@@ -12,8 +12,10 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] protected float detectionRange = 5f;
     protected Vector2 direction;
     protected int currentHealth;
-    protected bool isDead = false; 
-    protected Transform playerTarget; 
+    protected bool isDead = false;
+    protected bool isAttack = true;
+
+    protected GameObject playerTarget; 
 
     protected Rigidbody2D rb;
     protected Animator anim;
@@ -37,7 +39,7 @@ public class EnemyBase : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            playerTarget = GameManager.Instance.player.transform;
+            playerTarget = GameManager.Instance.player;
         }
 
         currentHealth = maxHealth;
@@ -47,12 +49,11 @@ public class EnemyBase : MonoBehaviour
     {
         if (playerTarget == null)
         {
-            playerTarget = GameManager.Instance.player.transform;
-           
+            playerTarget = GameManager.Instance.player;
 
         }
-        float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.position);
-        direction  = (playerTarget.position - transform.position);
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
+        direction  = (playerTarget.transform.position - transform.position);
 
         if (distanceToPlayer <= detectionRange)
         {
@@ -140,7 +141,7 @@ public class EnemyBase : MonoBehaviour
     }
 
     /// <summary>
-    /// 피격 시 색상 깜빡임 효과 (선택적)
+    /// 피격 시 색상 깜빡임 효과 
     /// </summary>
     IEnumerator FlashColorOnHit()
     {

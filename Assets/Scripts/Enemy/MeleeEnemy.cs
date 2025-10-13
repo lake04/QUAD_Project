@@ -17,7 +17,7 @@ public class MeleeEnemy : EnemyBase
 
     private void Move()
     {
-        rb.velocity = new Vector2(nextMove * moveSpeed * Time.deltaTime, rb.velocity.y);
+        rb.velocity = new Vector2(nextMove, rb.velocity.y);
 
         //¹Ù´Ú Ã¼Å©
         Vector2 downVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
