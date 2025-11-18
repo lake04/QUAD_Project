@@ -1,4 +1,4 @@
-using System.Collections;
+Ôªøusing System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -10,8 +10,6 @@ public class PlayerMove : MonoBehaviour
     [Header("Singleton")]
     public static PlayerMove Instance;
 
-
-    #region ¿Ãµø or ¡°«¡
     [Header("Move")]
     public float moveSpeed = 5;
 
@@ -24,20 +22,26 @@ public class PlayerMove : MonoBehaviour
     private bool isJumpInputBuffered = false;
     private bool isJumpingCancel = false;
 
+    public int maxJumpCount = 2;
+    private int jumpCount = 0;
+
     [Header("Ground Check")]
     public bool isGrounded = false;
     public Transform groundCheck;
     public float groundCheckRadius = 0.7f;
     public LayerMask groundLayer;
-    private bool isJumpCancle=false;
 
-    [Header("Slope Chceck")]
     public float slopeCheckDistance = 0.5f;
     public float maxSlopeAngle = 45f;
     private bool isOnSlope = false;
     private float slopeDownAngle;
 
-    #endregion
+    [Header("Dash")]
+    public float dashPower = 20f;
+    public float dashTime = 0.15f;
+    public float dashCooldown = 0.5f;
+    private bool isDashing = false;
+    private float lastDashTime = -999f;
 
     [Header("Player Stat")]
     public int maxHp;
@@ -45,7 +49,6 @@ public class PlayerMove : MonoBehaviour
 
     private void Awake()
     {
-
         if (Instance == null) Instance = this;
     }
 
@@ -56,9 +59,14 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             isJumpInputBuffered = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            TryDash();
         }
 
         if (isJumpingCancel)
@@ -71,28 +79,36 @@ public class PlayerMove : MonoBehaviour
     void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-        SlopeCheck();
-        Move();
-        Jump();
+
+        if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+
+        if (!isDashing)
+        {
+            SlopeCheck();
+            Move();
+            Jump();
+        }
     }
 
     void Move()
     {
         float moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-
-         
-        //spr.flipX = isFlip;
     }
 
     void Jump()
     {
-        if (isJumpInputBuffered == true && isGrounded)
+        if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
         {
             isJumping = true;
             jumpTimeCounter = jumpTime;
+
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+
+            jumpCount++;
             isJumpInputBuffered = false;
         }
 
@@ -121,9 +137,35 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
+    void TryDash()
+    {
+        if (Time.time < lastDashTime + dashCooldown) return;
+        StartCoroutine(DashCoroutine());
+    }
+
+    IEnumerator DashCoroutine()
+    {
+        isDashing = true;
+        lastDashTime = Time.time;
+
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0;
+
+        float direction = Input.GetAxisRaw("Horizontal");
+        if (direction == 0)
+            direction = transform.localScale.x > 0 ? 1 : -1;
+
+        rb.velocity = new Vector2(direction * dashPower, 0f);
+
+        yield return new WaitForSeconds(dashTime);
+
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+    }
+
     void SlopeCheck()
     {
-        Vector2 checkPos = transform.position - new Vector3(0f, 0.5f); // πﬂπÿ
+        Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
         RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
 
         if (hit)
@@ -147,9 +189,8 @@ public class PlayerMove : MonoBehaviour
             isOnSlope = false;
             rb.gravityScale = 1f;
         }
-
-        
     }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
