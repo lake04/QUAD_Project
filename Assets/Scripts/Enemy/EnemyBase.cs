@@ -10,6 +10,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] protected float moveSpeed = 2f; 
     [SerializeField] protected int attackDamage = 1;
     [SerializeField] protected float detectionRange = 5f;
+    [SerializeField] protected float attackRange = 1f;
     protected Vector2 direction;
     protected int currentHealth;
     protected bool isDead = false;
@@ -20,6 +21,8 @@ public class EnemyBase : MonoBehaviour
     protected Rigidbody2D rb;
     protected Animator anim;
 
+    protected EnemyState enemyState;
+
     protected virtual void Awake()
     {
         Init();
@@ -29,7 +32,64 @@ public class EnemyBase : MonoBehaviour
     {
         if (isDead) return;
 
-        Search();
+        HandleState();
+    }
+
+    protected void HandleState()
+    {
+        if (playerTarget == null && GameManager.Instance != null)
+        {
+            playerTarget = GameManager.Instance.player;
+        }
+
+        if (playerTarget == null) return;
+
+        float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
+        direction = (playerTarget.transform.position - transform.position).normalized;
+
+
+        if (enemyState == EnemyState.Hurt)
+        {
+            if (enemyState == EnemyState.Hurt)
+            {
+                rb.velocity = Vector2.zero;
+            }
+        }
+        else if (distanceToPlayer <= attackRange && isAttack)
+        {
+            ChangeState(EnemyState.Attacking);
+        }
+        else if (distanceToPlayer <= detectionRange)
+        {
+            ChangeState(EnemyState.Chasing);
+        }
+        else if(enemyState == EnemyState.Die)
+        {
+            Die();
+        }
+        else
+        {
+            ChangeState(EnemyState.Patrolling);
+        }
+
+        switch (enemyState)
+        {
+            case EnemyState.Patrolling:
+                HandlePatrolling();
+                break;
+
+            case EnemyState.Chasing:
+                HandlePlayerDetected();
+                break;
+
+            case EnemyState.Attacking:
+                Attack();
+                break;
+
+            case EnemyState.Die:
+                Die();
+                break;
+        }
     }
 
     public void Init()
@@ -45,25 +105,6 @@ public class EnemyBase : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    protected void Search()
-    {
-        if (playerTarget == null)
-        {
-            playerTarget = GameManager.Instance.player;
-
-        }
-        float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
-        direction  = (playerTarget.transform.position - transform.position);
-
-        if (distanceToPlayer <= detectionRange)
-        {
-            HandlePlayerDetected();
-        }
-        else
-        {
-            HandlePatrolling();
-        }
-    }
 
     /// <summary>
     /// 플레이어가 감지되었을 때 행동
@@ -77,6 +118,11 @@ public class EnemyBase : MonoBehaviour
     /// 플레이어가 없을 때의 행동
     /// </summary>
     protected virtual void HandlePatrolling()
+    {
+
+    }
+
+    protected virtual void Attack()
     {
 
     }
@@ -128,6 +174,26 @@ public class EnemyBase : MonoBehaviour
        
     }
 
+    protected void ChangeState(EnemyState _newState)
+    {
+        if (enemyState == _newState) return; 
+
+
+        enemyState = _newState;
+    }
+
+    IEnumerator FlashColorOnHit()
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr != null)
+        {
+            Color originalColor = sr.color;
+            sr.color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            sr.color = originalColor;
+        }
+    }
+
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -140,18 +206,5 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 피격 시 색상 깜빡임 효과 
-    /// </summary>
-    IEnumerator FlashColorOnHit()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            Color originalColor = sr.color;
-            sr.color = Color.red;
-            yield return new WaitForSeconds(0.1f); 
-            sr.color = originalColor;
-        }
-    }
+
 }

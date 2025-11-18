@@ -2,18 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MeleeEnemy : EnemyBase
+public class GroundEnemy : EnemyBase
 {
     private int nextMove = 1;
     public LayerMask checkLayer;
 
     private void FixedUpdate()
     {
-        Move();
+        if (enemyState == EnemyState.Patrolling)
+        {
+            Move();
+        } 
 
     }
-  
-
 
     private void Move()
     {
