@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 
 public class PlayerMove : MonoBehaviour
 {
@@ -64,7 +65,7 @@ public class PlayerMove : MonoBehaviour
             isJumpInputBuffered = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             TryDash();
         }
@@ -198,4 +199,5 @@ public class PlayerMove : MonoBehaviour
             nowHp--;
         }
     }
+
 }
