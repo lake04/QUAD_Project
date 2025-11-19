@@ -102,7 +102,11 @@ public class PlayerMove : MonoBehaviour
         float moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
-        sprite.flipX = moveInput > 0;
+        if(moveInput != 0)
+        {
+            sprite.flipX = moveInput > 0;
+
+        }
     }
 
     void Jump()
