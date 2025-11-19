@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class EnemyBase : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class EnemyBase : MonoBehaviour
     protected Rigidbody2D rb;
     protected Animator anim;
 
-    protected EnemyState enemyState;
+    [SerializeField] protected EnemyState enemyState;
 
     protected virtual void Awake()
     {
@@ -47,39 +46,35 @@ public class EnemyBase : MonoBehaviour
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
         direction = (playerTarget.transform.position - transform.position).normalized;
 
-
-        if (enemyState == EnemyState.Hurt)
+        if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die)
         {
-            if (enemyState == EnemyState.Hurt)
+            if (distanceToPlayer <= attackRange && isAttack)
             {
-                rb.velocity = Vector2.zero;
+                ChangeState(EnemyState.Attacking);
+            }
+            else if (distanceToPlayer <= detectionRange)
+            {
+                ChangeState(EnemyState.Chasing);
+
+            }
+            else
+            {
+                ChangeState(EnemyState.Patrolling);
             }
         }
-        else if (distanceToPlayer <= attackRange && isAttack)
+        else if (enemyState == EnemyState.Hurt || enemyState == EnemyState.Die)
         {
-            ChangeState(EnemyState.Attacking);
-        }
-        else if (distanceToPlayer <= detectionRange)
-        {
-            ChangeState(EnemyState.Chasing);
-        }
-        else if(enemyState == EnemyState.Die)
-        {
-            Die();
-        }
-        else
-        {
-            ChangeState(EnemyState.Patrolling);
+            rb.velocity = Vector2.zero;
         }
 
         switch (enemyState)
         {
             case EnemyState.Patrolling:
-                HandlePatrolling();
+                Patrolling();
                 break;
 
             case EnemyState.Chasing:
-                HandlePlayerDetected();
+                Chasing();
                 break;
 
             case EnemyState.Attacking:
@@ -109,7 +104,7 @@ public class EnemyBase : MonoBehaviour
     /// <summary>
     /// 플레이어가 감지되었을 때 행동
     /// </summary>
-    protected virtual void HandlePlayerDetected()
+    protected virtual void Chasing()
     {
 
     }
@@ -117,7 +112,7 @@ public class EnemyBase : MonoBehaviour
     /// <summary>
     /// 플레이어가 없을 때의 행동
     /// </summary>
-    protected virtual void HandlePatrolling()
+    protected virtual void Patrolling()
     {
 
     }
@@ -128,7 +123,7 @@ public class EnemyBase : MonoBehaviour
     }
 
 
-    public void TakeDamage(int damage)
+    public virtual void TakeDamage(int damage)
     {
         if (isDead) return;
 
@@ -182,7 +177,7 @@ public class EnemyBase : MonoBehaviour
         enemyState = _newState;
     }
 
-    IEnumerator FlashColorOnHit()
+    protected virtual IEnumerator FlashColorOnHit()
     {
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
         if (sr != null)
@@ -191,6 +186,11 @@ public class EnemyBase : MonoBehaviour
             sr.color = Color.red;
             yield return new WaitForSeconds(0.1f);
             sr.color = originalColor;
+        }
+
+        if (!isDead)
+        {
+            ChangeState(EnemyState.Patrolling);
         }
     }
 

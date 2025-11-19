@@ -16,7 +16,7 @@ public class CursedTotem : EnemyBase
     /// <summary>
     /// 플레이어가 감지되었을 때 행동
     /// </summary>
-    protected override void HandlePlayerDetected()
+    protected override void Chasing()
     {
         if(isAttack)
         {
@@ -27,7 +27,7 @@ public class CursedTotem : EnemyBase
     /// <summary>
     /// 플레이어가 없을 때의 행동
     /// </summary>
-    protected override void HandlePatrolling()
+    protected override void Patrolling()
     {
 
     }

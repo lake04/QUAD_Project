@@ -28,13 +28,13 @@ public class Seagull : EnemyBase
     }
 
 
-    protected override void HandlePlayerDetected()
+    protected override void Chasing()
     {
         if(!isEsape)
             StartCoroutine(Descent());
     }
 
-    protected override void HandlePatrolling()
+    protected override void Patrolling()
     {
         Move();
     }

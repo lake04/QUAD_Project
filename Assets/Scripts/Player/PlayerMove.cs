@@ -48,6 +48,8 @@ public class PlayerMove : MonoBehaviour
     public int maxHp;
     private int nowHp;
 
+    private SpriteRenderer sprite;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
@@ -56,6 +58,7 @@ public class PlayerMove : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -98,6 +101,8 @@ public class PlayerMove : MonoBehaviour
     {
         float moveInput = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        sprite.flipX = moveInput > 0;
     }
 
     void Jump()
