@@ -529,9 +529,9 @@ MonoBehaviour:
   maxHealth: 3
   moveSpeed: 2
   attackDamage: 1
-  detectionRange: 0
-  attackRange: 1
-  enemyState: 0
+  detectionRange: 4
+  attackRange: 1.5
+  enemyState: 1
   rootPrefab: {fileID: 6839203611091618034, guid: 30be0e476fa9a974095145c95e95f52d, type: 3}
 --- !u!50 &121146881
 Rigidbody2D:
@@ -15876,9 +15876,9 @@ MonoBehaviour:
   maxHealth: 3
   moveSpeed: 2
   attackDamage: 1
-  detectionRange: 0
-  attackRange: 1
-  enemyState: 0
+  detectionRange: 4
+  attackRange: 1.5
+  enemyState: 1
   rootPrefab: {fileID: 6839203611091618034, guid: 30be0e476fa9a974095145c95e95f52d, type: 3}
 --- !u!50 &1567338030
 Rigidbody2D:
