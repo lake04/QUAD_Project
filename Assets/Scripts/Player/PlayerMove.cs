@@ -85,7 +85,7 @@ public partial class Player
             }
         }
 
-        if (Input.GetKey(KeyCode.Space) && isJumping)
+        if (Input.GetKey(KeyCode.Z) && isJumping)
         {
             if (jumpTimeCounter > 0)
             {

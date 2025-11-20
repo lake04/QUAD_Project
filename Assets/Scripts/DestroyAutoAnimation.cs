@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class DestroyAutoAnimation : MonoBehaviour
 {
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -18,6 +16,7 @@ public class DestroyAutoAnimation : MonoBehaviour
 
     public void Destroy()
     {
+        
         Destroy(gameObject);
     }
 }

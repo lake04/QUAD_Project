@@ -54,7 +54,7 @@ public partial class Player : MonoBehaviour
 
     private void GetInputs()
     {
-        isAttack = Input.GetMouseButtonDown(0);
+        isAttack = Input.GetKeyDown(KeyCode.X);
         xAxis = Input.GetAxis("Horizontal");
         yAxis = Input.GetAxis("Vertical");
 

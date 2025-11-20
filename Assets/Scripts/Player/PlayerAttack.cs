@@ -6,6 +6,7 @@ public partial class Player
 {
     [Header("Attack")]
     private bool isAttack = false;
+    public bool  isAttacking = false;
     private float timeBetweenAttack = 0f;
     private float timeSinceAttack = 0f;
     public float damage;
@@ -23,24 +24,29 @@ public partial class Player
         timeSinceAttack += Time.deltaTime;
         if(isAttack && timeSinceAttack >= timeBetweenAttack)
         {
-            timeSinceAttack = 0;
             anim.SetTrigger("Attacking");
 
-            if(yAxis == 0 ||yAxis < 0 && isGrounded)
-            {
-                Hit(sideAttackTransform, sideAttackArea);
-                SlashEffectAtAngle(slashEffect, 180, sideAttackTransform);
-            }
-            else if(yAxis > 0)
-            {
-                Hit(upAttackTransform, upAttackArea);
-                SlashEffectAtAngle(slashEffect, 0, upAttackTransform);
-            }
-            else if (yAxis < 0 && isGrounded == false)
-            {
-                Hit(downAttackTransform, downAttackArea);
-                SlashEffectAtAngle(slashEffect, 0, downAttackTransform);
-            }
+            timeSinceAttack = 0;
+            isAttacking = true;
+
+            Hit(sideAttackTransform, sideAttackArea);
+            SlashEffectAtAngle(slashEffect, 0, upAttackTransform);
+
+            //if (yAxis == 0 || yAxis < 0 && isGrounded)
+            //{
+            //    Hit(sideAttackTransform, sideAttackArea);
+            //    SlashEffectAtAngle(slashEffect, 180, sideAttackTransform);
+            //}
+            //else if (yAxis > 0)
+            //{
+            //    Hit(upAttackTransform, upAttackArea);
+            //    SlashEffectAtAngle(slashEffect, 0, upAttackTransform);
+            //}
+            //else if (yAxis < 0 && isGrounded == false)
+            //{
+            //    Hit(downAttackTransform, downAttackArea);
+            //    SlashEffectAtAngle(slashEffect, 0, downAttackTransform);
+            //}
         }
 
     }
