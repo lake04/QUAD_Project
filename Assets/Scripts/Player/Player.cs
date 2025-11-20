@@ -1,21 +1,64 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
-public class Player : MonoBehaviour
+public partial class Player : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public Animator anim;
+
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
     }
 
-    // Update is called once per frame
     void Update()
     {
-      
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            isJumpInputBuffered = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            TryDash();
+        }
+
+        if (isJumpingCancel)
+        {
+            rb.velocity = Vector2.zero;
+            isJumpingCancel = false;
+        }
+
+        GetInputs();
+        Attack();
     }
 
+    void FixedUpdate()
+    {
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+
+        if (!isDashing)
+        {
+            SlopeCheck();
+            Move();
+            Jump();
+        }
+    }
+
+    private void GetInputs()
+    {
+        isAttack = Input.GetMouseButtonDown(0);
+        xAxis = Input.GetAxis("Horizontal");
+        yAxis = Input.GetAxis("Vertical");
+
+    }
     public void Respawn()
     {
         if (GameManager.Instance.respawnPoint != null)

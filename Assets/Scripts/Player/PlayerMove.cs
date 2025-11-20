@@ -4,15 +4,14 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
 
-public class PlayerMove : MonoBehaviour
+public partial class Player
 {
     private Rigidbody2D rb;
 
-    [Header("Singleton")]
-    public static PlayerMove Instance;
-
     [Header("Move")]
     public float moveSpeed = 5;
+    private float xAxis;
+    private float yAxis;
 
     [Header("Jump")]
     public float jumpForce = 10f;
@@ -50,66 +49,19 @@ public class PlayerMove : MonoBehaviour
 
     private SpriteRenderer sprite;
 
-    private void Awake()
+
+    private void Move()
     {
-        if (Instance == null) Instance = this;
-    }
+        rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
 
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(xAxis != 0)
         {
-            isJumpInputBuffered = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            TryDash();
-        }
-
-        if (isJumpingCancel)
-        {
-            rb.velocity = Vector2.zero;
-            isJumpingCancel = false;
-        }
-    }
-
-    void FixedUpdate()
-    {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        if (isGrounded)
-        {
-            jumpCount = 0;
-        }
-
-        if (!isDashing)
-        {
-            SlopeCheck();
-            Move();
-            Jump();
-        }
-    }
-
-    void Move()
-    {
-        float moveInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        if(moveInput != 0)
-        {
-            sprite.flipX = moveInput > 0;
+            sprite.flipX = xAxis > 0;
 
         }
     }
 
-    void Jump()
+    private void Jump()
     {
         if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
         {
@@ -122,7 +74,7 @@ public class PlayerMove : MonoBehaviour
             isJumpInputBuffered = false;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) || isJumpingCancel)
+        if (Input.GetKeyUp(KeyCode.Z) || isJumpingCancel)
         {
             isJumping = false;
             isJumpingCancel = false;
@@ -147,13 +99,13 @@ public class PlayerMove : MonoBehaviour
         }
     }
 
-    void TryDash()
+    private void TryDash()
     {
         if (Time.time < lastDashTime + dashCooldown) return;
         StartCoroutine(DashCoroutine());
     }
 
-    IEnumerator DashCoroutine()
+    private IEnumerator DashCoroutine()
     {
         isDashing = true;
         lastDashTime = Time.time;
@@ -173,7 +125,7 @@ public class PlayerMove : MonoBehaviour
         isDashing = false;
     }
 
-    void SlopeCheck()
+    private void SlopeCheck()
     {
         Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
         RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);

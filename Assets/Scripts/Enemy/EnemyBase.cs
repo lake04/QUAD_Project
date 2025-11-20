@@ -5,13 +5,13 @@ using UnityEngine;
 public class EnemyBase : MonoBehaviour
 {
     [Header("적 능력치")]
-    [SerializeField] protected int maxHealth = 3; 
+    [SerializeField] protected float maxHealth = 3; 
+    [SerializeField] protected float curHealth; 
     [SerializeField] protected float moveSpeed = 2f; 
     [SerializeField] protected int attackDamage = 1;
     [SerializeField] protected float detectionRange = 5f;
     [SerializeField] protected float attackRange = 1f;
     protected Vector2 direction;
-    protected int currentHealth;
     protected bool isDead = false;
     protected bool isAttack = true;
 
@@ -26,6 +26,7 @@ public class EnemyBase : MonoBehaviour
     {
         Init();
     }
+
 
     protected virtual void Update()
     {
@@ -97,7 +98,7 @@ public class EnemyBase : MonoBehaviour
             playerTarget = GameManager.Instance.player;
         }
 
-        currentHealth = maxHealth;
+        curHealth = maxHealth;
     }
 
 
@@ -123,15 +124,15 @@ public class EnemyBase : MonoBehaviour
     }
 
 
-    public virtual void TakeDamage(int damage)
+    public virtual void TakeDamage(float _damage)
     {
         if (isDead) return;
 
-        currentHealth -= damage;
+        curHealth -= _damage;
   
         StartCoroutine(FlashColorOnHit());
 
-        if (currentHealth <= 0)
+        if (curHealth <= 0)
         {
             Die();
         }
