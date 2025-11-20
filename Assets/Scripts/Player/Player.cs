@@ -15,7 +15,7 @@ public partial class Player : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Z))
         {
             isJumpInputBuffered = true;
         }
@@ -58,6 +58,34 @@ public partial class Player : MonoBehaviour
         xAxis = Input.GetAxis("Horizontal");
         yAxis = Input.GetAxis("Vertical");
 
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            nowHp--;
+            CameraShake.Instance.Shake(0.2f,0.2f);
+            StartCoroutine(FlashColorOnHit());
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            nowHp--;
+            CameraShake.Instance.Shake(0.2f, 0.2f);
+            StartCoroutine(FlashColorOnHit());
+        }
+    }
+
+    protected virtual IEnumerator FlashColorOnHit()
+    {
+        Color originalColor = sprite.color;
+        sprite.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        sprite.color = originalColor;
     }
     public void Respawn()
     {

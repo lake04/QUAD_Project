@@ -52,8 +52,15 @@ public partial class Player
 
     private void Move()
     {
-        rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
-
+        if(xAxis != 0f)
+        {
+            anim.SetBool("Move", true);
+        }
+        else if(yAxis == 0)
+        {
+            anim.SetBool("Move", false);
+        }
+            rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
         if(xAxis != 0)
         {
             sprite.flipX = xAxis > 0;
@@ -65,6 +72,8 @@ public partial class Player
     {
         if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
         {
+            anim.SetBool("Move", false);
+
             isJumping = true;
             jumpTimeCounter = jumpTime;
 
@@ -153,12 +162,6 @@ public partial class Player
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            nowHp--;
-        }
-    }
+   
 
 }

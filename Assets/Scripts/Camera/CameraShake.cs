@@ -7,7 +7,8 @@ public class CameraShake : MonoBehaviour
 {
     public static CameraShake Instance;
 
-    private Vector3 shakeOffset = Vector3.zero;
+    public Vector3 shakeOffset = Vector3.zero;
+
 
     private void Start()
     {
@@ -21,6 +22,10 @@ public class CameraShake : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+    }
+
     public void Shake(float duration, float magnitude)
     {
         StartCoroutine(DoShake(duration, magnitude));
@@ -32,6 +37,8 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < duration)
         {
+            Debug.Log("shake");
+
             // 흔들림 오프셋을 랜덤하게 계산
             shakeOffset = new Vector3(
                 Random.Range(-1f, 1f) * magnitude,

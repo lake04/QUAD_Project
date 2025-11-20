@@ -17,6 +17,7 @@ public partial class Player
 
     [SerializeField] private LayerMask attackableLayer;
 
+    [SerializeField] private Transform effectPos1, effectPos2;
 
 
     private void Attack()
@@ -29,8 +30,17 @@ public partial class Player
             timeSinceAttack = 0;
             isAttacking = true;
 
-            Hit(sideAttackTransform, sideAttackArea);
-            SlashEffectAtAngle(slashEffect, 0, upAttackTransform);
+            if(sprite.flipX)
+            {
+                StartCoroutine(SlashEffectAtAngle(slashEffect, 0, effectPos1));
+                Hit(upAttackTransform, sideAttackArea);
+            }
+            else
+            {
+                StartCoroutine(SlashEffectAtAngle(slashEffect, 0, effectPos2));
+                Hit(sideAttackTransform, sideAttackArea);
+            }
+
 
             //if (yAxis == 0 || yAxis < 0 && isGrounded)
             //{
@@ -68,9 +78,17 @@ public partial class Player
         }
     }
 
-    private void SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle,Transform _attackTransform)
+    private IEnumerator SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle,Transform _attackTransform)
     {
+        yield return new WaitForSeconds(0.5f);
+        CameraShake.Instance.Shake(0.2f, 0.4f);
+
         _slashEffect = Instantiate(_slashEffect, _attackTransform);
+        if(sprite.flipX)
+        {
+            _slashEffect.GetComponent<SpriteRenderer>().flipX = true;
+
+        }
         _slashEffect.transform.eulerAngles = new Vector3(0, 0, _effectAngle);
         _slashEffect.transform.localScale = new Vector2(transform.localScale.x,transform.localScale.y);
     }
@@ -80,6 +98,6 @@ public partial class Player
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(sideAttackTransform.position, sideAttackArea);
         Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-        Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+        //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
     }
 }

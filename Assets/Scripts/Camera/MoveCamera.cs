@@ -66,12 +66,18 @@ public class MoveCamera : MonoBehaviour
         Vector3 targetPos = target.transform.position + adjustCamPos;
         targetPos.x += currentLookAheadX;
 
-        Vector3 newCamPos = Vector3.Lerp(transform.position, targetPos, smooth);
+        Vector3 finalTargetPos = targetPos;
+        if (CameraShake.Instance != null) 
+        {
+            finalTargetPos += CameraShake.Instance.shakeOffset;
+        }
+
+        Vector3 newCamPos = Vector3.Lerp(transform.position, finalTargetPos, smooth);
 
         transform.position = new Vector3(
             Mathf.Clamp(newCamPos.x, minCamLimit.x, maxCamLimit.x),
             Mathf.Clamp(newCamPos.y, minCamLimit.y, maxCamLimit.y),
-            -10f + adjustCamPos.z 
+            -10f + adjustCamPos.z
         );
     }
 
