@@ -44,12 +44,12 @@ public partial class Player : MonoBehaviour
             jumpCount = 0;
         }
 
-        if (!isDashing)
+        if (!isSwimming) // 수영 중이 아닐 때만 슬로프 체크 및 점프 실행
         {
             SlopeCheck();
-            Move();
             Jump();
         }
+        Move();
     }
 
     private void GetInputs()
@@ -77,6 +77,20 @@ public partial class Player : MonoBehaviour
             nowHp--;
             CameraShake.Instance.Shake(0.2f, 0.2f);
             StartCoroutine(FlashColorOnHit());
+        }
+
+        if (((1 << collision.gameObject.layer) & waterLayer) != 0)
+        {
+            EnterWater();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        // **새로운 로직: 물에서 이탈**
+        if (((1 << collision.gameObject.layer) & waterLayer) != 0)
+        {
+            ExitWater();
         }
     }
 
