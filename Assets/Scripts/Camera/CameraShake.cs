@@ -37,7 +37,6 @@ public class CameraShake : MonoBehaviour
 
         while (elapsed < duration)
         {
-            Debug.Log("shake");
 
             // 흔들림 오프셋을 랜덤하게 계산
             shakeOffset = new Vector3(

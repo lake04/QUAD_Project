@@ -130,9 +130,9 @@ public class Mosquito : EnemyBase
     }
 
 
-    public override void TakeDamage(float damage)
+    public override void TakeDamage(float damage, Vector2 _hitDirecticon, float _hitForce)
     {
-        base.TakeDamage(damage);
+        base.TakeDamage(damage, _hitDirecticon,_hitForce);
 
         if (!isDead && !isCurrentlyEscaping)
         {

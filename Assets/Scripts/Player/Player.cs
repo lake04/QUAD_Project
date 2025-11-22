@@ -32,7 +32,6 @@ public partial class Player : MonoBehaviour
         }
 
         GetInputs();
-        Attack();
     }
 
     void FixedUpdate()
@@ -54,7 +53,11 @@ public partial class Player : MonoBehaviour
 
     private void GetInputs()
     {
-        isAttack = Input.GetKeyDown(KeyCode.X);
+        if(Input.GetKeyDown(KeyCode.X) && !isAttacking)
+        {
+          StartCoroutine( Attack());
+
+        }
         xAxis = Input.GetAxis("Horizontal");
         yAxis = Input.GetAxis("Vertical");
 

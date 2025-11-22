@@ -228,6 +228,7 @@ GameObject:
   - component: {fileID: 36651308}
   - component: {fileID: 36651307}
   - component: {fileID: 36651313}
+  - component: {fileID: 36651314}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -251,10 +252,12 @@ MonoBehaviour:
   isAttacking: 0
   damage: 1
   slashEffect: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
-  sideAttackTransform: {fileID: 55897272}
+  leftAttackTransform: {fileID: 272710085}
+  rightAttackTransform: {fileID: 55897272}
   upAttackTransform: {fileID: 1757498392}
   downAttackTransform: {fileID: 1849596011}
-  sideAttackArea: {x: 2.5, y: 2}
+  leftAttackArea: {x: 3.3, y: 2.5}
+  rightAttackArea: {x: 3.3, y: 2.5}
   upAttackArea: {x: 2.5, y: 2}
   downAttackArea: {x: 3.5, y: 3}
   attackableLayer:
@@ -266,7 +269,7 @@ MonoBehaviour:
   jumpForce: 5
   jumpTime: 0.35
   jumpCutMultiplier: 0.1
-  maxJumpCount: 2
+  maxJumpCount: 1
   isGrounded: 0
   groundCheck: {fileID: 1781228950}
   groundCheckRadius: 0.5
@@ -279,6 +282,7 @@ MonoBehaviour:
   dashTime: 0.15
   dashCooldown: 0.5
   maxHp: 30
+  sprite: {fileID: 0}
 --- !u!61 &36651308
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -314,8 +318,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.74}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.48, y: 0.05}
-    oldSize: {x: 1.435, y: 1.898}
+    pivot: {x: 0.23535112, y: 0.09633779}
+    oldSize: {x: 2.736, y: 1.928}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -392,7 +396,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 699309e389ba47343ae6131e863507d9, type: 3}
+  m_Sprite: {fileID: 1590973165, guid: 4bd0ed1c8188675439713a5b9508befe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -422,8 +426,10 @@ Transform:
   - {fileID: 272710085}
   - {fileID: 1757498392}
   - {fileID: 1849596011}
+  - {fileID: 315281123}
   - {fileID: 1158112150}
   - {fileID: 141564307}
+  - {fileID: 1610716229}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &36651313
@@ -447,6 +453,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &36651314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36651306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6637cc2a61f03ff4b851ec454a46fb06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireSpirit: {fileID: 0}
+  swapCooldown: 1
+  lastSwapTime: 1
 --- !u!1 &55897271
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +493,7 @@ Transform:
   m_GameObject: {fileID: 55897271}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.38, y: 0.81, z: 0}
+  m_LocalPosition: {x: 1.9, y: 0.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -594,6 +615,9 @@ MonoBehaviour:
   detectionRange: 4
   attackRange: 1.5
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   rootPrefab: {fileID: 6839203611091618034, guid: 30be0e476fa9a974095145c95e95f52d, type: 3}
 --- !u!50 &121146881
 Rigidbody2D:
@@ -898,7 +922,7 @@ Transform:
   m_GameObject: {fileID: 272710084}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.81, y: 0.29, z: 0}
+  m_LocalPosition: {x: -1.52, y: 0.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -953,6 +977,11 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   player: {fileID: 36651306}
+--- !u!4 &315281123 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+  m_PrefabInstance: {fileID: 962383057}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &361482639
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,6 +1036,9 @@ MonoBehaviour:
   detectionRange: 0
   attackRange: 0
   enemyState: 1
+  recoilLength: 1
+  recoilFactor: 20
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
@@ -17501,6 +17533,9 @@ MonoBehaviour:
   detectionRange: 0
   attackRange: 0
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
@@ -17807,6 +17842,79 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &962383057
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 36651312}
+    m_Modifications:
+    - target: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_Name
+      value: SlashEffect
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.25999832
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.1999998
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5994987706066975202, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_FlipX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5994987706066975202, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_Size.x
+      value: 5.324
+      objectReference: {fileID: 0}
+    - target: {fileID: 5994987706066975202, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_Size.y
+      value: 2.92
+      objectReference: {fileID: 0}
+    - target: {fileID: 5994987706066975202, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
 --- !u!1 &964177881
 GameObject:
   m_ObjectHideFlags: 0
@@ -18243,6 +18351,9 @@ MonoBehaviour:
   detectionRange: 0
   attackRange: 0
   enemyState: 1
+  recoilLength: 1
+  recoilFactor: 20
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
@@ -18532,6 +18643,9 @@ MonoBehaviour:
   detectionRange: 4
   attackRange: 1
   enemyState: 0
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   escapeSpeed: 3
   descentSpeed: 6
   waveAmplitude: 0.5
@@ -18715,6 +18829,9 @@ MonoBehaviour:
   detectionRange: 2
   attackRange: 0
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
@@ -20097,6 +20214,9 @@ MonoBehaviour:
   detectionRange: 4
   attackRange: 1.5
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   rootPrefab: {fileID: 6839203611091618034, guid: 30be0e476fa9a974095145c95e95f52d, type: 3}
 --- !u!50 &1567338030
 Rigidbody2D:
@@ -20435,6 +20555,37 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1397740098}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1610716228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1610716229}
+  m_Layer: 10
+  m_Name: FirePos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1610716229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610716228}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.06, y: 0.45, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 36651312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1707083188
 GameObject:
@@ -20819,6 +20970,9 @@ MonoBehaviour:
   detectionRange: 4
   attackRange: 1
   enemyState: 0
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   escapeSpeed: 3
   descentSpeed: 6
   waveAmplitude: 0.5
@@ -21333,6 +21487,9 @@ MonoBehaviour:
   detectionRange: 2
   attackRange: 0
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
@@ -21646,6 +21803,9 @@ MonoBehaviour:
   detectionRange: 2
   attackRange: 0
   enemyState: 1
+  recoilLength: 0
+  recoilFactor: 0
+  isRecoiling: 0
   checkLayer:
     serializedVersion: 2
     m_Bits: 320

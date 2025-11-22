@@ -31,8 +31,10 @@ public class CursedTotem : EnemyBase
    IEnumerator IEAttack()
     {
         isAttack = false;
-        
-        GameObject rootClone = Instantiate(rootPrefab, playerTarget.transform.position, Quaternion.identity);
+
+        Vector3 pos = playerTarget.transform.position;
+        pos.y = +  0.5f;
+        GameObject rootClone = Instantiate(rootPrefab, pos, Quaternion.identity);
         
         yield return new WaitForSeconds(2f);
         

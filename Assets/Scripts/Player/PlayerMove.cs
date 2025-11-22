@@ -42,12 +42,13 @@ public partial class Player
     public float dashCooldown = 0.5f;
     private bool isDashing = false;
     private float lastDashTime = -999f;
+    public bool canDash = false;
 
     [Header("Player Stat")]
     public int maxHp;
     private int nowHp;
 
-    private SpriteRenderer sprite;
+    public SpriteRenderer sprite;
 
 
     private void Move()
@@ -110,7 +111,7 @@ public partial class Player
 
     private void TryDash()
     {
-        if (Time.time < lastDashTime + dashCooldown) return;
+        if (Time.time < lastDashTime + dashCooldown || !canDash) return;
         StartCoroutine(DashCoroutine());
     }
 

@@ -22,6 +22,11 @@ public class EnemyBase : MonoBehaviour
 
     [SerializeField] protected EnemyState enemyState;
 
+    [Header("피격 처리")]
+    [SerializeField] private float recoilLength;
+    [SerializeField] private float recoilFactor;
+    [SerializeField] private bool isRecoiling = false;
+
     protected virtual void Awake()
     {
         Init();
@@ -124,18 +129,26 @@ public class EnemyBase : MonoBehaviour
     }
 
 
-    public virtual void TakeDamage(float _damage)
+    public virtual void TakeDamage(float _damage,Vector2 _hitDirecticon,float _hitForce)
     {
         if (isDead) return;
 
         curHealth -= _damage;
   
         StartCoroutine(FlashColorOnHit());
-
+        StartCoroutine(Recoiling(_hitDirecticon,_hitForce));
         if (curHealth <= 0)
         {
             Die();
         }
+    }
+
+    private IEnumerator Recoiling(Vector2 _hitDirecticon, float _hitForce)
+    {
+        isRecoiling = true;
+        rb.AddForce(_hitDirecticon * recoilFactor * _hitDirecticon);
+        yield return new WaitForSeconds(recoilLength);
+        isRecoiling = false;
     }
 
     protected virtual void Die()
