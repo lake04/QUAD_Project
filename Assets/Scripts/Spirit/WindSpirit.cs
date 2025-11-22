@@ -18,7 +18,7 @@ public class WindSpirit : SpiritBase
     {
         if (curLevel == 1)
         {
-            GameManager.Instance.player.GetComponent<Player>().canDash = true;
+            //GameManager.Instance.player.GetComponent<Player>().canDash = true;
         }
 
         if (curLevel == 2)

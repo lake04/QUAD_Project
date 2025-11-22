@@ -42,35 +42,69 @@ public partial class Player
     public float dashCooldown = 0.5f;
     private bool isDashing = false;
     private float lastDashTime = -999f;
-    public bool canDash = false;
 
     [Header("Player Stat")]
     public int maxHp;
     private int nowHp;
+
+    [Header("Swimming")]
+    public float swimSpeed = 3.5f;
+    public float rotationSpeed = 500f; 
+    public bool isSwimming = false;
+    public LayerMask waterLayer;
+
+    private float originalGravityScale;
 
     public SpriteRenderer sprite;
 
 
     private void Move()
     {
-        if(xAxis != 0f)
+        if (isSwimming)
         {
-            anim.SetBool("Move", true);
-        }
-        else if(yAxis == 0)
-        {
-            anim.SetBool("Move", false);
-        }
-            rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
-        if(xAxis != 0)
-        {
-            sprite.flipX = xAxis > 0;
+            // 수영 이동 로직
+            Vector2 inputVector = new Vector2(xAxis, yAxis).normalized;
 
+            // 회전 로직
+            if (inputVector != Vector2.zero)
+            {
+                float targetAngle = Mathf.Atan2(inputVector.y, inputVector.x) * Mathf.Rad2Deg;
+
+                // 현재 회전 값과 목표 각도 사이보간
+                Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+                // 입력 방향에 따라 Sprite 뒤집기
+                //sprite.flipX = xAxis < 0; 
+            }
+
+            rb.velocity = transform.right * inputVector.magnitude * swimSpeed;
+        }
+        else
+        {
+            if (xAxis != 0f)
+            {
+                anim.SetBool("Move", true);
+            }
+            else if (yAxis == 0)
+            {
+                anim.SetBool("Move", false);
+            }
+
+            rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
+
+            if (xAxis != 0)
+            {
+                sprite.flipX = xAxis > 0;
+                transform.rotation = Quaternion.identity;
+            }
         }
     }
 
     private void Jump()
     {
+        if (isSwimming) return;
+
         if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
         {
             anim.SetBool("Move", false);
@@ -111,7 +145,9 @@ public partial class Player
 
     private void TryDash()
     {
-        if (Time.time < lastDashTime + dashCooldown || !canDash) return;
+        if (isSwimming) return;
+
+        if (Time.time < lastDashTime + dashCooldown) return;
         StartCoroutine(DashCoroutine());
     }
 
@@ -137,6 +173,13 @@ public partial class Player
 
     private void SlopeCheck()
     {
+        if (isSwimming) // 수영 중에는 슬로프 체크 비활성화
+        {
+            isOnSlope = false;
+            rb.gravityScale = 0f;
+            return;
+        }
+
         Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
         RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
 
@@ -162,7 +205,23 @@ public partial class Player
             rb.gravityScale = 1f;
         }
     }
+    private void EnterWater()
+    {
+        isSwimming = true;
+        originalGravityScale = rb.gravityScale; 
+        rb.gravityScale = 0f;
+        rb.velocity = Vector2.zero;
 
-   
+        //anim.SetBool("IsSwimming", true);
+    }
+
+    private void ExitWater()
+    {
+        isSwimming = false;
+        rb.gravityScale = originalGravityScale;
+
+        //anim.SetBool("IsSwimming", false);
+    }
+
 
 }
