@@ -23,14 +23,15 @@ public class FireSpirit : SpiritBase
     {
         Vector2 fireDirection = Vector2.zero;
 
-        GameObject fire = Instantiate(fireBall,spawnPos.transform.position, Quaternion.identity);
-        fire.transform.position = spawnPos.transform.position;
+        float playerScaleX = GameManager.Instance.player.GetComponent<Player>().transform.localScale.x;
 
-        if (GameManager.Instance.player.GetComponent<Player>().sprite.flipX)
+        GameObject fire = Instantiate(fireBall, spawnPos.transform.position, Quaternion.identity);
+
+        if (playerScaleX > 0)
         {
             fireDirection = Vector2.right;
         }
-        else
+        else 
         {
             fireDirection = Vector2.left;
         }

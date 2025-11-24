@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
@@ -56,6 +57,7 @@ public partial class Player
     private float originalGravityScale;
 
     public SpriteRenderer sprite;
+    public bool canDash;
 
 
     private void Move()
@@ -95,7 +97,14 @@ public partial class Player
 
             if (xAxis != 0)
             {
-                sprite.flipX = xAxis > 0;
+                Vector3 localScale = transform.localScale;
+
+                if (Mathf.Sign(localScale.x) != Mathf.Sign(xAxis))
+                {
+                    localScale.x *= -1f;
+                    transform.localScale = localScale;
+                }
+
                 transform.rotation = Quaternion.identity;
             }
         }
