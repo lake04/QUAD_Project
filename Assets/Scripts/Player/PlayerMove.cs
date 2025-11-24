@@ -55,8 +55,8 @@ public partial class Player
 
     private float originalGravityScale;
 
-    private SpriteRenderer sprite;
-
+    public SpriteRenderer sprite;
+    public bool canDash = false;
 
     private void Move()
     {
@@ -145,7 +145,7 @@ public partial class Player
 
     private void TryDash()
     {
-        if (isSwimming) return;
+        if (isSwimming || !canDash) return;
 
         if (Time.time < lastDashTime + dashCooldown) return;
         StartCoroutine(DashCoroutine());
