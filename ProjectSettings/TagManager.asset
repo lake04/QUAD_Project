@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Wall
   - Ground
+  - Undefined
+  - Spirit
   layers:
   - Default
   - TransparentFX

@@ -32,6 +32,7 @@ public class SpiritBase : MonoBehaviour
     public void GetSoul(int _amount)
     {
         spiritSoul += _amount;
+
         CheckForLevelUp();
     }
 
