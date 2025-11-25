@@ -21,6 +21,10 @@ public class FireSpirit : SpiritBase
 
     public override void Skill1()
     {
+        if(curLevel<1)
+        {
+            return;
+        }
         Vector2 fireDirection = Vector2.zero;
 
         float playerScaleX = GameManager.Instance.player.GetComponent<Player>().transform.localScale.x;
