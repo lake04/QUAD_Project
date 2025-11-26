@@ -50,7 +50,7 @@ public partial class Player
 
     [Header("Swimming")]
     public float swimSpeed = 3.5f;
-    public float rotationSpeed = 500f; 
+    public float rotationSpeed = 500f;
     public bool isSwimming = false;
     public LayerMask waterLayer;
 
@@ -71,24 +71,22 @@ public partial class Player
             if (inputVector != Vector2.zero)
             {
                 float targetAngle = Mathf.Atan2(inputVector.y, inputVector.x) * Mathf.Rad2Deg;
-
-                // 현재 회전 값과 목표 각도 사이보간
                 Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
 
-                // 입력 방향에 따라 Sprite 뒤집기
-                //sprite.flipX = xAxis < 0; 
+                // 입력 방향에 따라 Sprite 뒤집기 (수영 중에는 회전이 메인이므로 flipX 로직은 제외)
             }
 
             rb.velocity = transform.right * inputVector.magnitude * swimSpeed;
         }
         else
         {
+            // 지상/공중 이동 로직
             if (xAxis != 0f)
             {
                 anim.SetBool("Move", true);
             }
-            else if (yAxis == 0)
+            else
             {
                 anim.SetBool("Move", false);
             }
@@ -112,8 +110,7 @@ public partial class Player
 
     private void Jump()
     {
-        if (isSwimming) return;
-
+        // Jump 실행 로직
         if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
         {
             anim.SetBool("Move", false);
@@ -127,6 +124,7 @@ public partial class Player
             isJumpInputBuffered = false;
         }
 
+        // Jump Cut 로직
         if (Input.GetKeyUp(KeyCode.Z) || isJumpingCancel)
         {
             isJumping = false;
@@ -138,6 +136,7 @@ public partial class Player
             }
         }
 
+        // Jump Hold 로직
         if (Input.GetKey(KeyCode.Z) && isJumping)
         {
             if (jumpTimeCounter > 0)
@@ -154,9 +153,10 @@ public partial class Player
 
     private void TryDash()
     {
-        if (isSwimming) return;
-
+        // isSwimming 체크는 Player.cs의 HandleState에서 처리
         if (Time.time < lastDashTime + dashCooldown) return;
+
+        ChangeState(PlayerState.Dash);
         StartCoroutine(DashCoroutine());
     }
 
@@ -165,19 +165,19 @@ public partial class Player
         isDashing = true;
         lastDashTime = Time.time;
 
-        float originalGravity = rb.gravityScale;
-        rb.gravityScale = 0;
-
         float direction = Input.GetAxisRaw("Horizontal");
         if (direction == 0)
             direction = transform.localScale.x > 0 ? 1 : -1;
+
+        // FSM에서 ExitDash 상태를 처리하기 위해 중력 설정 로직 제거
+        rb.gravityScale = 0;
 
         rb.velocity = new Vector2(direction * dashPower, 0f);
 
         yield return new WaitForSeconds(dashTime);
 
-        rb.gravityScale = originalGravity;
-        isDashing = false;
+        // Dash 종료 후 상태 복귀
+        ChangeState(PlayerState.Idle);
     }
 
     private void SlopeCheck()
@@ -205,32 +205,41 @@ public partial class Player
             }
             else
             {
-                rb.gravityScale = 1f;
+                rb.gravityScale = originalGravityScale;
             }
         }
         else
         {
             isOnSlope = false;
-            rb.gravityScale = 1f;
+            rb.gravityScale = originalGravityScale;
         }
     }
+
+    // 물 진입 로직
     private void EnterWater()
     {
         isSwimming = true;
-        originalGravityScale = rb.gravityScale; 
         rb.gravityScale = 0f;
         rb.velocity = Vector2.zero;
 
         //anim.SetBool("IsSwimming", true);
     }
 
+    // 물 이탈 로직
     private void ExitWater()
     {
         isSwimming = false;
-        rb.gravityScale = originalGravityScale;
+        rb.gravityScale = originalGravityScale; // 원래 중력으로 복귀
+
+        transform.rotation = Quaternion.identity;
+
+        rb.velocity = new Vector2(rb.velocity.x, 0f);
+
+        jumpCount = 0;
+        isJumping = false;
+        isJumpInputBuffered = false;
+        jumpTimeCounter = 0f;
 
         //anim.SetBool("IsSwimming", false);
     }
-
-
 }

@@ -6,86 +6,89 @@ public partial class Player
 {
     [Header("Attack")]
     private bool isAttack = false;
-    public bool  isAttacking = false;
+    public bool isAttacking = false;
     private float timeBetweenAttack = 1f;
     public float damage;
     [SerializeField] private GameObject slashEffect;
 
-    [SerializeField] private Transform  leftAttackTransform, rightAttackTransform,upAttackTransform, downAttackTransform;
-    [SerializeField] private Vector2    leftAttackArea, rightAttackArea, upAttackArea, downAttackArea;
+    [SerializeField] private Transform leftAttackTransform, rightAttackTransform, upAttackTransform, downAttackTransform;
+    [SerializeField] private Vector2 leftAttackArea, rightAttackArea, upAttackArea, downAttackArea;
 
     [SerializeField] private LayerMask attackableLayer;
 
     [SerializeField] private Transform effectPos1, effectPos2;
 
-
+    // Attack 메서드를 단일 코루틴으로 변경 (지상/수영 공격 모두 사용)
     private IEnumerator Attack()
     {
         isAttacking = true;
         anim.SetTrigger("Attacking");
-        if (sprite.flipX)
+
+        // localScale.x가 양수(>0)면 오른쪽, 음수(<0)면 왼쪽을 바라봄
+        bool isFacingLeft = transform.localScale.x < 0;
+
+        // 공격 방향에 따른 변수 설정: 왼쪽을 바라보면 leftAttackTransform 사용
+        Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
+        Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
+        Transform currentEffectPos = isFacingLeft ? effectPos1 : effectPos2;
+
+        // 1. 히트 판정 시점까지 대기 
+        yield return new WaitForSeconds(0.2f);
+
+        // 2. 히트 판정 실행
+        Hit(currentAttackTransform, currentAttackArea);
+
+        // 3. 이펙트 및 카메라 쉐이크 시점까지 대기 (예: 0.1초)
+        yield return new WaitForSeconds(0.1f);
+
+        // 4. 이펙트 실행
+        CameraShake.Instance.Shake(0.2f, 0.4f);
+        GameObject _slashEffectInstance = Instantiate(slashEffect, currentEffectPos);
+        if (isFacingLeft) 
         {
-            StartCoroutine(SlashEffectAtAngle(slashEffect, 0, effectPos1));
-            Hit(rightAttackTransform, rightAttackArea);
+            _slashEffectInstance.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        _slashEffectInstance.transform.eulerAngles = new Vector3(0, 0, 0); // 각도 설정
+        _slashEffectInstance.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
+
+        // 5. 공격 종료 애니메이션 시간 대기
+        yield return new WaitForSeconds(timeBetweenAttack - 0.3f);
+
+        // 6. 공격 종료 및 상태 복귀
+        isAttacking = false;
+
+        // Attack 코루틴 종료 후, FSM은 적절한 상태로 복귀
+        if (isSwimming)
+        {
+            ChangeState(PlayerState.Swim);
+        }
+        else if (isGrounded)
+        {
+            ChangeState(xAxis != 0 ? PlayerState.Run : PlayerState.Idle);
         }
         else
         {
-            StartCoroutine(SlashEffectAtAngle(slashEffect, 0, effectPos2));
-            Hit(leftAttackTransform, leftAttackArea);
+            ChangeState(PlayerState.Jump);
         }
-
-
-        //if (yAxis == 0 || yAxis < 0 && isGrounded)
-        //{
-        //    Hit(leftAttackTransform, leftAttackArea);
-        //    SlashEffectAtAngle(slashEffect, 180, leftAttackTransform);
-        //}
-        //else if (yAxis > 0)
-        //{
-        //    Hit(upAttackTransform, upAttackArea);
-        //    SlashEffectAtAngle(slashEffect, 0, upAttackTransform);
-        //}
-        //else if (yAxis < 0 && isGrounded == false)
-        //{
-        //    Hit(downAttackTransform, downAttackArea);
-        //    SlashEffectAtAngle(slashEffect, 0, downAttackTransform);
-        //}
-
-        yield return new WaitForSeconds(timeBetweenAttack);
-        isAttacking = false;
     }
 
+    // Hit 메서드 (변화 없음)
     private void Hit(Transform _attackTransform, Vector2 _attackArea)
     {
         Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
 
-        if(objectsToHit.Length > 0 )
+        if (objectsToHit.Length > 0)
         {
             Debug.Log("Hit");
         }
-        for(int i=0;i<objectsToHit.Length ;i++)
+        for (int i = 0; i < objectsToHit.Length; i++)
         {
             if (objectsToHit[i].GetComponent<EnemyBase>() != null)
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
-                objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir,10);
+                objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
             }
         }
-    }
-
-    private IEnumerator SlashEffectAtAngle(GameObject _slashEffect, int _effectAngle,Transform _attackTransform)
-    {
-        yield return new WaitForSeconds(0.6f);
-        CameraShake.Instance.Shake(0.2f, 0.4f);
-
-        _slashEffect = Instantiate(_slashEffect, _attackTransform);
-        if(sprite.flipX)
-        {
-            _slashEffect.GetComponent<SpriteRenderer>().flipX = true;
-
-        }
-        _slashEffect.transform.eulerAngles = new Vector3(0, 0, _effectAngle);
-        _slashEffect.transform.localScale = new Vector2(transform.localScale.x,transform.localScale.y);
     }
 
     private void OnDrawGizmos()
