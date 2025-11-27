@@ -18,6 +18,7 @@ public class WaterSpirit : SpiritBase
     {
         if (curLevel == 1)
         {
+            GameManager.Instance.player.GetComponent<Player>().swimSpeed = 5f;
         }
 
         if (curLevel == 2)
