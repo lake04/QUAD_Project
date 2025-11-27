@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine.U2D;
 
 // 새로운 상태: Swim 추가
@@ -21,6 +22,10 @@ public partial class Player : MonoBehaviour
     // FSM 변수 추가
     public PlayerState currentState;
 
+    private CameraFollowObject cameraFollowObject;
+    [SerializeField] private GameObject cameraFollowGo;
+    [SerializeField]  private float fallSpeedYDampingChangeThreshold;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -30,6 +35,10 @@ public partial class Player : MonoBehaviour
 
         // 초기 상태 설정
         ChangeState(PlayerState.Idle);
+
+        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
     }
 
     void Update()
@@ -51,6 +60,19 @@ public partial class Player : MonoBehaviour
 
         // 상태 처리 메서드 호출
         HandleState();
+        TurnCheck();
+
+        if(rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.lerpedFromPlayerFalling)
+        {
+            CameraManager.instance.LerpYDamping(true);
+        }
+
+        if(rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.lerpedFromPlayerFalling)
+        {
+            CameraManager.instance.lerpedFromPlayerFalling = false;
+
+            CameraManager.instance.LerpYDamping(false);
+        }
     }
 
     void FixedUpdate()
