@@ -24,7 +24,7 @@ public partial class Player : MonoBehaviour
 
     private CameraFollowObject cameraFollowObject;
     [SerializeField] private GameObject cameraFollowGo;
-    [SerializeField] private float fallSpeedYDampingChangeThreshold;
+    [SerializeField]  private float fallSpeedYDampingChangeThreshold;
 
     void Start()
     {

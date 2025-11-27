@@ -13,6 +13,7 @@ public partial class Player
     public float moveSpeed = 5;
     private float xAxis;
     private float yAxis;
+    public bool isFacingRight = true;
 
     [Header("Jump")]
     public float jumpForce = 10f;
@@ -92,19 +93,38 @@ public partial class Player
             }
 
             rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
+        }
+    }
 
-            if (xAxis != 0)
-            {
-                Vector3 localScale = transform.localScale;
+    private void TurnCheck()
+    {
+        if(xAxis>0 && !isFacingRight)
+        {
+            Turn();
+        }
+        else if(xAxis < 0 && isFacingRight)
+        {
+            Turn();
+        }
+    }
 
-                if (Mathf.Sign(localScale.x) != Mathf.Sign(xAxis))
-                {
-                    localScale.x *= -1f;
-                    transform.localScale = localScale;
-                }
+    private void Turn()
+    {
+        if(isFacingRight)
+        {
+            Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(rotator);
+            isFacingRight = !isFacingRight;
 
-                transform.rotation = Quaternion.identity;
-            }
+            cameraFollowObject.CallTurn();
+        }
+        else
+        {
+            Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
+            transform.rotation = Quaternion.Euler(rotator);
+            isFacingRight = !isFacingRight;
+
+            cameraFollowObject.CallTurn();
         }
     }
 
