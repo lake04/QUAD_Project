@@ -7,6 +7,10 @@ TagManager:
   - coin
   - ThornTrap
   - Enemy
+  - Wall
+  - Ground
+  - Undefined
+  - Spirit
   layers:
   - Default
   - TransparentFX

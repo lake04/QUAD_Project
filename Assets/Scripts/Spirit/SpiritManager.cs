@@ -6,15 +6,11 @@ public class SpiritManager : MonoBehaviour
 {
     public static SpiritManager Instance;
 
-    private SpiritBase equippedSpirit;
 
     [SerializeField] private FireSpirit fireSpirit;
-    //[SerializeField] private WindSpirit windSpirit;
-    //[SerializeField] private WaterSpirit waterSpirit;
-    //[SerializeField] private GroundSpirit groundSpirit;
-
-    [SerializeField] private float swapCooldown = 1.0f;
-    [SerializeField] private float lastSwapTime = 1.0f;
+    [SerializeField] private WindSpirit windSpirit;
+    [SerializeField] private WaterSpirit waterSpirit;
+    [SerializeField] private GroundSpirit groundSpirit;
 
     void Start()
     {
@@ -30,45 +26,41 @@ public class SpiritManager : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A))
+        if(Input.GetKeyDown(KeyCode.Alpha1))
         {
-            UseSkill1();
+            fireSpirit.Skill1();
         }
-        else if(Input.GetKeyDown(KeyCode.S))
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
         {
-            if (Input.GetKeyDown(KeyCode.A))
+            groundSpirit.Skill1();
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+       if(collision.CompareTag("Spirit"))
+        {
+            Spirit sprite = collision.GetComponent<Spirit>();
+            
+            switch(sprite.spiritType)
             {
-                UseSkill2();
+                case SpiritType.Fire:
+                    fireSpirit.GetSoul(sprite.spiritAmput);
+                    break;
+
+                case SpiritType.Water:
+                    waterSpirit.GetSoul(sprite.spiritAmput);
+                    break;
+
+               case SpiritType.Ground:
+                    groundSpirit.GetSoul(sprite.spiritAmput);
+                    break;
+
+                case SpiritType.Wind:
+                    windSpirit.GetSoul(sprite.spiritAmput);
+                    break;
             }
+            Destroy(collision.gameObject);
         }
     }
-
-    public void EquipSpirit(SpiritBase _newSpirit)
-    {
-        if (Time.deltaTime < lastSwapTime + swapCooldown)
-        {
-            return;
-        }
-
-        equippedSpirit = _newSpirit;
-        lastSwapTime = Time.deltaTime;
-    }
-
-
-    private void UseSkill1()
-    {
-        if (equippedSpirit != null)
-        {
-            equippedSpirit.Skill1();
-        }
-    }
-
-    private void UseSkill2()
-    {
-        if (equippedSpirit != null)
-        {
-            equippedSpirit.Skill2();
-        }
-    }
-
 }
