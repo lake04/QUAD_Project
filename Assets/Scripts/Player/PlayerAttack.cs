@@ -42,7 +42,7 @@ public partial class Player
         yield return new WaitForSeconds(0.1f);
 
         // 4. ¿Ã∆Â∆Æ Ω««‡
-        CameraShake.Instance.Shake(0.2f, 0.4f);
+        CameraShake.Instance.Shake(0.4f, 0.1f,0.5f);
         GameObject _slashEffectInstance = Instantiate(slashEffect, currentEffectPos);
         if (isFacingLeft) 
         {
