@@ -41,16 +41,6 @@ public partial class Player
         // 3. 이펙트 및 카메라 쉐이크 시점까지 대기 (예: 0.1초)
         yield return new WaitForSeconds(0.1f);
 
-        // 4. 이펙트 실행
-        CameraShake.Instance.Shake(0.2f, 0.4f);
-        GameObject _slashEffectInstance = Instantiate(slashEffect, currentEffectPos);
-        if (isFacingLeft) 
-        {
-            _slashEffectInstance.GetComponent<SpriteRenderer>().flipX = false;
-        }
-        _slashEffectInstance.transform.eulerAngles = new Vector3(0, 0, 0); // 각도 설정
-        _slashEffectInstance.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
-
         // 5. 공격 종료 애니메이션 시간 대기
         yield return new WaitForSeconds(timeBetweenAttack - 0.3f);
 
@@ -89,6 +79,11 @@ public partial class Player
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
             }
         }
+    }
+
+    public void AttackShake()
+    {
+        CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
     }
 
     private void OnDrawGizmos()

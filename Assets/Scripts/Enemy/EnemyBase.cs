@@ -35,9 +35,15 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void Update()
     {
+
+    }
+
+    protected virtual void FixedUpdate()
+    {
         if (isDead) return;
 
         HandleState();
+
     }
 
     protected void HandleState()
@@ -50,7 +56,6 @@ public class EnemyBase : MonoBehaviour
         if (playerTarget == null) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
-        direction = (playerTarget.transform.position - transform.position).normalized;
 
         if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die)
         {
