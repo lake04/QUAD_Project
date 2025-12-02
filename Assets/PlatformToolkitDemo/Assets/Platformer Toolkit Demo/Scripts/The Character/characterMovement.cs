@@ -125,7 +125,6 @@ namespace GMTK.PlatformerToolkit {
 
             //Update the Rigidbody with this new velocity
             body.velocity = velocity;
-
         }
 
         private void runWithoutAcceleration() {
