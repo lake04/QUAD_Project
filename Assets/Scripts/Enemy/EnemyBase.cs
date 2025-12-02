@@ -11,6 +11,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] protected int attackDamage = 1;
     [SerializeField] protected float detectionRange = 5f;
     [SerializeField] protected float attackRange = 1f;
+    [SerializeField] protected float attackCooldown;
     protected Vector2 direction;
     protected bool isDead = false;
     protected bool isAttack = true;
