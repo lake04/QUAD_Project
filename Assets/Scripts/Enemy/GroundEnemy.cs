@@ -4,17 +4,18 @@ using UnityEngine;
 
 public class GroundEnemy : EnemyBase
 {
-    private int nextMove = 1;
+    protected int nextMove = 1;
     public LayerMask checkLayer;
-    [SerializeField] private float maxMoveDistance = 5f;
-    private Vector3 startPosition;
+    [SerializeField] protected float maxMoveDistance = 5f;
+    protected Vector3 startPosition;
 
     private void Start()
     {
         startPosition = transform.position;
+        sp = GetComponent<SpriteRenderer>();
     }
 
-    private void FixedUpdate()
+    protected override void FixedUpdate()
     {
         if (enemyState == EnemyState.Patrolling || enemyState == EnemyState.Chasing)
         {
@@ -39,7 +40,7 @@ public class GroundEnemy : EnemyBase
         
     }
 
-    private void PatrollingMove() 
+    protected void PatrollingMove()
     {
         rb.velocity = new Vector2(nextMove * moveSpeed, rb.velocity.y);
 
@@ -72,6 +73,15 @@ public class GroundEnemy : EnemyBase
         if (isTurn)
         {
             nextMove *= -1;
+            if (nextMove > 0)
+            {
+                sp.flipX = true;
+            }
+            else 
+            {
+                sp.flipX = false;
+            }
         }
+
     }
 }

@@ -8,14 +8,14 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager instance;
 
-    [Header("敲饭捞绢 家府")]
-    public EventReference testSound;
+    [Header("ui 家府")]
+    public EventReference buttonSound;
     void Awake()
     {
         if (instance == null) instance = this;
     }
-    public void TestSound()
+    public void ButtonSound()
     {
-        RuntimeManager.CreateInstance(testSound).start();
+        RuntimeManager.CreateInstance(buttonSound).start();
     }
 }
