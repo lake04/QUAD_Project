@@ -11,6 +11,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] protected int attackDamage = 1;
     [SerializeField] protected float detectionRange = 5f;
     [SerializeField] protected float attackRange = 1f;
+    [SerializeField] protected float attackCooldown;
     protected Vector2 direction;
     protected bool isDead = false;
     protected bool isAttack = true;
@@ -26,6 +27,8 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private float recoilLength;
     [SerializeField] private float recoilFactor;
     [SerializeField] private bool isRecoiling = false;
+
+    [SerializeField] protected SpriteRenderer sp;
 
     protected virtual void Awake()
     {
@@ -102,6 +105,7 @@ public class EnemyBase : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sp = GetComponent<SpriteRenderer>();
 
         if (GameManager.Instance != null)
         {

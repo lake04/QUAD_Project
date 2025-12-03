@@ -9,9 +9,19 @@ public enum SunkenWarriorStat
     Die
 }
 
+public enum BossPhase
+{
+    Phase1,
+    Phase2,
+}
+
 public class SunkenWarrior : MonoBehaviour
 {
     public SunkenWarriorStat stat;
+    public BossPhase phase = BossPhase.Phase1;
+
+    [SerializeField] private int curHp;
+    [SerializeField] private int maxHp;
 
     [Header("Move")]
     [SerializeField] private float moveSpeed = 1.0f;
@@ -22,18 +32,29 @@ public class SunkenWarrior : MonoBehaviour
     [SerializeField] private float attackRange = 3.0f;
     [SerializeField] private float damage = 10f;
     [SerializeField] private float skill1Cooldown = 2.0f; 
-    [SerializeField] private float dashDuration = 0.3f; 
+    [SerializeField] private float attackCooldown = 2.0f; 
+    [SerializeField] private float dashDuration = 0.3f;
 
-    private bool isAttackReady = true; 
+    private int lastPhasePatternIndex = -1;
+
+    private bool isAttack = true;
 
     private Rigidbody2D rb;
     private GameObject playerTarget;
+
+    [Header("Prefab")]
+    [SerializeField] private GameObject harpoonPrefab;
+    [SerializeField] private Transform harpoonSpawnPos;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerTarget = GameManager.Instance.player;
         ChangeState(SunkenWarriorStat.Idle);
+
+        StartCoroutine(PhaseController());
+
+        curHp = maxHp;
     }
 
     void Update()
@@ -42,11 +63,7 @@ public class SunkenWarrior : MonoBehaviour
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
 
-        if (distanceToPlayer <= attackRange && isAttackReady)
-        {
-            StartCoroutine(Skill1_AttackDash()); 
-        }
-        else if (distanceToPlayer < moveRange && stat != SunkenWarriorStat.Attack)
+        if (distanceToPlayer < moveRange && stat != SunkenWarriorStat.Attack)
         {
             ChangeState(SunkenWarriorStat.Move);
         }
@@ -70,7 +87,6 @@ public class SunkenWarrior : MonoBehaviour
 
             case SunkenWarriorStat.Attack:
                 break;
-
         }
     }
 
@@ -83,22 +99,196 @@ public class SunkenWarrior : MonoBehaviour
         );
     }
 
-    private IEnumerator Skill1_AttackDash()
+    private void UpdatePhase()
     {
-        isAttackReady = false; 
-        ChangeState(SunkenWarriorStat.Attack);
+        if (curHp <= maxHp * 0.5f && phase == BossPhase.Phase1)
+        {
+            phase = BossPhase.Phase2;
+        }
+    }
+    private IEnumerator PhaseController()
+    {
+        yield return new WaitForSeconds(1.0f);
 
+        while (stat != SunkenWarriorStat.Die)
+        {
+            if (stat == SunkenWarriorStat.Attack)
+            {
+                yield return null;
+                continue;
+            }
+
+            if (phase == BossPhase.Phase1)
+            {
+                yield return StartCoroutine(Phase1Routine());
+            }
+            else
+            {
+                yield return StartCoroutine(Phase2Routine());
+            }
+
+        }
+    }
+
+
+    private IEnumerator Phase1Routine()
+    {
+        ChangeState(SunkenWarriorStat.Attack);
+        int patternCount = 3;
+        int random;
+        random = Random.Range(0, patternCount - 1);
+
+        if (random >= lastPhasePatternIndex)
+        {
+            random++;
+        }
+        lastPhasePatternIndex = random;
+
+        isAttack = false;
+
+        switch (random)
+        {
+            case 0:
+                StartCoroutine(SkillBasicStab());
+                break;
+
+            case 1:
+                StartCoroutine(Skill1AttackDash());
+                break;
+
+            case 2:
+                StartCoroutine(SkillHarpoon());
+                break;
+        }
+        yield return new WaitForSeconds(attackCooldown);
+        isAttack = true;
+    }
+
+    #region 패턴1
+    private IEnumerator SkillBasicStab()
+    {
+        rb.velocity = Vector2.zero;
+
+
+        //TODO : 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+
+        ChangeState(SunkenWarriorStat.Move);
+    }
+
+    private IEnumerator Skill1AttackDash()
+    {
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = direction * dashSpeed;
 
         yield return new WaitForSeconds(dashDuration);
 
         rb.velocity = Vector2.zero;
-
-        yield return new WaitForSeconds(skill1Cooldown);
-
-        isAttackReady = true; 
+        ChangeState(SunkenWarriorStat.Move);
     }
+
+    private IEnumerator SkillHarpoon()
+    {
+        Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
+        rb.velocity = Vector2.zero;
+
+        //TODO : 작살 던지는 애니메이션 실행
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
+        harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
+        //TODO : 작살 회수하는 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+        //Destroy(harpoonCIone);
+        ChangeState(SunkenWarriorStat.Move);
+    }
+    #endregion
+
+
+    #region 패턴 2
+    private IEnumerator Phase2Routine()
+    {
+        int patternCount = 3;
+        int random;
+
+        random = Random.Range(0, patternCount - 1);
+
+        if (random >= lastPhasePatternIndex)
+        {
+            random++;
+        }
+        lastPhasePatternIndex = random;
+
+        isAttack = false;
+
+        switch (random)
+        {
+            case 0:
+                StartCoroutine(Skill2BasicStab());
+                break;
+
+            case 1:
+                StartCoroutine(SkillHarpoonAndDash());
+                break;
+
+            case 2:
+
+                break;
+
+            case 3:
+
+                break;
+        }
+        yield return new WaitForSeconds(attackCooldown);
+        isAttack = true;
+    }
+
+    private IEnumerator Skill2BasicStab()
+    {
+        rb.velocity = Vector2.zero;
+
+
+        //TODO : 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+
+        ChangeState(SunkenWarriorStat.Move);
+    }
+
+    private IEnumerator SkillHarpoonAndDash()
+    {
+        Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
+        rb.velocity = Vector2.zero;
+
+        //TODO : 작살 던지는 애니메이션 실행
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position,Quaternion.identity);
+        harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
+        //TODO : 작살 회수하는 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+
+        yield return StartCoroutine(DashToTarget(harpoonCIone.transform.position, 0.3f));
+        Destroy(harpoonCIone);
+        ChangeState(SunkenWarriorStat.Move);
+    }
+
+    private IEnumerator DashToTarget(Vector3 targetPosition, float duration)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPos = transform.position;
+
+        while (elapsedTime < duration)
+        {
+          
+            transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.position = targetPosition;
+    }
+
+    #endregion
 
     protected void ChangeState(SunkenWarriorStat _newState)
     {

@@ -83,6 +83,15 @@ public class PredatorVine : EnemyBase
         if (isTurn)
         {
             nextMove *= -1;
+            if (nextMove > 0)
+            {
+                sp.flipX = true;
+            }
+            else
+            {
+                sp.flipX = false;
+            }
         }
+
     }
 }
