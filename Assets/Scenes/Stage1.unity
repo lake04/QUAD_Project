@@ -255,20 +255,20 @@ MonoBehaviour:
   fallSpeedYDampingChangeThreshold: 0
   isAttacking: 0
   damage: 1
-  slashEffect: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+  slashEffect: {fileID: 0}
   leftAttackTransform: {fileID: 272710085}
   rightAttackTransform: {fileID: 55897272}
   upAttackTransform: {fileID: 1757498392}
   downAttackTransform: {fileID: 1849596011}
-  leftAttackArea: {x: 3.3, y: 2.5}
-  rightAttackArea: {x: 3.3, y: 2.5}
-  upAttackArea: {x: 2.5, y: 2}
-  downAttackArea: {x: 3.5, y: 3}
+  leftAttackArea: {x: 4, y: 3}
+  rightAttackArea: {x: 4, y: 3}
+  upAttackArea: {x: 4, y: 3}
+  downAttackArea: {x: 4, y: 3}
   attackableLayer:
     serializedVersion: 2
     m_Bits: 512
-  effectPos1: {fileID: 1158112150}
-  effectPos2: {fileID: 141564307}
+  effectPos1: {fileID: 0}
+  effectPos2: {fileID: 0}
   moveSpeed: 5
   isFacingRight: 1
   jumpForce: 5
@@ -428,7 +428,7 @@ Transform:
   m_GameObject: {fileID: 36651306}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 113.65, y: 3.31, z: 0}
+  m_LocalPosition: {x: 95.56, y: -11.45, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18059,6 +18059,37 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!1 &959001531
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 959001532}
+  m_Layer: 0
+  m_Name: WaterDrillSpawnPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &959001532
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959001531}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.84, y: 0.56, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1642296646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &962383057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19666,6 +19697,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1397740098}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1302206589
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1302206590}
+  m_Layer: 0
+  m_Name: WaterDrillSpawnPos2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1302206590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1302206589}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.72, y: 0.59, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1642296646}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1307940342
 GameObject:
   m_ObjectHideFlags: 0
@@ -20562,7 +20624,7 @@ GameObject:
   - component: {fileID: 1642296647}
   - component: {fileID: 1642296648}
   - component: {fileID: 1642296649}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: SunkenWarrior
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -20635,6 +20697,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 544182754}
+  - {fileID: 959001532}
+  - {fileID: 1302206590}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &1642296647
@@ -20669,7 +20733,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.08650589, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -20680,7 +20744,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.361763, y: 2.0852814}
   m_EdgeRadius: 0
 --- !u!50 &1642296648
 Rigidbody2D:
@@ -20733,8 +20797,14 @@ MonoBehaviour:
   skill1Cooldown: 1
   attackCooldown: 2
   dashDuration: 0.5
+  recoilLength: 0.1
+  recoilFactor: 0.1
+  isRecoiling: 0
   harpoonPrefab: {fileID: 6696641247137289675, guid: 9f284cfe88bc3274a914282952d43721, type: 3}
   harpoonSpawnPos: {fileID: 544182754}
+  waterDrillPrefab: {fileID: 6696641247137289675, guid: 52d005c5c5e2b154981887e3f865daaa, type: 3}
+  waterDrillSpawnPos1: {fileID: 959001532}
+  waterDrillSpawnPos2: {fileID: 1302206590}
 --- !u!1 &1697786051
 GameObject:
   m_ObjectHideFlags: 0

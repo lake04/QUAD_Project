@@ -78,6 +78,11 @@ public partial class Player
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
             }
+            else if (objectsToHit[i].GetComponent<SunkenWarrior>() != null)
+            {
+                Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 0);
+            }
         }
     }
 

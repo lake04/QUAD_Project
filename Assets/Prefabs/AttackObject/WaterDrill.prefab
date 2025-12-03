@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 2529023567447399084}
   - component: {fileID: 5923177739969560451}
   - component: {fileID: 5238375945482706667}
-  - component: {fileID: 6800166685748390205}
+  - component: {fileID: 3085190129984193804}
   m_Layer: 0
-  m_Name: Harpoon
+  m_Name: WaterDrill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1
   m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.5203757, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &6800166685748390205
+--- !u!114 &3085190129984193804
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,9 +168,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6696641247137289675}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abb3df5035839ac49ac76d37ae74dcb5, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c8d8949575a2db43bff1c40d93de3b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  speed: 20
-  maxDistance: 8
+  rb: {fileID: 0}
+  speed: 15
