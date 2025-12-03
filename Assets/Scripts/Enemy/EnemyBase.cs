@@ -28,6 +28,8 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private float recoilFactor;
     [SerializeField] private bool isRecoiling = false;
 
+    [SerializeField] protected SpriteRenderer sp;
+
     protected virtual void Awake()
     {
         Init();
@@ -103,6 +105,7 @@ public class EnemyBase : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        sp = GetComponent<SpriteRenderer>();
 
         if (GameManager.Instance != null)
         {
