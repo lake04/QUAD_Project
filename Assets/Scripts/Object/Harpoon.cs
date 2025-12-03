@@ -2,11 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Harpoon : ProjectileBase
+public class Harpoon : MonoBehaviour
 {
+    private Transform startPos;
+    private Vector2 direction;
+    private Vector3 initialPos;
+
+    [SerializeField] protected float damage;
+    private Rigidbody2D rb;
+    [SerializeField] protected float speed;
+
+    [SerializeField] private float maxDistance = 10f;
+    private bool isReturning = false;
+
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody2D>();
+
     }
 
     void Start()
@@ -16,6 +28,52 @@ public class Harpoon : ProjectileBase
 
     void Update()
     {
-        
+        if (!isReturning)
+        {
+            float distanceTraveled = Vector3.Distance(transform.position, initialPos);
+
+            if (distanceTraveled >= maxDistance)
+            {
+                StartReturn();
+            }
+        }
+    }
+
+    public  void Init(Vector2 _direction,Transform _startPos)
+    {
+        direction = _direction;
+        rb.AddForce(direction * speed, ForceMode2D.Impulse);
+        startPos = _startPos;
+        initialPos = transform.position;
+    }
+
+
+    public void StartReturn()
+    {
+        rb.velocity = Vector2.zero;
+
+        isReturning = true;
+
+        StartCoroutine(ReturnToStart(0.4f)); 
+    }
+
+    private IEnumerator ReturnToStart(float duration)
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        float elapsedTime = 0f;
+        Vector3 initialPos = transform.position;
+
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(initialPos, startPos.position, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+
+        transform.position = startPos.position;
+
+        //Destroy(gameObject);
     }
 }

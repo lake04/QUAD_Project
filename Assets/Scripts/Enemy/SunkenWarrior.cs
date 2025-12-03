@@ -53,6 +53,8 @@ public class SunkenWarrior : MonoBehaviour
         ChangeState(SunkenWarriorStat.Idle);
 
         StartCoroutine(PhaseController());
+
+        curHp = maxHp;
     }
 
     void Update()
@@ -134,7 +136,6 @@ public class SunkenWarrior : MonoBehaviour
         ChangeState(SunkenWarriorStat.Attack);
         int patternCount = 3;
         int random;
-
         random = Random.Range(0, patternCount - 1);
 
         if (random >= lastPhasePatternIndex)
@@ -158,7 +159,6 @@ public class SunkenWarrior : MonoBehaviour
             case 2:
                 StartCoroutine(SkillHarpoon());
                 break;
-
         }
         yield return new WaitForSeconds(attackCooldown);
         isAttack = true;
@@ -194,23 +194,18 @@ public class SunkenWarrior : MonoBehaviour
         rb.velocity = Vector2.zero;
 
         //TODO : 작살 던지는 애니메이션 실행
-        GameObject harpoonCIone = Instantiate(harpoonPrefab,harpoonSpawnPos);
-        harpoonCIone.GetComponent<Harpoon>().Init(direction);
-        yield return new WaitForSeconds(1f);
-
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
+        harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
         //TODO : 작살 회수하는 애니메이션 실행
-        harpoonCIone.transform.position = Vector2.MoveTowards(harpoonCIone.transform.position,harpoonSpawnPos.position,2f);
 
-
+        yield return new WaitForSeconds(0.5f);
+        //Destroy(harpoonCIone);
         ChangeState(SunkenWarriorStat.Move);
     }
-
-
-
     #endregion
 
 
-
+    #region 패턴 2
     private IEnumerator Phase2Routine()
     {
         int patternCount = 3;
@@ -229,10 +224,11 @@ public class SunkenWarrior : MonoBehaviour
         switch (random)
         {
             case 0:
-
+                StartCoroutine(Skill2BasicStab());
                 break;
 
             case 1:
+                StartCoroutine(SkillHarpoonAndDash());
                 break;
 
             case 2:
@@ -247,7 +243,52 @@ public class SunkenWarrior : MonoBehaviour
         isAttack = true;
     }
 
-   
+    private IEnumerator Skill2BasicStab()
+    {
+        rb.velocity = Vector2.zero;
+
+
+        //TODO : 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+
+        ChangeState(SunkenWarriorStat.Move);
+    }
+
+    private IEnumerator SkillHarpoonAndDash()
+    {
+        Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
+        rb.velocity = Vector2.zero;
+
+        //TODO : 작살 던지는 애니메이션 실행
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position,Quaternion.identity);
+        harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
+        //TODO : 작살 회수하는 애니메이션 실행
+
+        yield return new WaitForSeconds(0.5f);
+
+        yield return StartCoroutine(DashToTarget(harpoonCIone.transform.position, 0.3f));
+        Destroy(harpoonCIone);
+        ChangeState(SunkenWarriorStat.Move);
+    }
+
+    private IEnumerator DashToTarget(Vector3 targetPosition, float duration)
+    {
+        float elapsedTime = 0f;
+        Vector3 startPos = transform.position;
+
+        while (elapsedTime < duration)
+        {
+          
+            transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / duration);
+
+            elapsedTime += Time.deltaTime;
+            yield return null; 
+        }
+        transform.position = targetPosition;
+    }
+
+    #endregion
 
     protected void ChangeState(SunkenWarriorStat _newState)
     {
