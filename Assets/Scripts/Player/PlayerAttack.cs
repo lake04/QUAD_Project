@@ -40,13 +40,13 @@ public partial class Player
 
         // 3. 이펙트 및 카메라 쉐이크 시점까지 대기 (예: 0.1초)
         yield return new WaitForSeconds(0.1f);
-
+        AttackShake();
         // 5. 공격 종료 애니메이션 시간 대기
         yield return new WaitForSeconds(timeBetweenAttack - 0.3f);
 
         // 6. 공격 종료 및 상태 복귀
         isAttacking = false;
-
+        anim.SetBool("Move",true);
         // Attack 코루틴 종료 후, FSM은 적절한 상태로 복귀
         if (isSwimming)
         {
@@ -88,7 +88,7 @@ public partial class Player
 
     public void AttackShake()
     {
-        CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
+        CameraShake.Instance.AttacShake(0.3f, 0.3f, 1.2f);
     }
 
     private void OnDrawGizmos()

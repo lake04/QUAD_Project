@@ -1093,6 +1093,16 @@ MonoBehaviour:
       Data3: -1510837838
       Data4: 1549234780
     Path: event:/button
+  soundList:
+  - type: 4
+    fmodEvent:
+      Guid:
+        Data1: -973729337
+        Data2: 1275849083
+        Data3: -1510837838
+        Data4: 1549234780
+      Path: event:/button
+  bgms: []
 --- !u!4 &573580545
 Transform:
   m_ObjectHideFlags: 0

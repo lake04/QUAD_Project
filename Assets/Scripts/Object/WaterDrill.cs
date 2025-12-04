@@ -15,4 +15,13 @@ public class WaterDrill : ProjectileBase
     {
         
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            collision.GetComponent<Player>().TakeDamage(1);
+            Destroy(gameObject);
+        }
+    }
 }

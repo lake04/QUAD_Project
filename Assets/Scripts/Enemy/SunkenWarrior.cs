@@ -52,13 +52,17 @@ public class SunkenWarrior : MonoBehaviour
     private GameObject playerTarget;
     private Animator anim;
 
+    private bool isFacingRight = false;
+
     [Header("Prefab")]
     [SerializeField] private GameObject harpoonPrefab;
+    [SerializeField] private GameObject skill2HarpoonPrefab;
     [SerializeField] private Transform harpoonSpawnPos;
 
     [SerializeField] private GameObject waterDrillPrefab;
     [SerializeField] private Transform waterDrillSpawnPos1;
     [SerializeField] private Transform waterDrillSpawnPos2;
+    [SerializeField] private GameObject dieEffect;
 
     void Start()
     {
@@ -75,6 +79,7 @@ public class SunkenWarrior : MonoBehaviour
     {
         if (playerTarget == null) return;
 
+
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
 
         if (distanceToPlayer < moveRange && stat != SunkenWarriorStat.Attack)
@@ -89,6 +94,8 @@ public class SunkenWarrior : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (stat == SunkenWarriorStat.Patrolling) return;
+
         switch (stat)
         {
             case SunkenWarriorStat.Idle:
@@ -111,6 +118,21 @@ public class SunkenWarrior : MonoBehaviour
             playerTarget.transform.position,
             moveSpeed * Time.fixedDeltaTime 
         );
+        //Vector2 vector = playerTarget.transform.position - transform.position;
+        //float rotZ = Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg;
+        //transform.rotation = Quaternion.Euler(0,0, rotZ);
+
+        float targetX = playerTarget.transform.position.x;
+        float myX = transform.position.x;
+
+        if (targetX < myX && isFacingRight)
+        {
+            Flip();
+        }
+        else if (targetX > myX && !isFacingRight)
+        {
+            Flip();
+        }
     }
 
     private void UpdatePhase()
@@ -118,6 +140,7 @@ public class SunkenWarrior : MonoBehaviour
         if (curHp <= maxHp * 0.5f && phase == BossPhase.Phase1)
         {
             phase = BossPhase.Phase2;
+            StartCoroutine(PhaseChage());
         }
     }
 
@@ -151,11 +174,12 @@ public class SunkenWarrior : MonoBehaviour
         ChangeState(SunkenWarriorStat.Attack);
         int patternCount = 3;
         int random;
-        random = Random.Range(0, patternCount - 1);
 
-        if (random >= lastPhasePatternIndex)
+        random = Random.Range(0, patternCount);
+
+        if (random == lastPhasePatternIndex)
         {
-            random++;
+            random = (random + 1) % patternCount;
         }
         lastPhasePatternIndex = random;
 
@@ -176,6 +200,33 @@ public class SunkenWarrior : MonoBehaviour
         }
         yield return new WaitForSeconds(attackCooldown);
         isAttack = true;
+    }
+
+    private IEnumerator PhaseChage()
+    {
+        ChangeState(SunkenWarriorStat.Patrolling);
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        int spawnCount = 10;
+
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject spawnObject = Instantiate(waterDrillPrefab);
+            spawnObject.transform.position = transform.position;
+            spawnObject.transform.rotation = Quaternion.identity;
+
+            float x = Mathf.Cos(Mathf.PI * 2 * i / spawnCount);
+            float y = Mathf.Sin(Mathf.PI * 2 * i / spawnCount);
+
+            Vector2 dirVec = new Vector2(x, y);
+
+            spawnObject.GetComponent<ProjectileBase>().Init(dirVec);
+
+            yield return new WaitForSeconds(0.2f);
+        }
+        yield return new WaitForSeconds(0.5f);
+        ChangeState(SunkenWarriorStat.Move);
+        rb.isKinematic = false;
     }
 
     #region 패턴1
@@ -207,6 +258,7 @@ public class SunkenWarrior : MonoBehaviour
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
+        SoundManager.instance.PlaySFX(ESfx.SFX_SHOOT);
         //TODO : 작살 던지는 애니메이션 실행
         GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
@@ -225,11 +277,11 @@ public class SunkenWarrior : MonoBehaviour
         int patternCount = 3;
         int random;
 
-        random = Random.Range(0, patternCount - 1);
+        random = Random.Range(0, patternCount);
 
-        if (random >= lastPhasePatternIndex)
+        if (random == lastPhasePatternIndex)
         {
-            random++;
+            random = (random + 1) % patternCount;
         }
         lastPhasePatternIndex = random;
 
@@ -292,7 +344,7 @@ public class SunkenWarrior : MonoBehaviour
         rb.velocity = Vector2.zero;
 
         //TODO : 작살 던지는 애니메이션 실행
-        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position,Quaternion.identity);
+        GameObject harpoonCIone = Instantiate(skill2HarpoonPrefab, harpoonSpawnPos.position,Quaternion.identity);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
         //TODO : 작살 회수하는 애니메이션 실행
 
@@ -357,23 +409,22 @@ public class SunkenWarrior : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
+        ChangeState(SunkenWarriorStat.Die);
+        Instantiate(dieEffect, transform);
+
         if (anim != null)
         {
             anim.SetTrigger("Die");
         }
 
-        if (rb != null)
-        {
-            rb.velocity = Vector2.zero;
-            rb.isKinematic = true;
-        }
+         rb.velocity = Vector2.zero;
+         rb.isKinematic = true;
 
         Collider2D[] colliders = GetComponents<Collider2D>();
         foreach (Collider2D col in colliders)
         {
             col.enabled = false;
         }
-
         Destroy(gameObject, 1.5f);
 
     }
@@ -393,5 +444,13 @@ public class SunkenWarrior : MonoBehaviour
         {
             ChangeState(SunkenWarriorStat.Patrolling);
         }
+    }
+
+    private void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 scale = transform.localScale;
+        scale.x *= -1;
+        transform.localScale = scale;
     }
 }

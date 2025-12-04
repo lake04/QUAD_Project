@@ -15,6 +15,8 @@ public class Harpoon : MonoBehaviour
     [SerializeField] private float maxDistance = 10f;
     private bool isReturning = false;
 
+    [SerializeField] private bool isDestroy;
+
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -75,5 +77,17 @@ public class Harpoon : MonoBehaviour
         transform.position = startPos.position;
 
         //Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("Player"))
+        {
+            collision.GetComponent<Player>().TakeDamage(1);
+            if(isDestroy)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 }

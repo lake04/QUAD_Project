@@ -216,9 +216,8 @@ public partial class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            nowHp--;
-            CameraShake.Instance.Shake(0.2f, 0.2f);
-            StartCoroutine(FlashColorOnHit());
+            TakeDamage(1);
+
         }
 
         // 물 진입 시 상태 변경
@@ -243,12 +242,18 @@ public partial class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            nowHp--;
-            CameraShake.Instance.Shake(0.2f, 0.2f);
-            StartCoroutine(FlashColorOnHit());
+            TakeDamage(1);
+
         }
     }
 
+
+    public void TakeDamage(int _damage)
+    {
+        nowHp--;
+        CameraShake.Instance.Shake(0.2f, 0.2f);
+        StartCoroutine(FlashColorOnHit());
+    }
     protected virtual IEnumerator FlashColorOnHit()
     {
         Color originalColor = sprite.color;

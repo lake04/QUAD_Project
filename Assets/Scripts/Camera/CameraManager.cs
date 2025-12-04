@@ -39,7 +39,7 @@ public class CameraManager : MonoBehaviour
                 framingTransposer = curCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
             }
 
-            //normYPanAmount = framingTransposer.m_YDamping;
+            normYPanAmount = framingTransposer.m_YDamping;
         }
     }
 
