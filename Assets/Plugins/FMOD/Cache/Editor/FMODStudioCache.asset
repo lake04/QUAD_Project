@@ -15,10 +15,30 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639003197009552119
+  lastModified: 639004626879220697
   FileSizes:
   - Name: Desktop
     Value: 1074
+  Exists: 1
+--- !u!114 &-4243142833120097336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/SFX.bank
+  m_EditorClassIdentifier: 
+  Path: Fmod/QUAD_Sound/Build/Desktop/SFX.bank
+  Name: SFX
+  StudioPath: bank:/SFX
+  lastModified: 639004626879234846
+  FileSizes:
+  - Name: Desktop
+    Value: 8992
   Exists: 1
 --- !u!114 &-1824389409810867832
 MonoBehaviour:
@@ -35,10 +55,10 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639003197009571431
+  lastModified: 639004626879220697
   FileSizes:
   - Name: Desktop
-    Value: 812
+    Value: 900
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -56,18 +76,22 @@ MonoBehaviour:
   - {fileID: -1824389409810867832}
   - {fileID: -8939067294144403281}
   - {fileID: 8500634508231594269}
+  - {fileID: -4243142833120097336}
   EditorEvents:
   - {fileID: 38288836930374265}
+  - {fileID: 768917947928122250}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8939067294144403281}
   StringsBanks:
   - {fileID: -1824389409810867832}
   cacheVersion: 131857
-  cacheTime: 639003197009576926
+  cacheTime: 639004626879244915
   SerializableEventsDict:
   - key: event:/button
     index: 0
+  - key: event:/HarpoonShot
+    index: 1
 --- !u!114 &38288836930374265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,6 +119,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &768917947928122250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/HarpoonShot
+  m_EditorClassIdentifier: 
+  Path: event:/HarpoonShot
+  Guid:
+    Data1: -22750159
+    Data2: 1115937062
+    Data3: -1890858826
+    Data4: -1028006848
+  Banks:
+  - {fileID: -4243142833120097336}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &8500634508231594269
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -110,7 +161,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639003197009576926
+  lastModified: 639004626879244915
   FileSizes:
   - Name: Desktop
     Value: 5792
