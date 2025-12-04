@@ -6,7 +6,7 @@ public enum SunkenWarriorStat
     Idle,
     Move,
     Attack,
-    Patrolling,
+    Transform,
     Die
 }
 
@@ -35,6 +35,7 @@ public class SunkenWarrior : MonoBehaviour
     [SerializeField] private float skill1Cooldown = 2.0f; 
     [SerializeField] private float attackCooldown = 2.0f; 
     [SerializeField] private float dashDuration = 0.3f;
+    private Transform startPos;
 
     private int lastPhasePatternIndex = -1;
 
@@ -71,7 +72,7 @@ public class SunkenWarrior : MonoBehaviour
         ChangeState(SunkenWarriorStat.Idle);
 
         StartCoroutine(PhaseController());
-
+        startPos = transform;
         curHp = maxHp;
     }
 
@@ -79,6 +80,10 @@ public class SunkenWarrior : MonoBehaviour
     {
         if (playerTarget == null) return;
 
+        if(stat == SunkenWarriorStat.Transform)
+        {
+            return;
+        }
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
 
@@ -94,8 +99,6 @@ public class SunkenWarrior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (stat == SunkenWarriorStat.Patrolling) return;
-
         switch (stat)
         {
             case SunkenWarriorStat.Idle:
@@ -104,9 +107,6 @@ public class SunkenWarrior : MonoBehaviour
 
             case SunkenWarriorStat.Move:
                 Move();
-                break;
-
-            case SunkenWarriorStat.Attack:
                 break;
         }
     }
@@ -118,9 +118,6 @@ public class SunkenWarrior : MonoBehaviour
             playerTarget.transform.position,
             moveSpeed * Time.fixedDeltaTime 
         );
-        //Vector2 vector = playerTarget.transform.position - transform.position;
-        //float rotZ = Mathf.Atan2(vector.y, vector.x) * Mathf.Rad2Deg;
-        //transform.rotation = Quaternion.Euler(0,0, rotZ);
 
         float targetX = playerTarget.transform.position.x;
         float myX = transform.position.x;
@@ -150,7 +147,7 @@ public class SunkenWarrior : MonoBehaviour
 
         while (stat != SunkenWarriorStat.Die)
         {
-            if (stat == SunkenWarriorStat.Attack)
+            if (stat == SunkenWarriorStat.Transform || stat == SunkenWarriorStat.Attack)
             {
                 yield return null;
                 continue;
@@ -204,9 +201,11 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator PhaseChage()
     {
-        ChangeState(SunkenWarriorStat.Patrolling);
+        ChangeState(SunkenWarriorStat.Transform);
         rb.velocity = Vector2.zero;
-        rb.isKinematic = true;
+
+        yield return new WaitForSeconds(1f);
+
         int spawnCount = 10;
 
         for (int i = 0; i < 10; i++)
@@ -222,11 +221,13 @@ public class SunkenWarrior : MonoBehaviour
 
             spawnObject.GetComponent<ProjectileBase>().Init(dirVec);
 
-            yield return new WaitForSeconds(0.2f);
+            float rotZ = Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg;
+            spawnObject.transform.rotation = Quaternion.Euler(0f, 0f, -rotZ);
         }
+
         yield return new WaitForSeconds(0.5f);
-        ChangeState(SunkenWarriorStat.Move);
-        rb.isKinematic = false;
+
+        ChangeState(SunkenWarriorStat.Idle);
     }
 
     #region 패턴1
@@ -258,7 +259,7 @@ public class SunkenWarrior : MonoBehaviour
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
-        SoundManager.instance.PlaySFX(ESfx.SFX_SHOOT);
+        SoundManager.instance.PlaySFX(SoundType.SFX_SHOOT);
         //TODO : 작살 던지는 애니메이션 실행
         GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
@@ -362,7 +363,6 @@ public class SunkenWarrior : MonoBehaviour
 
         while (elapsedTime < duration)
         {
-          
             transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / duration);
 
             elapsedTime += Time.deltaTime;
@@ -388,20 +388,11 @@ public class SunkenWarrior : MonoBehaviour
         curHp -= _damage;
 
         StartCoroutine(FlashColorOnHit());
-        StartCoroutine(Recoiling(_hitDirecticon, _hitForce));
         UpdatePhase();
         if (curHp <= 0)
         {
             Die();
         }
-    }
-
-    private IEnumerator Recoiling(Vector2 _hitDirecticon, float _hitForce)
-    {
-        isRecoiling = true;
-        rb.AddForce(_hitDirecticon * _hitForce * _hitDirecticon);
-        yield return new WaitForSeconds(recoilLength);
-        isRecoiling = false;
     }
 
     protected virtual void Die()
@@ -442,7 +433,11 @@ public class SunkenWarrior : MonoBehaviour
 
         if (!isDead)
         {
-            ChangeState(SunkenWarriorStat.Patrolling);
+            if(stat != SunkenWarriorStat.Transform)
+            {
+                ChangeState(SunkenWarriorStat.Idle);
+
+            }
         }
     }
 

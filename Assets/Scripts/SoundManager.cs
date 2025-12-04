@@ -11,19 +11,20 @@ public enum EBgm
     BGM_GAME,
 }
 
-public enum ESfx
+public enum SoundType
 {
     SFX_BUTTON,
     SFX_ENDING,
     SFX_BOTTLE,
     SFX_OPENDOOR,
-    SFX_SHOOT
+    SFX_SHOOT,
+    BOSS_BGM
 }
 
 [System.Serializable]
 public struct SoundEntry
 {
-    public ESfx type;
+    public SoundType type;
     public EventReference fmodEvent;
 }
 
@@ -37,7 +38,7 @@ public class SoundManager : MonoBehaviour
     public List<SoundEntry> soundList;
 
     [SerializeField] EventReference[] bgms;
-    private Dictionary<ESfx, EventReference> sfxs = new Dictionary<ESfx, EventReference>();
+    private Dictionary<SoundType, EventReference> sfxs = new Dictionary<SoundType, EventReference>();
 
     void Awake()
     {
@@ -51,22 +52,23 @@ public class SoundManager : MonoBehaviour
             }
         }
     }
+
+    private void Start()
+    {
+        PlaySFX(SoundType.BOSS_BGM);
+    }
+
     public void ButtonSound()
     {
         RuntimeManager.CreateInstance(buttonSound).start();
     }
 
-    public void PlaySFX(ESfx esfx)
+    public void PlaySFX(SoundType esfx)
     {
         if (sfxs.TryGetValue(esfx, out EventReference fmodEvent))
         {
             RuntimeManager.CreateInstance(fmodEvent).start();
         }
-    }
-
-    public void PlayBGM(ESfx esfx)
-    {
-        RuntimeManager.CreateInstance(bgms[(int)esfx]).start();
     }
 
 }
