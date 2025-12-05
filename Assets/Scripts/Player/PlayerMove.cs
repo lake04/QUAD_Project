@@ -1,108 +1,262 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.IO.Pipes;
 using UnityEngine;
-using UnityEngine.Playables;
-using UnityEngine.Rendering;
 
 public partial class Player
 {
     private Rigidbody2D rb;
 
-    [Header("Move")]
-    public float moveSpeed = 5;
-    private float xAxis;
-    private float yAxis;
+    [Header("Move Settings")]
+    public float maxSpeed = 10f;
+    public float maxAcceleration = 52f;
+    public float maxDecceleration = 50f;
+    public float maxTurnSpeed = 90f;
+
+    [Header("Air Stats")]
+    public float maxAirAcceleration = 52f;
+    public float maxAirDeceleration = 52f;
+    public float maxAirTurnSpeed = 80f;
+
+    [Header("Jump Settings")]
+    public float jumpHeight = 4.5f;
+    public float timeToJumpApex = 0.4f;
+    public float upwardMovementMultiplier = 1f;      
+    public float downwardMovementMultiplier = 6.17f; 
+    public float jumpCutOff = 2f;
+    public int maxAirJumps = 2;
+    public float speedLimit = 20f;
+
+    [Header("Assists")]
+    public float coyoteTime = 0.15f;
+    public float jumpBuffer = 0.1f;
+
+    [Header("State Checks")]
     public bool isFacingRight = true;
-
-    [Header("Jump")]
-    public float jumpForce = 10f;
-    public float jumpTime = 0.35f;
-    public float jumpCutMultiplier = 0.5f;
-    private float jumpTimeCounter;
-    private bool isJumping;
-    private bool isJumpInputBuffered = false;
-    private bool isJumpingCancel = false;
-
-    public int maxJumpCount = 2;
-    private int jumpCount = 0;
-
-    [Header("Ground Check")]
     public bool isGrounded = false;
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.7f;
-    public LayerMask groundLayer;
+    public bool isOnSlope = false;
 
+    private float coyoteTimeCounter;
+    private float jumpBufferCounter;
+    private int jumpCount = 0;
+    private float defaultGravityScale = 1f;
+
+    [Header("Ground Check References")]
+    public Transform groundCheck;
+    public float groundCheckRadius = 0.3f;
+    public LayerMask groundLayer;
     public float slopeCheckDistance = 0.5f;
     public float maxSlopeAngle = 45f;
-    private bool isOnSlope = false;
     private float slopeDownAngle;
 
-    [Header("Dash")]
+    [Header("Dash Settings")]
     public float dashPower = 20f;
-    public float dashTime = 0.15f;
+    public float dashTime = 0.2f;
     public float dashCooldown = 0.5f;
     private bool isDashing = false;
     private float lastDashTime = -999f;
 
-    [Header("Player Stat")]
-    public int maxHp;
-    private int nowHp;
-
-    [Header("Swimming")]
+    [Header("Swimming Settings")]
     public float swimSpeed = 3.5f;
     public float rotationSpeed = 500f;
     public bool isSwimming = false;
     public LayerMask waterLayer;
-
     private float originalGravityScale;
-
     public SpriteRenderer sprite;
-    public bool canDash;
-
 
     private void Move()
     {
         if (isSwimming)
         {
-            // 수영 이동 로직
             Vector2 inputVector = new Vector2(xAxis, yAxis).normalized;
-
-            // 회전 로직
-            if (inputVector != Vector2.zero)
-            {
-                float targetAngle = Mathf.Atan2(inputVector.y, inputVector.x) * Mathf.Rad2Deg;
-                Quaternion targetRotation = Quaternion.Euler(0, 0, targetAngle);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-                // 입력 방향에 따라 Sprite 뒤집기 (수영 중에는 회전이 메인이므로 flipX 로직은 제외)
-            }
-
             rb.velocity = transform.right * inputVector.magnitude * swimSpeed;
+            return;
+        }
+
+        float targetSpeed = xAxis * maxSpeed;
+        float acceleration, deceleration, turnSpeed;
+
+        // 지상/공중 상태에 따라 다른 스탯 적용
+        if (isGrounded)
+        {
+            acceleration = maxAcceleration;
+            deceleration = maxDecceleration;
+            turnSpeed = maxTurnSpeed;
         }
         else
         {
-            // 지상/공중 이동 로직
-            if (xAxis != 0f)
+            acceleration = maxAirAcceleration;
+            deceleration = maxAirDeceleration;
+            turnSpeed = maxAirTurnSpeed;
+        }
+
+        float maxSpeedChange;
+
+        if (xAxis != 0)
+        {            
+            if (Mathf.Sign(xAxis) != Mathf.Sign(rb.velocity.x) && Mathf.Abs(rb.velocity.x) > 0.1f)
             {
-                anim.SetBool("Move", true);
+                maxSpeedChange = turnSpeed * Time.deltaTime;
             }
             else
             {
-                anim.SetBool("Move", false);
+                maxSpeedChange = acceleration * Time.deltaTime;
+            }
+        }
+        else
+        {
+            maxSpeedChange = deceleration * Time.deltaTime;
+        }
+
+        float currentSpeed = Mathf.MoveTowards(rb.velocity.x, targetSpeed, maxSpeedChange);
+
+        if (isOnSlope && isGrounded && xAxis == 0) currentSpeed = 0;
+
+        rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
+
+        anim.SetBool("Move", xAxis != 0);
+    }
+
+    private void Jump()
+    {
+        // 코요테 타임 계산
+        if (isGrounded)
+        {
+            coyoteTimeCounter = coyoteTime;
+            jumpCount = 0;
+        }
+        else
+        {
+            coyoteTimeCounter -= Time.deltaTime;
+        }
+
+        
+        if (jumpDown) jumpBufferCounter = jumpBuffer;
+        else jumpBufferCounter -= Time.deltaTime;
+
+        bool canJump = (isGrounded || coyoteTimeCounter > 0) || (jumpCount < maxAirJumps);
+
+        if (jumpBufferCounter > 0 && canJump)
+        {            
+            if (!isGrounded && coyoteTimeCounter <= 0)
+            {                
+                if (jumpCount >= maxAirJumps) return;
             }
 
-            rb.velocity = new Vector2(xAxis * moveSpeed, rb.velocity.y);
+            PerformJump();
         }
+    }
+
+    private void PerformJump()
+    {
+        jumpBufferCounter = 0;
+        coyoteTimeCounter = 0;
+        jumpCount++;
+
+        float gravity = (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex);
+        float targetGravity = Physics2D.gravity.y * (gravity / Physics2D.gravity.y);
+        float jumpSpeed = Mathf.Sqrt(-2f * targetGravity * jumpHeight);
+
+        if (rb.velocity.y > 0f)
+        {
+            jumpSpeed = Mathf.Max(jumpSpeed - rb.velocity.y, 0f);
+        }
+        else if (rb.velocity.y < 0f)
+        {
+            jumpSpeed += Mathf.Abs(rb.velocity.y);
+        }
+
+        rb.velocity += new Vector2(0, jumpSpeed);
+
+        anim.SetTrigger("Jump");
+    }
+
+    private void ApplyGravity()
+    {
+        // 중력 무시
+        if (isSwimming || isDashing) { rb.gravityScale = 0; return; }
+        if (isOnSlope && isGrounded && xAxis == 0) { rb.gravityScale = 0; return; }
+
+        Vector2 newGravity = new Vector2(0, (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex));
+        float baseGravityScale = (newGravity.y / Physics2D.gravity.y);
+
+        float gravMultiplier = 1f;
+
+        if (rb.velocity.y > 0.01f)
+        {
+            if (isGrounded)
+            {
+                gravMultiplier = defaultGravityScale;
+            }
+            else
+            {
+                if (jumpHeld)
+                {
+                    gravMultiplier = upwardMovementMultiplier;
+                }
+                else
+                {
+                    gravMultiplier = jumpCutOff;
+                }
+            }
+        }
+        else if (rb.velocity.y < -0.01f)
+        {
+            if (isGrounded)
+            {
+                gravMultiplier = defaultGravityScale;
+            }
+            else
+            {
+                gravMultiplier = downwardMovementMultiplier;
+            }
+        }
+        else
+        {
+            gravMultiplier = defaultGravityScale;
+        }
+
+        rb.gravityScale = baseGravityScale * gravMultiplier;
+
+        rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -speedLimit, 100));
+    }
+
+    private void SlopeCheck()
+    {
+        if (isSwimming) return;
+        Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
+        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
+
+        if (hit)
+        {
+            Vector2 normal = hit.normal;
+            slopeDownAngle = Vector2.Angle(normal, Vector2.up);
+            isOnSlope = slopeDownAngle > 0 && slopeDownAngle <= maxSlopeAngle;
+        }
+        else isOnSlope = false;
     }
 
     private void TurnCheck()
     {
-        if(xAxis>0 && !isFacingRight)
+        // 공격 중에는 키 입력으로 회전하지 않도록 방지
+        if (isAttacking) return;
+
+        if (xAxis > 0 && !isFacingRight)
         {
             Turn();
         }
-        else if(xAxis < 0 && isFacingRight)
+        else if (xAxis < 0 && isFacingRight)
+        {
+            Turn();
+        }
+    }
+
+    public void LookAtMouse()
+    {
+        if (mousePos.x > transform.position.x && !isFacingRight)
+        {
+            Turn();
+        }
+        else if (mousePos.x < transform.position.x && isFacingRight)
         {
             Turn();
         }
@@ -110,72 +264,17 @@ public partial class Player
 
     private void Turn()
     {
-        if(isFacingRight)
-        {
-            Vector3 rotator = new Vector3(transform.rotation.x, 180f, transform.rotation.z);
-            transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = !isFacingRight;
+        isFacingRight = !isFacingRight;
+        Vector3 rotator = transform.rotation.eulerAngles;
+        rotator.y = isFacingRight ? 0f : 180f;
+        transform.rotation = Quaternion.Euler(rotator);
 
-            cameraFollowObject.CallTurn();
-        }
-        else
-        {
-            Vector3 rotator = new Vector3(transform.rotation.x, 0f, transform.rotation.z);
-            transform.rotation = Quaternion.Euler(rotator);
-            isFacingRight = !isFacingRight;
-
-            cameraFollowObject.CallTurn();
-        }
-    }
-
-    private void Jump()
-    {
-        // Jump 실행 로직
-        if (isJumpInputBuffered == true && jumpCount < maxJumpCount)
-        {
-            anim.SetBool("Move", false);
-
-            isJumping = true;
-            jumpTimeCounter = jumpTime;
-
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-
-            jumpCount++;
-            isJumpInputBuffered = false;
-        }
-
-        // Jump Cut 로직
-        if (Input.GetKeyUp(KeyCode.Z) || isJumpingCancel)
-        {
-            isJumping = false;
-            isJumpingCancel = false;
-
-            if (rb.velocity.y > 0)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * jumpCutMultiplier);
-            }
-        }
-
-        // Jump Hold 로직
-        if (Input.GetKey(KeyCode.Z) && isJumping)
-        {
-            if (jumpTimeCounter > 0)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                jumpTimeCounter -= Time.deltaTime;
-            }
-            else
-            {
-                isJumping = false;
-            }
-        }
+        if (cameraFollowObject != null) cameraFollowObject.CallTurn();
     }
 
     private void TryDash()
     {
-        // isSwimming 체크는 Player.cs의 HandleState에서 처리
-        if (Time.time < lastDashTime + dashCooldown) return;
-
+        if (isSwimming || Time.time < lastDashTime + dashCooldown) return;
         ChangeState(PlayerState.Dash);
         StartCoroutine(DashCoroutine());
     }
@@ -185,81 +284,29 @@ public partial class Player
         isDashing = true;
         lastDashTime = Time.time;
 
-        float direction = Input.GetAxisRaw("Horizontal");
-        if (direction == 0)
-            direction = transform.localScale.x > 0 ? 1 : -1;
+        float direction = xAxis;
+        if (direction == 0) direction = isFacingRight ? 1 : -1;
 
-        // FSM에서 ExitDash 상태를 처리하기 위해 중력 설정 로직 제거
         rb.gravityScale = 0;
-
         rb.velocity = new Vector2(direction * dashPower, 0f);
 
         yield return new WaitForSeconds(dashTime);
 
-        // Dash 종료 후 상태 복귀
+        isDashing = false;
         ChangeState(PlayerState.Idle);
     }
 
-    private void SlopeCheck()
-    {
-        if (isSwimming) // 수영 중에는 슬로프 체크 비활성화
-        {
-            isOnSlope = false;
-            rb.gravityScale = 0f;
-            return;
-        }
-
-        Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
-        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
-
-        if (hit)
-        {
-            Vector2 normal = hit.normal;
-            slopeDownAngle = Vector2.Angle(normal, Vector2.up);
-            isOnSlope = slopeDownAngle > 0 && slopeDownAngle <= maxSlopeAngle;
-
-            if (isOnSlope && isGrounded && rb.velocity.y <= 0)
-            {
-                rb.gravityScale = 0f;
-                rb.velocity = new Vector2(rb.velocity.x, 0f);
-            }
-            else
-            {
-                rb.gravityScale = originalGravityScale;
-            }
-        }
-        else
-        {
-            isOnSlope = false;
-            rb.gravityScale = originalGravityScale;
-        }
-    }
-
-    // 물 진입 로직
     private void EnterWater()
     {
         isSwimming = true;
-        rb.gravityScale = 0f;
         rb.velocity = Vector2.zero;
-
-        //anim.SetBool("IsSwimming", true);
     }
 
-    // 물 이탈 로직
     private void ExitWater()
     {
         isSwimming = false;
-        rb.gravityScale = originalGravityScale; // 원래 중력으로 복귀
-
         transform.rotation = Quaternion.identity;
-
         rb.velocity = new Vector2(rb.velocity.x, 0f);
-
         jumpCount = 0;
-        isJumping = false;
-        isJumpInputBuffered = false;
-        jumpTimeCounter = 0f;
-
-        //anim.SetBool("IsSwimming", false);
     }
 }
