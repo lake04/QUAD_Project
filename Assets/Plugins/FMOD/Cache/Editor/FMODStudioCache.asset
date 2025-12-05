@@ -20,6 +20,80 @@ MonoBehaviour:
   - Name: Desktop
     Value: 1074
   Exists: 1
+--- !u!114 &-8821399524991402935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/SFX.bank
+  m_EditorClassIdentifier: 
+  Path: Fmod/QUAD_Sound/Build/Desktop/SFX.bank
+  Name: SFX
+  StudioPath: bank:/SFX
+  lastModified: 639005475981591354
+  FileSizes:
+  - Name: Desktop
+    Value: 13888
+  Exists: 1
+--- !u!114 &-5904002925476104477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Attack
+  m_EditorClassIdentifier: 
+  Path: event:/Attack
+  Guid:
+    Data1: 246140809
+    Data2: 1195339272
+    Data3: 1722204596
+    Data4: -181170595
+  Banks:
+  - {fileID: -8821399524991402935}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &-3205053498518936046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BossBGM
+  m_EditorClassIdentifier: 
+  Path: event:/BossBGM
+  Guid:
+    Data1: 218132320
+    Data2: 1263509360
+    Data3: -409992276
+    Data4: -957928967
+  Banks:
+  - {fileID: 1765743286544879102}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-1824389409810867832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35,10 +109,10 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639005472023259499
+  lastModified: 639005475981571282
   FileSizes:
   - Name: Desktop
-    Value: 812
+    Value: 1054
   Exists: 1
 --- !u!114 &11400000
 MonoBehaviour:
@@ -56,18 +130,32 @@ MonoBehaviour:
   - {fileID: -1824389409810867832}
   - {fileID: -8939067294144403281}
   - {fileID: 8500634508231594269}
+  - {fileID: 1765743286544879102}
+  - {fileID: -8821399524991402935}
   EditorEvents:
   - {fileID: 38288836930374265}
+  - {fileID: -3205053498518936046}
+  - {fileID: 3754123553992235933}
+  - {fileID: 3818882622754085088}
+  - {fileID: -5904002925476104477}
   EditorParameters: []
   MasterBanks:
   - {fileID: -8939067294144403281}
   StringsBanks:
   - {fileID: -1824389409810867832}
   cacheVersion: 131857
-  cacheTime: 639005472023269644
+  cacheTime: 639005475981606280
   SerializableEventsDict:
-  - key: event:/button
+  - key: event:/Button
     index: 0
+  - key: event:/BossBGM
+    index: 1
+  - key: event:/BGM
+    index: 2
+  - key: event:/HarpoonShot
+    index: 3
+  - key: event:/Attack
+    index: 4
 --- !u!114 &38288836930374265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,9 +166,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/button
+  m_Name: event:/Button
   m_EditorClassIdentifier: 
-  Path: event:/button
+  Path: event:/Button
   Guid:
     Data1: -973729337
     Data2: 1275849083
@@ -88,6 +176,80 @@ MonoBehaviour:
     Data4: 1549234780
   Banks:
   - {fileID: 8500634508231594269}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &1765743286544879102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/BGM.bank
+  m_EditorClassIdentifier: 
+  Path: Fmod/QUAD_Sound/Build/Desktop/BGM.bank
+  Name: BGM
+  StudioPath: bank:/BGM
+  lastModified: 639005475981561143
+  FileSizes:
+  - Name: Desktop
+    Value: 3348192
+  Exists: 1
+--- !u!114 &3754123553992235933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/BGM
+  m_EditorClassIdentifier: 
+  Path: event:/BGM
+  Guid:
+    Data1: 692054519
+    Data2: 1267200154
+    Data3: 1177801366
+    Data4: 870840644
+  Banks:
+  - {fileID: 1765743286544879102}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &3818882622754085088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/HarpoonShot
+  m_EditorClassIdentifier: 
+  Path: event:/HarpoonShot
+  Guid:
+    Data1: -22750159
+    Data2: 1115937062
+    Data3: -1890858826
+    Data4: -1028006848
+  Banks:
+  - {fileID: -8821399524991402935}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -110,7 +272,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639005472023269644
+  lastModified: 639005475981606280
   FileSizes:
   - Name: Desktop
     Value: 5792
