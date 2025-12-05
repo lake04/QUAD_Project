@@ -17623,55 +17623,6 @@ MonoBehaviour:
   harpoonPrefab: {fileID: 6696641247137289675, guid: 9f284cfe88bc3274a914282952d43721, type: 3}
   skill2HarpoonPrefab: {fileID: 6696641247137289675, guid: ec0c77b6929d59245a3f92ddf6cce3e2, type: 3}
   harpoonSpawnPos: {fileID: 544182754}
-  waterDrillPrefab: {fileID: 6696641247137289675, guid: 52d005c5c5e2b154981887e3f865daaa, type: 3}
-  waterDrillSpawnPos1: {fileID: 959001532}
-  waterDrillSpawnPos2: {fileID: 1302206590}
-  dieEffect: {fileID: 693311409799336913, guid: f540084e7c28e764bad6c6e880daa845, type: 3}
---- !u!61 &1642296650
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1642296644}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: -0.5134964, y: -1.4681544}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 13.75, y: 10.252075}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.7494049, y: 5.989867}
-  m_EdgeRadius: 0
 --- !u!1 &1697786051
 GameObject:
   m_ObjectHideFlags: 0

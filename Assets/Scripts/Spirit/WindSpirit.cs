@@ -23,7 +23,7 @@ public class WindSpirit : SpiritBase
 
         if (curLevel == 2)
         {
-            GameManager.Instance.player.GetComponent<Player>().maxJumpCount = 2;
+            GameManager.Instance.player.GetComponent<Player>().maxAirJumps = 2;
         }
     }
 }
