@@ -18,6 +18,7 @@ public enum SoundType
     SFX_BOTTLE,
     SFX_OPENDOOR,
     SFX_SHOOT,
+    SFX_Attack,
     BOSS_BGM
 }
 
@@ -34,10 +35,11 @@ public class SoundManager : MonoBehaviour
 
     [Header("ui ¼Ò¸®")]
     public EventReference buttonSound;
+    public EventReference bgm;
 
     public List<SoundEntry> soundList;
 
-    [SerializeField] EventReference[] bgms;
+    [SerializeField] EventReference[] sfx;
     private Dictionary<SoundType, EventReference> sfxs = new Dictionary<SoundType, EventReference>();
 
     void Awake()
@@ -55,7 +57,7 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        PlaySFX(SoundType.BOSS_BGM);
+        RuntimeManager.CreateInstance(bgm).start();
     }
 
     public void ButtonSound()

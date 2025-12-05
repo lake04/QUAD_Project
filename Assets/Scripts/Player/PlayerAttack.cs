@@ -23,7 +23,6 @@ public partial class Player
     {
         isAttacking = true;
         anim.SetTrigger("Attacking");
-
         // localScale.x가 양수(>0)면 오른쪽, 음수(<0)면 왼쪽을 바라봄
         bool isFacingLeft = transform.localScale.x < 0;
 

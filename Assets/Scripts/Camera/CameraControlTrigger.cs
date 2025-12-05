@@ -91,7 +91,7 @@ public class MyScriptEditor : Editor
             cameraControlTigger.customInspectorObjects.cameraOnLeft = EditorGUILayout.ObjectField("Camera on Left",cameraControlTigger.customInspectorObjects.cameraOnLeft,
                 typeof(CinemachineVirtualCamera),true) as CinemachineVirtualCamera;
 
-            cameraControlTigger.customInspectorObjects.cameraOnRight = EditorGUILayout.ObjectField("Camera on Left", cameraControlTigger.customInspectorObjects.cameraOnRight,
+            cameraControlTigger.customInspectorObjects.cameraOnRight = EditorGUILayout.ObjectField("Camera on Right", cameraControlTigger.customInspectorObjects.cameraOnRight,
                 typeof(CinemachineVirtualCamera), true) as CinemachineVirtualCamera;
         }
 
