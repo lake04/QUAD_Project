@@ -15,6 +15,8 @@ public enum PlayerState
 
 public partial class Player : MonoBehaviour
 {
+    public static Player instance;
+
     public Animator anim;
 
     // FSM 변수 추가
@@ -39,6 +41,10 @@ public partial class Player : MonoBehaviour
     [HideInInspector] public Vector2 mousePos;
     private Camera mainCam;
 
+    private void Awake()
+    {
+        if(instance == null) instance = this;
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
