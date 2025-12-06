@@ -15,6 +15,8 @@ public enum PlayerState
 
 public partial class Player : MonoBehaviour
 {
+    public static Player instance;
+
     public Animator anim;
 
     // FSM 변수 추가
@@ -24,18 +26,36 @@ public partial class Player : MonoBehaviour
     [SerializeField] private GameObject cameraFollowGo;
     [SerializeField]  private float fallSpeedYDampingChangeThreshold;
 
+    [Header("Player Stat")]
+    public int maxHp = 5;
+    public int nowHp;
+
+    public bool canDash;
+
+    [HideInInspector] public float xAxis;
+    [HideInInspector] public float yAxis;
+    [HideInInspector] public bool jumpDown;
+    [HideInInspector] public bool jumpHeld;
+    [HideInInspector] public bool jumpUp;
+
+    [HideInInspector] public Vector2 mousePos;
+    private Camera mainCam;
+
+    private void Awake()
+    {
+        if(instance == null) instance = this;
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
-        // 중력 스케일 초기값을 Start에서 설정합니다.
         originalGravityScale = rb.gravityScale;
+        mainCam = Camera.main;
 
         // 초기 상태 설정
         ChangeState(PlayerState.Idle);
 
         cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
-
         fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
     }
 
@@ -44,19 +64,6 @@ public partial class Player : MonoBehaviour
         // === 입력 감지는 Update에서 항상 처리 ===
         GetInputs();
 
-        // Z키 (점프 버퍼링)
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            isJumpInputBuffered = true;
-        }
-
-        // C키 (대시 시도)
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            TryDash();
-        }
-
-        // 상태 처리 메서드 호출
         HandleState();
         TurnCheck();
 
@@ -75,11 +82,10 @@ public partial class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Ground Check는 항상 실행
+        bool wasGrounded = isGrounded;
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
 
-        // 접지 상태에 따른 점프 카운트 초기화
-        if (isGrounded)
+        if (isGrounded && !wasGrounded)
         {
             jumpCount = 0;
         }
@@ -101,8 +107,6 @@ public partial class Player : MonoBehaviour
         }
 
         currentState = newState;
-
-        // Enter State 로직
     }
 
     // Update()에서 상태별 논리/입력 처리
@@ -116,18 +120,15 @@ public partial class Player : MonoBehaviour
                 CheckMovementStateTransition();
                 break;
             case PlayerState.Attack:
-                CheckMovementStateTransition();
                 break;
             case PlayerState.Dash:
-                // DashCoroutine에서 종료 처리
                 break;
             case PlayerState.Swim:
                 CheckSwimStateTransition();
                 break;
         }
 
-        // X키 (공격 입력 플래그 설정)
-        isAttack = Input.GetKeyDown(KeyCode.X);
+        isAttack = Input.GetMouseButtonDown(0);
     }
 
     // FixedUpdate()에서 상태별 물리 로직 처리
@@ -143,19 +144,23 @@ public partial class Player : MonoBehaviour
         {
             case PlayerState.Idle:
             case PlayerState.Run:
-            case PlayerState.Attack:
                 Move();
                 Jump();
+                ApplyGravity();
+                break;
+            case PlayerState.Attack:
+                rb.velocity = new Vector2(0, rb.velocity.y);
+                ApplyGravity(); 
                 break;
             case PlayerState.Jump:
                 Move();
                 Jump();
+                ApplyGravity();
                 break;
             case PlayerState.Swim:
                 Move();
                 break;
             case PlayerState.Dash:
-                // DashCoroutine에서 물리 처리
                 break;
         }
     }
@@ -164,32 +169,34 @@ public partial class Player : MonoBehaviour
 
     private void CheckMovementStateTransition()
     {
-        if (isDashing) return;
+        if (isDashing) { }
 
-        if (isAttacking)
+        if (isAttacking) return;
+
+        if (isAttack && !isAttacking)
         {
-            // 공격 중 상태 전환은 Attack 코루틴 종료 시점에서 처리
+            ChangeState(PlayerState.Attack); // 상태 변경
+            StartCoroutine(Attack());
+            return; // 공격 시작 시 아래 이동 로직 무시
         }
+
         else if (isGrounded)
         {
-            if (xAxis != 0)
-            {
-                ChangeState(PlayerState.Run);
-            }
-            else
-            {
-                ChangeState(PlayerState.Idle);
-            }
+            ChangeState(xAxis != 0 ? PlayerState.Run : PlayerState.Idle);
         }
-        else // 공중에 있으면
+        else
         {
             ChangeState(PlayerState.Jump);
         }
 
-        // 공격 시작은 모든 비-Dash 상태에서 가능
         if (isAttack && !isAttacking)
         {
             StartCoroutine(Attack());
+        }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
+        {
+            TryDash();
         }
     }
 
@@ -208,6 +215,12 @@ public partial class Player : MonoBehaviour
         // Input.GetKeyDown(KeyCode.X)는 HandleState에서 isAttack 플래그로 처리
         xAxis = Input.GetAxis("Horizontal");
         yAxis = Input.GetAxis("Vertical");
+
+        jumpDown = Input.GetKeyDown(KeyCode.Space);
+        jumpHeld = Input.GetKey(KeyCode.Space);
+        jumpUp = Input.GetKeyUp(KeyCode.Space);
+
+        mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
     }
 
     // --- OnTrigger 로직 (수영 상태 진입/이탈) ---
