@@ -35,7 +35,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639005475981591354
+  lastModified: 639005754478972050
   FileSizes:
   - Name: Desktop
     Value: 13888
@@ -109,7 +109,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639005475981571282
+  lastModified: 639005754478956948
   FileSizes:
   - Name: Desktop
     Value: 1054
@@ -144,7 +144,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: -1824389409810867832}
   cacheVersion: 131857
-  cacheTime: 639005475981606280
+  cacheTime: 639005754478982158
   SerializableEventsDict:
   - key: event:/Button
     index: 0
@@ -198,7 +198,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639005475981561143
+  lastModified: 639005754478941440
   FileSizes:
   - Name: Desktop
     Value: 3348192
@@ -272,7 +272,7 @@ MonoBehaviour:
   Path: Fmod/QUAD_Sound/Build/Desktop/Ui.bank
   Name: Ui
   StudioPath: bank:/Ui
-  lastModified: 639005475981606280
+  lastModified: 639005754478982158
   FileSizes:
   - Name: Desktop
     Value: 5792

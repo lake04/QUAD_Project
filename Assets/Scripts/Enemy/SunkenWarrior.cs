@@ -181,20 +181,21 @@ public class SunkenWarrior : MonoBehaviour
         lastPhasePatternIndex = random;
 
         isAttack = false;
-        switch (random)
-        {
-            case 0:
-                StartCoroutine(SkillBasicStab());
-                break;
+        StartCoroutine(SkillHarpoon());
+        //switch (random)
+        //{
+        //    case 0:
+        //        StartCoroutine(SkillBasicStab());
+        //        break;
 
-            case 1:
-                StartCoroutine(Skill1AttackDash());
-                break;
+        //    case 1:
+        //        StartCoroutine(Skill1AttackDash());
+        //        break;
 
-            case 2:
-                StartCoroutine(SkillHarpoon());
-                break;
-        }
+        //    case 2:
+        //        StartCoroutine(SkillHarpoon());
+        //        break;
+        //}
         yield return new WaitForSeconds(attackCooldown);
         isAttack = true;
     }
@@ -260,8 +261,13 @@ public class SunkenWarrior : MonoBehaviour
         rb.velocity = Vector2.zero;
 
         SoundManager.instance.PlaySFX(SoundType.SFX_SHOOT);
+
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
         //TODO : 작살 던지는 애니메이션 실행
-        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, rotation);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
         //TODO : 작살 회수하는 애니메이션 실행
 
