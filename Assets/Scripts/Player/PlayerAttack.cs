@@ -16,13 +16,11 @@ public partial class Player
 
     [SerializeField] private LayerMask attackableLayer;
 
-    [SerializeField] private Transform effectPos1, effectPos2;
-
     // Attack 메서드를 단일 코루틴으로 변경 (지상/수영 공격 모두 사용)
     private IEnumerator Attack()
     {
         isAttacking = true;
-        LookAtMouse(); 
+        LookAtMouse();
         anim.SetTrigger("Attacking");
 
         bool isFacingLeft = !isFacingRight;
@@ -30,27 +28,13 @@ public partial class Player
         // 공격 방향에 따른 변수 설정: 왼쪽을 바라보면 leftAttackTransform 사용
         Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
         Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
-        Transform currentEffectPos = isFacingLeft ? effectPos1 : effectPos2;
-
+        
         yield return new WaitForSeconds(0.2f);
 
         Hit(currentAttackTransform, currentAttackArea);
 
         isAttacking = false;
-
-        // Attack 코루틴 종료 후, FSM은 적절한 상태로 복귀
-        if (isSwimming)
-        {
-            ChangeState(PlayerState.Swim);
-        }
-        else if (isGrounded)
-        {
-            ChangeState(xAxis != 0 ? PlayerState.Run : PlayerState.Idle);
-        }
-        else
-        {
-            ChangeState(PlayerState.Jump);
-        }
+        isAttack = false;
     }
 
     // Hit 메서드 (변화 없음)
@@ -78,14 +62,15 @@ public partial class Player
         CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
     }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
-    //    Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
-    //    //Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-    //    //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
-    //    Gizmos.DrawSphere(groundCheck.position,groundCheckRadius);
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
+        Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
+        //Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
+        //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+        Gizmos.DrawSphere(groundCheck.position, 0.2f);
+        Gizmos.DrawSphere(wallCheck.position, 0.2f);
 
-    //}
+    }
 }

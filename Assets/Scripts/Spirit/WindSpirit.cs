@@ -21,9 +21,9 @@ public class WindSpirit : SpiritBase
             GameManager.Instance.player.GetComponent<Player>().canDash = true;
         }
 
-        if (curLevel == 2)
-        {
-            GameManager.Instance.player.GetComponent<Player>().maxAirJumps = 2;
-        }
+        //if (curLevel == 2)
+        //{
+        //    GameManager.Instance.player.GetComponent<Player>().maxAirJumps = 2;
+        //}
     }
 }

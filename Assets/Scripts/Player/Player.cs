@@ -24,16 +24,14 @@ public partial class Player : MonoBehaviour
 
     private CameraFollowObject cameraFollowObject;
     [SerializeField] private GameObject cameraFollowGo;
-    [SerializeField]  private float fallSpeedYDampingChangeThreshold;
+    [SerializeField] private float fallSpeedYDampingChangeThreshold;
 
     [Header("Player Stat")]
     public int maxHp = 5;
     public int nowHp;
 
-    public bool canDash;
-
-    [HideInInspector] public float xAxis;
-    [HideInInspector] public float yAxis;
+    [HideInInspector] public float horizontal;
+    [HideInInspector] public float vertical;
     [HideInInspector] public bool jumpDown;
     [HideInInspector] public bool jumpHeld;
     [HideInInspector] public bool jumpUp;
@@ -43,7 +41,7 @@ public partial class Player : MonoBehaviour
 
     private void Awake()
     {
-        if(instance == null) instance = this;
+        if (instance == null) instance = this;
     }
     void Start()
     {
@@ -52,27 +50,22 @@ public partial class Player : MonoBehaviour
         originalGravityScale = rb.gravityScale;
         mainCam = Camera.main;
 
-        // 초기 상태 설정
-        ChangeState(PlayerState.Idle);
-
         cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
         fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
     }
 
     void Update()
     {
-        // === 입력 감지는 Update에서 항상 처리 ===
         GetInputs();
 
-        HandleState();
-        TurnCheck();
+        Movement();
 
-        if(rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.lerpedFromPlayerFalling)
+        if (rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.lerpedFromPlayerFalling)
         {
             CameraManager.instance.LerpYDamping(true);
         }
 
-        if(rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.lerpedFromPlayerFalling)
+        if (rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.lerpedFromPlayerFalling)
         {
             CameraManager.instance.lerpedFromPlayerFalling = false;
 
@@ -82,143 +75,37 @@ public partial class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        bool wasGrounded = isGrounded;
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        if (isGrounded && !wasGrounded)
-        {
-            jumpCount = 0;
-        }
-
-        // 물리 기반 상태 처리
-        HandleFixedState();
+        if (!isDashing)
+            Move();
     }
 
-    // 상태 변경 메서드
-    public void ChangeState(PlayerState newState)
+    private void Movement()
     {
-        if (currentState == newState) return;
+        Jump();
 
-        // Exit State 로직
-        if (currentState == PlayerState.Dash)
-        {
-            rb.gravityScale = originalGravityScale;
-            isDashing = false;
-        }
+        WallSlide();
+        WallJump();
 
-        currentState = newState;
-    }
-
-    // Update()에서 상태별 논리/입력 처리
-    private void HandleState()
-    {
-        switch (currentState)
-        {
-            case PlayerState.Idle:
-            case PlayerState.Run:
-            case PlayerState.Jump:
-                CheckMovementStateTransition();
-                break;
-            case PlayerState.Attack:
-                break;
-            case PlayerState.Dash:
-                break;
-            case PlayerState.Swim:
-                CheckSwimStateTransition();
-                break;
-        }
-
-        isAttack = Input.GetMouseButtonDown(0);
-    }
-
-    // FixedUpdate()에서 상태별 물리 로직 처리
-    private void HandleFixedState()
-    {
-        // Dash 상태가 아닐 때만 경사로 체크
-        if (currentState != PlayerState.Dash)
-        {
-            SlopeCheck();
-        }
-
-        switch (currentState)
-        {
-            case PlayerState.Idle:
-            case PlayerState.Run:
-                Move();
-                Jump();
-                ApplyGravity();
-                break;
-            case PlayerState.Attack:
-                rb.velocity = new Vector2(0, rb.velocity.y);
-                ApplyGravity(); 
-                break;
-            case PlayerState.Jump:
-                Move();
-                Jump();
-                ApplyGravity();
-                break;
-            case PlayerState.Swim:
-                Move();
-                break;
-            case PlayerState.Dash:
-                break;
-        }
-    }
-
-    // --- FSM Transition Helpers ---
-
-    private void CheckMovementStateTransition()
-    {
-        if (isDashing) { }
-
-        if (isAttacking) return;
-
-        if (isAttack && !isAttacking)
-        {
-            ChangeState(PlayerState.Attack); // 상태 변경
-            StartCoroutine(Attack());
-            return; // 공격 시작 시 아래 이동 로직 무시
-        }
-
-        else if (isGrounded)
-        {
-            ChangeState(xAxis != 0 ? PlayerState.Run : PlayerState.Idle);
-        }
-        else
-        {
-            ChangeState(PlayerState.Jump);
-        }
-
-        if (isAttack && !isAttacking)
-        {
-            StartCoroutine(Attack());
-        }
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
-        {
-            TryDash();
-        }
-    }
-
-    private void CheckSwimStateTransition()
-    {
-        // 수영 중 공격
-        if (isAttack && !isAttacking)
-        {
-            // 수영 중 공격 로직이 지상 공격과 동일하다는 가정 하에 호출
-            StartCoroutine(Attack());
-        }
+        if (!isWallJumping)
+            TurnCheck();
     }
 
     private void GetInputs()
     {
-        // Input.GetKeyDown(KeyCode.X)는 HandleState에서 isAttack 플래그로 처리
-        xAxis = Input.GetAxis("Horizontal");
-        yAxis = Input.GetAxis("Vertical");
+        horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
 
-        jumpDown = Input.GetKeyDown(KeyCode.Space);
-        jumpHeld = Input.GetKey(KeyCode.Space);
-        jumpUp = Input.GetKeyUp(KeyCode.Space);
+        Debug.Log("xAxis: " + horizontal + ", yAxis: " + vertical);
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+            StartCoroutine(Dash());
+
+        isAttack = Input.GetMouseButtonDown(0);
+
+        if (isAttack && !isAttacking)
+        {
+            StartCoroutine(Attack());
+        }
 
         mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
     }
@@ -230,34 +117,34 @@ public partial class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             TakeDamage(1);
-
         }
 
         // 물 진입 시 상태 변경
-        if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState != PlayerState.Swim)
-        {
-            EnterWater();
-            ChangeState(PlayerState.Swim);
-        }
+        //if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState != PlayerState.Swim)
+        //{
+        //    EnterWater();
+        //    ChangeState(PlayerState.Swim);
+        //}
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    //private void OnTriggerExit2D(Collider2D collision)
+    //{
+    //    // 물에서 이탈 시 상태 변경
+    //    if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState == PlayerState.Swim)
+    //    {
+    //        ExitWater();
+    //        ChangeState(PlayerState.Idle); // 지상으로 복귀
+    //    }
+    //}
+
+    private bool IsGrounded()
     {
-        // 물에서 이탈 시 상태 변경
-        if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState == PlayerState.Swim)
-        {
-            ExitWater();
-            ChangeState(PlayerState.Idle); // 지상으로 복귀
-        }
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private bool IsWalled()
     {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            TakeDamage(1);
-
-        }
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
     }
 
 
