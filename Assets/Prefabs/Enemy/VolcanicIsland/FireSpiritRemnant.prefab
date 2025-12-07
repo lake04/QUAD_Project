@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4228634053172492152}
   - component: {fileID: 7832198297646530477}
   - component: {fileID: 2183482059288879451}
+  - component: {fileID: 8079579472466882516}
   m_Layer: 9
   m_Name: FireSpiritRemnant
   m_TagString: Enemy
@@ -187,3 +188,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   maxMoveDistance: 5
+--- !u!95 &8079579472466882516
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352145088063644281}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f6de2651aa0125d458dce441209ebdbc, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
