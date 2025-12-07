@@ -272,7 +272,8 @@ public class SunkenWarrior : MonoBehaviour
         //TODO : 작살 회수하는 애니메이션 실행
 
         yield return new WaitForSeconds(0.7f);
-        Destroy(harpoonCIone);
+        //Destroy(harpoonCIone);
+
         ChangeState(SunkenWarriorStat.Move);
     }
     #endregion

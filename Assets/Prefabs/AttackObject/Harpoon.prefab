@@ -173,7 +173,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  speed: 20
+  speed: 25
+  maxFlySpeed: 50
   maxDistance: 15
   isDestroy: 1
 --- !u!1 &6987288851532281100
