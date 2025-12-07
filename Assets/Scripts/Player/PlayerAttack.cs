@@ -22,39 +22,20 @@ public partial class Player
     private IEnumerator Attack()
     {
         isAttacking = true;
+        LookAtMouse(); 
         anim.SetTrigger("Attacking");
 
-        // localScale.x가 양수(>0)면 오른쪽, 음수(<0)면 왼쪽을 바라봄
-        bool isFacingLeft = transform.localScale.x < 0;
+        bool isFacingLeft = !isFacingRight;
 
         // 공격 방향에 따른 변수 설정: 왼쪽을 바라보면 leftAttackTransform 사용
         Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
         Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
         Transform currentEffectPos = isFacingLeft ? effectPos1 : effectPos2;
 
-        // 1. 히트 판정 시점까지 대기 
         yield return new WaitForSeconds(0.2f);
 
-        // 2. 히트 판정 실행
         Hit(currentAttackTransform, currentAttackArea);
 
-        // 3. 이펙트 및 카메라 쉐이크 시점까지 대기 (예: 0.1초)
-        yield return new WaitForSeconds(0.1f);
-
-        // 4. 이펙트 실행
-        CameraShake.Instance.Shake(0.2f, 0.4f);
-        GameObject _slashEffectInstance = Instantiate(slashEffect, currentEffectPos);
-        if (isFacingLeft) 
-        {
-            _slashEffectInstance.GetComponent<SpriteRenderer>().flipX = false;
-        }
-        _slashEffectInstance.transform.eulerAngles = new Vector3(0, 0, 0); // 각도 설정
-        _slashEffectInstance.transform.localScale = new Vector2(transform.localScale.x, transform.localScale.y);
-
-        // 5. 공격 종료 애니메이션 시간 대기
-        yield return new WaitForSeconds(timeBetweenAttack - 0.3f);
-
-        // 6. 공격 종료 및 상태 복귀
         isAttacking = false;
 
         // Attack 코루틴 종료 후, FSM은 적절한 상태로 복귀
@@ -87,8 +68,14 @@ public partial class Player
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
+                AttackShake();
             }
         }
+    }
+
+    public void AttackShake()
+    {
+        CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
     }
 
     private void OnDrawGizmos()

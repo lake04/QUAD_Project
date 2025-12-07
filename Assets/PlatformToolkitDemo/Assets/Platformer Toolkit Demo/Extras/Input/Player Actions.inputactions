@@ -18,7 +18,7 @@
                     "name": "Toolkit",
                     "type": "Button",
                     "id": "0cec30aa-54dd-4da1-b451-d8bb1712e097",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -45,7 +45,7 @@
                     "name": "Continue",
                     "type": "Button",
                     "id": "3893fa41-0ffb-48db-9613-b47c580c6752",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -63,7 +63,7 @@
                     "name": "Quit",
                     "type": "Button",
                     "id": "f1352a80-a7ab-4470-9f2b-635fe482ef58",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
