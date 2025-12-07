@@ -7,6 +7,7 @@ public enum EnemyState
     Patrolling, 
     Chasing, 
     Attacking,
+    Attack,
     Hurt,
     Die
 }

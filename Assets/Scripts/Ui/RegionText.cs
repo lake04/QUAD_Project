@@ -35,4 +35,6 @@ public class RegionText : MonoBehaviour
         sequence.Append(image.DOFade(1.0f, 1.5f));
         sequence.Append(image.DOFade(0f, 1.5f));
     }
+
+
 }
