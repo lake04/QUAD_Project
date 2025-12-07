@@ -6,7 +6,12 @@ using UnityEngine.UI;
 
 public class RegionText : MonoBehaviour
 {
-    private Text text;
+    [SerializeField] private Text text;
+
+    private void OnEnable()
+    {
+        text = GetComponent<Text>();
+    }
 
     private void Awake()
     {
@@ -15,19 +20,20 @@ public class RegionText : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(InvokeTextCoroutine());
+       
     }
 
-    private IEnumerator InvokeTextCoroutine()
+    public IEnumerator InvokeTextCoroutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
         Sequence sequence = DOTween.Sequence();
 
-        text.color = new Color(0, 0, 0, 0);
+        text.color = new Color(255, 255, 255, 0);
 
         text.gameObject.SetActive(true);
 
-        sequence.Append(text.DOFade(1.0f, 1.1f));
+        sequence.Append(text.DOFade(1.0f, 1.5f));
+        sequence.Append(text.DOFade(0f, 1.5f));
     }
 }

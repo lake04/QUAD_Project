@@ -11,6 +11,8 @@ public class Harpoon : MonoBehaviour
     [SerializeField] protected float damage;
     private Rigidbody2D rb;
     [SerializeField] protected float speed;
+    private float currentSpeed;
+    [SerializeField] private float maxFlySpeed = 20f;
 
     [SerializeField] private float maxDistance = 10f;
     private bool isReturning = false;
@@ -20,7 +22,6 @@ public class Harpoon : MonoBehaviour
     private void OnEnable()
     {
         rb = GetComponent<Rigidbody2D>();
-
     }
 
     void Start()
@@ -32,6 +33,30 @@ public class Harpoon : MonoBehaviour
     {
         if (!isReturning)
         {
+
+            float distanceTraveled = Vector3.Distance(transform.position, initialPos);
+
+            if (distanceTraveled >= maxDistance)
+            {
+                StartReturn();
+            }
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (!isReturning)
+        {
+            currentSpeed += speed * Time.fixedDeltaTime;
+
+            if (currentSpeed > maxFlySpeed)
+            {
+                currentSpeed = maxFlySpeed;
+            }
+
+            rb.velocity = direction * currentSpeed;
+
+
             float distanceTraveled = Vector3.Distance(transform.position, initialPos);
 
             if (distanceTraveled >= maxDistance)
@@ -44,9 +69,11 @@ public class Harpoon : MonoBehaviour
     public  void Init(Vector2 _direction,Transform _startPos)
     {
         direction = _direction;
-        rb.AddForce(direction * speed, ForceMode2D.Impulse);
         startPos = _startPos;
+        currentSpeed = speed;
         initialPos = transform.position;
+
+
     }
 
 
@@ -76,7 +103,7 @@ public class Harpoon : MonoBehaviour
 
         transform.position = startPos.position;
 
-        //Destroy(gameObject);
+        Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
