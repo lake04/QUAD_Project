@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class RegionTrigger : MonoBehaviour
 {
-    [SerializeField] private GameObject text;
+    [SerializeField] private RegionText text;
     [SerializeField] private Transform canva;
 
     void Start()
@@ -21,7 +21,7 @@ public class RegionTrigger : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-           Instantiate(text, canva);
+            StartCoroutine(text.InvokeTextCoroutine());
         }
     }
 }

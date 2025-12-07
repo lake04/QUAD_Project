@@ -78,12 +78,14 @@ public partial class Player
         CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
-        Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
-        //Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-        //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.color = Color.red;
+    //    Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
+    //    Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
+    //    //Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
+    //    //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
+    //    Gizmos.DrawSphere(groundCheck.position,groundCheckRadius);
+
+    //}
 }

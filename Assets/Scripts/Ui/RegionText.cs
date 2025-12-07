@@ -6,28 +6,33 @@ using UnityEngine.UI;
 
 public class RegionText : MonoBehaviour
 {
-    private Text text;
+    [SerializeField] private Image image;
+
+    private void OnEnable()
+    {
+        image = GetComponent<Image>();
+    }
 
     private void Awake()
     {
-        text = GetComponent<Text>();
     }
 
     private void Start()
     {
-        StartCoroutine(InvokeTextCoroutine());
+       
     }
 
-    private IEnumerator InvokeTextCoroutine()
+    public IEnumerator InvokeTextCoroutine()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
 
         Sequence sequence = DOTween.Sequence();
 
-        text.color = new Color(0, 0, 0, 0);
+        image.color = new Color(255, 255, 255, 0);
 
-        text.gameObject.SetActive(true);
+        gameObject.SetActive(true);
 
-        sequence.Append(text.DOFade(1.0f, 1.1f));
+        sequence.Append(image.DOFade(1.0f, 1.5f));
+        sequence.Append(image.DOFade(0f, 1.5f));
     }
 }
