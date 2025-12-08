@@ -50,19 +50,64 @@ public partial class Player
     [SerializeField] private LayerMask wallLayer;
 
     [Header("Swimming Settings")]
-    public float swimSpeed = 3.5f;
-    public float rotationSpeed = 500f;
-    public bool isSwimming = false;
-    public LayerMask waterLayer;
+    public float swimSpeed = 10f;
+    [SerializeField] private float swimDashAttackPower = 40f;
+    [SerializeField] private float swimDeceleration = 2f;
+    [SerializeField] private float swimDashCooldownTime = 1.5f;
+    [SerializeField] private bool isSwimming = false;
+    [SerializeField] private LayerMask waterLayer;
+    private bool aimInputLocked = false;
     private float originalGravityScale;
     public SpriteRenderer sprite;
 
+    [Header("Swim Dash Attack Hit")]
+    [SerializeField] private float dashAttackRadius = 0.8f;
+    [SerializeField] private LayerMask dashAttackLayer;
+
+    [Header("Swim Dash Aim Settings")]
+    public float maxAimDuration = 2.0f;
+    [HideInInspector] public float currentAimTimer;
+
     private void Move()
     {
+        if (isAimingSwimDash)
+        {
+            rb.velocity = Vector2.zero;
+            anim.SetBool("Move", false);
+            return;
+        }
+
+        if (isAttacking && !isSwimming)
+        {
+            if (IsGrounded())
+            {
+                rb.velocity = Vector2.zero;
+            }
+            else
+            {
+                rb.velocity = new Vector2(0f, rb.velocity.y);
+            }
+
+            anim.SetBool("Move", false);
+            return;
+        }
+
         if (isSwimming)
         {
-            Vector2 inputVector = new Vector2(horizontal, vertical).normalized;
-            rb.velocity = transform.right * inputVector.magnitude * swimSpeed;
+            if (isDashing) return;
+
+            Vector2 inputDir = new Vector2(horizontal, vertical).normalized;
+
+            if (inputDir.magnitude > 0.1f)
+            {
+                rb.velocity = Vector2.Lerp(rb.velocity, inputDir * swimSpeed, Time.fixedDeltaTime * 5f);
+                anim.SetBool("Move", true);
+            }
+            else
+            {
+                rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, Time.fixedDeltaTime * swimDeceleration);
+                anim.SetBool("Move", false);
+            }
             return;
         }
 
@@ -184,34 +229,38 @@ public partial class Player
 
     private void TurnCheck()
     {
-        if (isAttacking) return;
+        // 마우스 회전 충돌 방지
+        if (isAttacking || isAimingSwimDash) return;
 
-        Turn();
+        // 키보드 입력 회전
+        if ((isFacingRight && horizontal < 0f) || (!isFacingRight && horizontal > 0f))
+        {
+            Flip();
+        }
     }
 
     public void LookAtMouse()
     {
+        // 마우스만 판단
         if (mousePos.x > transform.position.x && !isFacingRight)
         {
-            Turn();
+            Flip();
         }
         else if (mousePos.x < transform.position.x && isFacingRight)
         {
-            Turn();
+            Flip();
         }
     }
 
-    private void Turn()
+    // 실제 몸을 뒤집는 기능만 담당 (조건 체크 없음)
+    private void Flip()
     {
-        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
-        {
-            isFacingRight = !isFacingRight;
-            Vector3 localScale = transform.localScale;
-            localScale.x *= -1f;
-            transform.localScale = localScale;
+        isFacingRight = !isFacingRight;
+        Vector3 localScale = transform.localScale;
+        localScale.x *= -1f;
+        transform.localScale = localScale;
 
-            if (cameraFollowObject != null) cameraFollowObject.CallTurn();
-        }
+        if (cameraFollowObject != null) cameraFollowObject.CallTurn();
     }
 
     private IEnumerator Dash()
@@ -249,25 +298,155 @@ public partial class Player
 
         rb.gravityScale = originalGravity;
 
-        // 대시 후 관성 유지
-        postDashTimer = postDashDuration;
-
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
 
-    //private void EnterWater()
-    //{
-    //    isSwimming = true;
-    //    rb.velocity = Vector2.zero;
-    //}
+    private void StartSwimDashAim()
+    {
+        if (isAimingSwimDash || aimInputLocked) return;
 
-    //private void ExitWater()
-    //{
-    //    isSwimming = false;
-    //    transform.rotation = Quaternion.identity;
-    //    rb.velocity = new Vector2(rb.velocity.x, 0f);
-    //    jumpCount = 0;
-    //}
+        isAimingSwimDash = true;
+        canDash = false;
+
+        currentAimTimer = maxAimDuration;
+
+        Time.timeScale = swimBulletTimeScale;
+        Time.fixedDeltaTime = defaultFixedDeltaTime * Time.timeScale;
+
+        if (dashDirectionIndicator != null)
+        {
+            dashDirectionIndicator.SetActive(true);
+            UpdateAimingIndicator();
+        }
+
+        anim.speed = 0f;
+    }
+
+    public void UpdateSwimAiming()
+    {
+        LookAtMouse();
+
+        UpdateAimingIndicator();
+
+        currentAimTimer -= Time.unscaledDeltaTime;
+
+        if (currentAimTimer <= 0)
+        {
+            aimInputLocked = true;
+            CancelSwimDashAim();
+        }
+    }
+
+    private void CancelSwimDashAim()
+    {
+        if (!isAimingSwimDash) return;
+
+        ResetBulletTime();
+        isAimingSwimDash = false;
+        canDash = true;
+            
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+    }
+
+    private void ResetBulletTime()
+    {
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = defaultFixedDeltaTime;
+        anim.speed = 1f;
+    }
+
+    private void UpdateAimingIndicator()
+    {
+        if (dashDirectionIndicator == null) return;
+
+        Vector2 dir = (mousePos - (Vector2)transform.position).normalized;
+
+        if (transform.localScale.x < 0)
+        {
+            dir.x *= -1;
+            dir.y *= -1;
+        }
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        dashDirectionIndicator.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
+    private IEnumerator ExecuteSwimDashAttack()
+    {
+        isAimingSwimDash = false;
+        isDashing = true;
+
+        ResetBulletTime();
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+
+        Vector2 dashDir = (mousePos - (Vector2)transform.position).normalized;
+        if (dashDir == Vector2.zero) dashDir = new Vector2(transform.localScale.x, 0); 
+
+        rb.velocity = dashDir * swimDashAttackPower;
+
+        anim.SetTrigger("Attacking");
+
+        float dashTimer = 0f;
+        List<Collider2D> hitEnemies = new List<Collider2D>(); 
+
+        while (dashTimer < dashingTime)
+        {
+            Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, dashAttackRadius, dashAttackLayer);
+
+            foreach (Collider2D hit in hits)
+            {
+                if (hit != null && !hitEnemies.Contains(hit))
+                {
+                    EnemyBase enemy = hit.GetComponent<EnemyBase>();
+                    if (enemy != null)
+                    {
+                        enemy.TakeDamage(damage, dashDir, 15f);
+                        hitEnemies.Add(hit);
+                        AttackShake();
+                    }
+                }
+            }
+
+            dashTimer += Time.deltaTime;
+            yield return null;
+        }
+
+        isDashing = false;
+
+        yield return new WaitForSeconds(swimDashCooldownTime);
+
+        canDash = true;
+    }
+
+    private void EnterWater()
+    {
+        isSwimming = true;
+        rb.gravityScale = 0f;
+        rb.velocity = rb.velocity * 0.5f;
+
+        anim.SetBool("isSwimming", true);
+        currentAirDashCount = maxAirDashCount;
+    }
+
+    private void ExitWater()
+    {
+        if (isAimingSwimDash) CancelSwimDashAim();
+
+        isSwimming = false;
+        rb.gravityScale = originalGravityScale;
+
+        transform.rotation = Quaternion.identity;
+        rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+
+        anim.SetBool("isSwimming", false);
+    }
+
+    // 대시 공격 범위 확인용 기즈모
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(dashDirectionIndicator.transform.position, dashAttackRadius);
+    }
 }
