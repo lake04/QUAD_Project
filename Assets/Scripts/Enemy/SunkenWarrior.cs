@@ -69,6 +69,7 @@ public class SunkenWarrior : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         playerTarget = GameManager.Instance.player;
+        anim = GetComponent<Animator>();
         ChangeState(SunkenWarriorStat.Idle);
 
         StartCoroutine(PhaseController());
@@ -103,16 +104,21 @@ public class SunkenWarrior : MonoBehaviour
         {
             case SunkenWarriorStat.Idle:
                 rb.velocity = Vector2.zero;
+                anim.SetBool("move", false);
                 break;
 
             case SunkenWarriorStat.Move:
                 Move();
+                break;
+            case SunkenWarriorStat.Attack:
+                anim.SetBool("move", false);
                 break;
         }
     }
 
     private void Move()
     {
+        anim.SetBool("move", true);
         transform.position = Vector3.MoveTowards(
             transform.position,
             playerTarget.transform.position,
@@ -181,21 +187,20 @@ public class SunkenWarrior : MonoBehaviour
         lastPhasePatternIndex = random;
 
         isAttack = false;
-        StartCoroutine(SkillHarpoon());
-        //switch (random)
-        //{
-        //    case 0:
-        //        StartCoroutine(SkillBasicStab());
-        //        break;
+        switch (random)
+        {
+            case 0:
+                StartCoroutine(SkillBasicStab());
+                break;
 
-        //    case 1:
-        //        StartCoroutine(Skill1AttackDash());
-        //        break;
+            case 1:
+                StartCoroutine(Skill1AttackDash());
+                break;
 
-        //    case 2:
-        //        StartCoroutine(SkillHarpoon());
-        //        break;
-        //}
+            case 2:
+                StartCoroutine(SkillHarpoon());
+                break;
+        }
         yield return new WaitForSeconds(attackCooldown);
         isAttack = true;
     }
@@ -272,7 +277,7 @@ public class SunkenWarrior : MonoBehaviour
         //TODO : 작살 회수하는 애니메이션 실행
 
         yield return new WaitForSeconds(0.7f);
-        //Destroy(harpoonCIone);
+        Destroy(harpoonCIone);
 
         ChangeState(SunkenWarriorStat.Move);
     }

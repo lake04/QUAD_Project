@@ -60,11 +60,11 @@ public class EnemyBase : MonoBehaviour
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
 
-        if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die)
+        if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die || enemyState != EnemyState.Attacking)
         {
-            if (distanceToPlayer <= attackRange && isAttack)
+            if (distanceToPlayer <= attackRange)
             {
-                ChangeState(EnemyState.Attacking);
+                ChangeState(EnemyState.Attack);
             }
             else if (distanceToPlayer <= detectionRange)
             {
@@ -76,13 +76,15 @@ public class EnemyBase : MonoBehaviour
                 ChangeState(EnemyState.Patrolling);
             }
         }
-        else if (enemyState == EnemyState.Hurt || enemyState == EnemyState.Die)
+        else if (enemyState == EnemyState.Hurt || enemyState == EnemyState.Die || enemyState == EnemyState.Attacking)
         {
             rb.velocity = Vector2.zero;
         }
 
         switch (enemyState)
         {
+            case EnemyState.Attacking:
+                break;
             case EnemyState.Patrolling:
                 Patrolling();
                 break;
@@ -91,8 +93,11 @@ public class EnemyBase : MonoBehaviour
                 Chasing();
                 break;
 
-            case EnemyState.Attacking:
-                Attack();
+            case EnemyState.Attack:
+                if (isAttack)
+                {
+                    Attack();
+                }
                 break;
 
             case EnemyState.Die:
@@ -182,7 +187,7 @@ public class EnemyBase : MonoBehaviour
             col.enabled = false;
         }
 
-        Destroy(gameObject, 1.5f);
+        Destroy(gameObject);
 
         DropItems();
     }
