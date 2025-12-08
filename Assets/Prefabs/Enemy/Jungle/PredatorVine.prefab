@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2084367469210325267}
   - component: {fileID: 2091743104450145724}
   - component: {fileID: 3120558197087309462}
+  - component: {fileID: 897568696749083796}
   m_Layer: 9
   m_Name: PredatorVine
   m_TagString: Enemy
@@ -76,9 +77,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 0f5c4204330a35649a7c6bb2f40cb07c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fa3b69d9915be8d47b71be13743bed34, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 15.000001, y: 12.502442}
@@ -119,18 +120,18 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.077215314, y: -0.11498165}
+  m_Offset: {x: -0.08730936, y: -0.16270071}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.3333335, y: 2.7783206}
+    pivot: {x: 0.49930587, y: 0.45502245}
+    oldSize: {x: 3.7500002, y: 3.1256106}
     newSize: {x: 15.000001, y: 12.502442}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1.4544306, y: 1.6594121}
+  m_Size: {x: 1.4746187, y: 1.7548503}
   m_EdgeRadius: 0
 --- !u!50 &2091743104450145724
 Rigidbody2D:
@@ -175,14 +176,39 @@ MonoBehaviour:
   curHealth: 0
   moveSpeed: 5
   attackDamage: 1
-  detectionRange: 2
+  detectionRange: 4
   attackRange: 0
   attackCooldown: 0
-  enemyState: 1
-  recoilLength: 0
-  recoilFactor: 0
+  enemyState: 0
+  recoilLength: 2
+  recoilFactor: 2
   isRecoiling: 0
+  sp: {fileID: 0}
   checkLayer:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 256
+  isActive: 0
   maxMoveDistance: 3
+  groundCheckLength: 1
+  wallCheckLength: 1
+--- !u!95 &897568696749083796
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7775034493531789418}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 68203d092ec838f45a20f3594c9dafb5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

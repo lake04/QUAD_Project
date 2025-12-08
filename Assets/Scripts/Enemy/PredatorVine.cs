@@ -7,58 +7,57 @@ public class PredatorVine : EnemyBase
 {
     private int nextMove = 1;
     public LayerMask checkLayer;
-    private bool isAtice = false;
+    [SerializeField] private bool isActive = false;
     [SerializeField] private float maxMoveDistance = 5f;
     private Vector3 startPosition;
+    [SerializeField] protected float groundCheckLength = 1;
+    [SerializeField] protected float wallCheckLength = 1;
 
     private void Start()
     {
         startPosition = transform.position;
     }
 
-    protected override void Update()
+
+    protected override void FixedUpdate()
     {
-        base.Update();
+        base.FixedUpdate();
+        PatrollingMove();
     }
-
-    private void FixedUpdate()
-    {
-        if (enemyState == EnemyState.Chasing)
-        {
-            isAtice = true;
-        }
-        else if (enemyState == EnemyState.Patrolling)
-        {
-            Patrolling();
-        }
-        Move();
-
-    }
-
-    protected override void Patrolling() 
-    {
-        rb.velocity = Vector2.zero;
-    }
-
+   
 
     protected override void Chasing() 
     {
-      
-    }
-
-    private void Move()
-    {
-        if (!isAtice)
+        if (isActive)
         {
             return;
         }
+        anim.SetTrigger("ready");
+    }
+
+    private void DoActive()
+    {
+        isActive = true;
+        anim.SetBool("move", true);
+    }
+
+    protected void PatrollingMove()
+    {
+        if (!isActive)
+        {
+            return;
+        }
+        anim.SetBool("move", true);
         rb.velocity = new Vector2(nextMove * moveSpeed, rb.velocity.y);
 
         Vector2 downVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
-        RaycastHit2D groundRayHit = Physics2D.Raycast(downVec, Vector3.down, 1f, LayerMask.GetMask("Ground"));
+        RaycastHit2D groundRayHit = Physics2D.Raycast(downVec, Vector3.down, groundCheckLength, LayerMask.GetMask("Ground"));
 
-        Vector2 frontVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
+        Vector2 frontVec = new Vector2(rb.position.x + nextMove * wallCheckLength, rb.position.y);
         RaycastHit2D wallRayHit = Physics2D.Raycast(frontVec, Vector2.right * nextMove, 0.4f, checkLayer);
+
+        Debug.DrawRay(downVec, Vector3.down * groundCheckLength, Color.red);
+        Debug.DrawRay(frontVec, Vector2.right * nextMove * wallCheckLength, Color.blue);
 
         float curDistance = transform.position.x - startPosition.x;
         bool isTurn = false;
@@ -68,15 +67,18 @@ public class PredatorVine : EnemyBase
             isTurn = true;
         }
 
-        if (Mathf.Abs(curDistance) >= maxMoveDistance)
+        if (enemyState == EnemyState.Patrolling)
         {
-            if (nextMove > 0 && curDistance > 0)
+            if (Mathf.Abs(curDistance) >= maxMoveDistance)
             {
-                isTurn = true;
-            }
-            else if (nextMove < 0 && curDistance < 0)
-            {
-                isTurn = true;
+                if (nextMove > 0 && curDistance > 0)
+                {
+                    isTurn = true;
+                }
+                else if (nextMove < 0 && curDistance < 0)
+                {
+                    isTurn = true;
+                }
             }
         }
 

@@ -98,7 +98,7 @@ public class AbyssRay : EnemyBase
         }
         else if (directionToPlayer < 0)
         {
-            nextMove = -1;
+            nextMove = 11;
         }
 
         Flip();
@@ -110,7 +110,7 @@ public class AbyssRay : EnemyBase
         {
             Vector3 newScale = transform.localScale;
 
-            newScale.x = Mathf.Sign(nextMove);
+            newScale.x = Mathf.Sign(nextMove) * 2;
 
             // localScaleÀ» Àû¿ë
             transform.localScale = newScale;
