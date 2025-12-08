@@ -33,9 +33,8 @@ public class CursedTotem : EnemyBase
         isAttack = false;
 
         Vector3 pos = playerTarget.transform.position;
-        pos.y = +  0.5f;
+        pos.y = -  2f;          
         GameObject rootClone = Instantiate(rootPrefab, pos, Quaternion.identity);
-        
         yield return new WaitForSeconds(2f);
         
         isAttack = true;

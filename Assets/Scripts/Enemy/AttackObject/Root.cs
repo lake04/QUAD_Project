@@ -26,6 +26,7 @@ public class Root : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("플레이어 뿌리 공격");
+            Player.instance.TakeDamage(damage);
             Destroy(gameObject);
         }
     }
