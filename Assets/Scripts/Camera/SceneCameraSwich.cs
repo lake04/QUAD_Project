@@ -17,20 +17,20 @@ public class SceneCameraSwich : MonoBehaviour
     public IEnumerator InvokeImgCoroutine()
     {
         yield return new WaitForSeconds(0.2f);
-
+        Player.instance.isMove = false;
         // 화면 페이드 인
         image.gameObject.SetActive(true);
         image.color = new Color(0, 0, 0, 0);
         yield return image.DOFade(1.0f, inFadeTime).WaitForCompletion();
 
         yield return new WaitForSeconds(waitScene);
-
+        Player.instance.isMove = true;
         // 화면 페이드 아웃
         image.DOFade(0f, outFadeTime).OnComplete(() => {
             image.gameObject.SetActive(false);
         });
 
-
+        
         GameManager.Instance.player.transform.position = spawnPos.position;
     }
 

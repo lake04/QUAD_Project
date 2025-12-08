@@ -14,8 +14,9 @@ public partial class Player : MonoBehaviour
 
     [Header("Player Stat")]
     public int maxHp = 5;
-    public int nowHp;
+    public int curHp;
 
+    public bool isMove = true;
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
 
@@ -35,17 +36,7 @@ public partial class Player : MonoBehaviour
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-        originalGravityScale = rb.gravityScale;
-        mainCam = Camera.main;
-
-        defaultFixedDeltaTime = Time.fixedDeltaTime;
-
-        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
-        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
-
-        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+        Initialized();
     }
 
     void Update()
@@ -159,6 +150,23 @@ public partial class Player : MonoBehaviour
         }
     }
 
+    public void Initialized()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        originalGravityScale = rb.gravityScale;
+        mainCam = Camera.main;
+        
+        defaultFixedDeltaTime = Time.fixedDeltaTime;
+
+        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+
+        curHp = maxHp;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
@@ -169,6 +177,14 @@ public partial class Player : MonoBehaviour
         if (((1 << collision.gameObject.layer) & waterLayer) != 0 && !isSwimming)
         {
             EnterWater();
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(1);
         }
     }
 
@@ -193,7 +209,7 @@ public partial class Player : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        nowHp--;
+        curHp--;
         CameraShake.Instance.Shake(0.2f, 0.2f);
         StartCoroutine(FlashColorOnHit());
     }
