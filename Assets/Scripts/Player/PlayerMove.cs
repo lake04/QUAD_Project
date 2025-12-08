@@ -446,6 +446,6 @@ public partial class Player
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, dashAttackRadius);
+        Gizmos.DrawWireSphere(dashDirectionIndicator.transform.position, dashAttackRadius);
     }
 }

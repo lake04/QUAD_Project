@@ -150,8 +150,8 @@ Transform:
   m_GameObject: {fileID: 2453059835537840996}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalPosition: {x: 1.5, y: 0, z: 0}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2743921368363988626}
@@ -683,11 +683,12 @@ MonoBehaviour:
   vertical: 0
   mousePos: {x: 0, y: 0}
   dashDirectionIndicator: {fileID: 7250372977779152836}
-  swimBulletTimeScale: 0.1
+  swimBulletTimeScale: 0.771
   isAimingSwimDash: 0
   isAttacking: 0
   damage: 1
-  slashEffect: {fileID: 7741151710058981893}
+  preAttackDelay: 0.2
+  afterAttackDelay: 0.4
   leftAttackTransform: {fileID: 7672229615906163787}
   rightAttackTransform: {fileID: 7931249742927768831}
   upAttackTransform: {fileID: 2311648177592237144}
@@ -725,6 +726,7 @@ MonoBehaviour:
   swimSpeed: 3.5
   swimDashAttackPower: 40
   swimDeceleration: 2
+  swimDashCooldownTime: 1.5
   isSwimming: 0
   waterLayer:
     serializedVersion: 2
@@ -927,10 +929,5 @@ PrefabInstance:
 --- !u!4 &7186033582465260863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
-  m_PrefabInstance: {fileID: 6382374424694812956}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7741151710058981893 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
   m_PrefabInstance: {fileID: 6382374424694812956}
   m_PrefabAsset: {fileID: 0}
