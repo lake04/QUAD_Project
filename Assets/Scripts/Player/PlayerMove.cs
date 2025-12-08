@@ -1,59 +1,53 @@
-ï»¿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public partial class Player
 {
-    private Rigidbody2D rb;
+    [Header("Movement Stats")]
+    [SerializeField] private float speed = 12f;
+    [SerializeField] private float jumpingPower = 20f;
 
-    [Header("Move Settings")]
-    public float maxSpeed = 10f;
-    public float maxAcceleration = 52f;
-    public float maxDecceleration = 50f;
-    public float maxTurnSpeed = 90f;
+    [HideInInspector] public bool isFacingRight = true;
+    private bool isMoving;
 
-    [Header("Air Stats")]
-    public float maxAirAcceleration = 52f;
-    public float maxAirDeceleration = 52f;
-    public float maxAirTurnSpeed = 80f;
+    [Header("WallSliding")]
+    private bool isWallSliding;
+    [SerializeField] private float wallSlidingSpeed = 2f;
+    private float wallJumpAcceleration = 50f;
+    private float wallJumpMaxSpeed = 12f;
+    private bool isWallJumping;
+    private float wallJumpingDirection;
+    private float wallJumpingCounter;
+    [SerializeField] private float wallJumpingTime = 0.2f;
+    [SerializeField] private float wallJumpingDuration = 0.4f;
+    private Vector2 wallJumpingPower = new Vector2(10f, 18f);
 
-    [Header("Jump Settings")]
-    public float jumpHeight = 4.5f;
-    public float timeToJumpApex = 0.4f;
-    public float upwardMovementMultiplier = 1f;      
-    public float downwardMovementMultiplier = 6.17f; 
-    public float jumpCutOff = 2f;
-    public int maxAirJumps = 2;
-    public float speedLimit = 20f;
-
-    [Header("Assists")]
-    public float coyoteTime = 0.15f;
-    public float jumpBuffer = 0.1f;
-
-    [Header("State Checks")]
-    public bool isFacingRight = true;
-    public bool isGrounded = false;
-    public bool isOnSlope = false;
-
+    [Header("Coyote Time")]
+    [SerializeField] private float coyoteTime = 0.2f;
     private float coyoteTimeCounter;
-    private float jumpBufferCounter;
-    private int jumpCount = 0;
-    private float defaultGravityScale = 1f;
 
-    [Header("Ground Check References")]
-    public Transform groundCheck;
-    public float groundCheckRadius = 0.3f;
-    public LayerMask groundLayer;
-    public float slopeCheckDistance = 0.5f;
-    public float maxSlopeAngle = 45f;
-    private float slopeDownAngle;
+    [Header("Jump Buffer")]
+    [SerializeField] private float jumpBufferTime = 0.2f;
+    private float jumpBufferCounter;
 
     [Header("Dash Settings")]
-    public float dashPower = 20f;
-    public float dashTime = 0.2f;
-    public float dashCooldown = 0.5f;
-    private bool isDashing = false;
-    private float lastDashTime = -999f;
+    public bool canDash = true;
+    private bool isDashing;
+    private float postDashTimer = 0f;
+    private int currentAirDashCount;
+    [SerializeField] private float dashingPower = 30f;
+    [SerializeField] private float dashingTime = 0.2f;
+    [SerializeField] private float dashingCooldown = 0.2f;
+    [SerializeField] private float postDashDuration = 0.3f;
+    [SerializeField] private int maxAirDashCount = 1;
+
+    [Header("References")]
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private LayerMask wallLayer;
 
     [Header("Swimming Settings")]
     public float swimSpeed = 3.5f;
@@ -67,187 +61,132 @@ public partial class Player
     {
         if (isSwimming)
         {
-            Vector2 inputVector = new Vector2(xAxis, yAxis).normalized;
+            Vector2 inputVector = new Vector2(horizontal, vertical).normalized;
             rb.velocity = transform.right * inputVector.magnitude * swimSpeed;
             return;
         }
 
-        float targetSpeed = xAxis * maxSpeed;
-        float acceleration, deceleration, turnSpeed;
+        float targetSpeed = horizontal * speed;
 
-        // ì§€ìƒ/ê³µì¤‘ ìƒíƒœì— ë”°ë¼ ë‹¤ë¥¸ ìŠ¤íƒ¯ ì ìš©
-        if (isGrounded)
+        bool isRunning = Mathf.Abs(horizontal) > 0.01f; // ÀÌµ¿ ÁßÀÌ¸é true
+        anim.SetBool("Move", isRunning);
+
+        if (isWallJumping)
         {
-            acceleration = maxAcceleration;
-            deceleration = maxDecceleration;
-            turnSpeed = maxTurnSpeed;
-        }
-        else
-        {
-            acceleration = maxAirAcceleration;
-            deceleration = maxAirDeceleration;
-            turnSpeed = maxAirTurnSpeed;
+            // º®Á¡ÇÁ ÁßÀÌ¸é Á¡ÁøÀûÀ¸·Î °¡¼Ó
+            float newVelX = Mathf.MoveTowards(rb.velocity.x, wallJumpingDirection * wallJumpMaxSpeed, wallJumpAcceleration * Time.fixedDeltaTime);
+            rb.velocity = new Vector2(newVelX, rb.velocity.y);
+            return;
         }
 
-        float maxSpeedChange;
-
-        if (xAxis != 0)
-        {            
-            if (Mathf.Sign(xAxis) != Mathf.Sign(rb.velocity.x) && Mathf.Abs(rb.velocity.x) > 0.1f)
+        if (!isWallJumping)
+        {
+            if (isDashing)
             {
-                maxSpeedChange = turnSpeed * Time.deltaTime;
+                // Áö»ó ´ë½Ã Áß ¼öÆò ¼Óµµ À¯Áö
+                rb.velocity = new Vector2(transform.localScale.x * dashingPower, rb.velocity.y);
+                return;
+            }
+
+            if (postDashTimer > 0f)
+            {
+                // ´ë½Ã ÈÄ °ü¼º À¯Áö, Á¡ÁøÀû °¨¼Ó
+                float decel = 20f;
+                rb.velocity = new Vector2(Mathf.MoveTowards(rb.velocity.x, 0f, decel * Time.fixedDeltaTime), rb.velocity.y);
+                postDashTimer -= Time.fixedDeltaTime;
             }
             else
             {
-                maxSpeedChange = acceleration * Time.deltaTime;
+                rb.velocity = new Vector2(targetSpeed, rb.velocity.y);
             }
         }
-        else
-        {
-            maxSpeedChange = deceleration * Time.deltaTime;
-        }
-
-        float currentSpeed = Mathf.MoveTowards(rb.velocity.x, targetSpeed, maxSpeedChange);
-
-        if (isOnSlope && isGrounded && xAxis == 0) currentSpeed = 0;
-
-        rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
-
-        anim.SetBool("Move", xAxis != 0);
     }
 
     private void Jump()
     {
-        // ì½”ìš”í…Œ íƒ€ìž„ ê³„ì‚°
-        if (isGrounded)
-        {
-            coyoteTimeCounter = coyoteTime;
-            jumpCount = 0;
-        }
-        else
-        {
-            coyoteTimeCounter -= Time.deltaTime;
-        }
+        if (IsGrounded()) coyoteTimeCounter = coyoteTime;
+        else coyoteTimeCounter -= Time.deltaTime;
 
-        
-        if (jumpDown) jumpBufferCounter = jumpBuffer;
+        if (Input.GetButtonDown("Jump")) jumpBufferCounter = jumpBufferTime;
         else jumpBufferCounter -= Time.deltaTime;
 
-        bool canJump = (isGrounded || coyoteTimeCounter > 0) || (jumpCount < maxAirJumps);
+        if (jumpBufferCounter > 0f && coyoteTimeCounter > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+            jumpBufferCounter = 0f;
+        }
 
-        if (jumpBufferCounter > 0 && canJump)
-        {            
-            if (!isGrounded && coyoteTimeCounter <= 0)
-            {                
-                if (jumpCount >= maxAirJumps) return;
-            }
-
-            PerformJump();
+        if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+            coyoteTimeCounter = 0f;
         }
     }
 
-    private void PerformJump()
+    private void WallSlide()
     {
-        jumpBufferCounter = 0;
-        coyoteTimeCounter = 0;
-        jumpCount++;
-
-        float gravity = (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex);
-        float targetGravity = Physics2D.gravity.y * (gravity / Physics2D.gravity.y);
-        float jumpSpeed = Mathf.Sqrt(-2f * targetGravity * jumpHeight);
-
-        if (rb.velocity.y > 0f)
+        if (IsWalled() && horizontal != 0f)
         {
-            jumpSpeed = Mathf.Max(jumpSpeed - rb.velocity.y, 0f);
-        }
-        else if (rb.velocity.y < 0f)
-        {
-            jumpSpeed += Mathf.Abs(rb.velocity.y);
-        }
+            //anim.SetBool("isWallSliding", true);
 
-        rb.velocity += new Vector2(0, jumpSpeed);
-
-        anim.SetTrigger("Jump");
-    }
-
-    private void ApplyGravity()
-    {
-        // ì¤‘ë ¥ ë¬´ì‹œ
-        if (isSwimming || isDashing) { rb.gravityScale = 0; return; }
-        if (isOnSlope && isGrounded && xAxis == 0) { rb.gravityScale = 0; return; }
-
-        Vector2 newGravity = new Vector2(0, (-2 * jumpHeight) / (timeToJumpApex * timeToJumpApex));
-        float baseGravityScale = (newGravity.y / Physics2D.gravity.y);
-
-        float gravMultiplier = 1f;
-
-        if (rb.velocity.y > 0.01f)
-        {
-            if (isGrounded)
-            {
-                gravMultiplier = defaultGravityScale;
-            }
-            else
-            {
-                if (jumpHeld)
-                {
-                    gravMultiplier = upwardMovementMultiplier;
-                }
-                else
-                {
-                    gravMultiplier = jumpCutOff;
-                }
-            }
-        }
-        else if (rb.velocity.y < -0.01f)
-        {
-            if (isGrounded)
-            {
-                gravMultiplier = defaultGravityScale;
-            }
-            else
-            {
-                gravMultiplier = downwardMovementMultiplier;
-            }
+            isWallSliding = true;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
-            gravMultiplier = defaultGravityScale;
+            //anim.SetBool("isWallSliding", false);
+
+            isWallSliding = false;
         }
-
-        rb.gravityScale = baseGravityScale * gravMultiplier;
-
-        rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -speedLimit, 100));
     }
 
-    private void SlopeCheck()
+    private void WallJump()
     {
-        if (isSwimming) return;
-        Vector2 checkPos = transform.position - new Vector3(0f, 0.5f);
-        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, groundLayer);
-
-        if (hit)
+        if (isWallSliding)
         {
-            Vector2 normal = hit.normal;
-            slopeDownAngle = Vector2.Angle(normal, Vector2.up);
-            isOnSlope = slopeDownAngle > 0 && slopeDownAngle <= maxSlopeAngle;
+            isWallJumping = false;
+            wallJumpingDirection = -Mathf.Sign(transform.localScale.x);
+            wallJumpingCounter = wallJumpingTime;
+
+            CancelInvoke(nameof(StopWallJumping));
         }
-        else isOnSlope = false;
+        else
+        {
+            wallJumpingCounter -= Time.deltaTime;
+        }
+
+        if (Input.GetButtonDown("Jump") && wallJumpingCounter > 0f)
+        {
+            isWallJumping = true;
+
+            // ÃÊ±â ¼öÆò ¼Óµµ´Â ¾à°£¸¸
+            rb.velocity = new Vector2(wallJumpingDirection * wallJumpingPower.x * 0.5f, wallJumpingPower.y);
+
+            wallJumpingCounter = 0f;
+
+            // Flip Ã³¸®
+            if (Mathf.Sign(transform.localScale.x) != wallJumpingDirection)
+            {
+                isFacingRight = !isFacingRight;
+                Vector3 localScale = transform.localScale;
+                localScale.x *= -1f;
+                transform.localScale = localScale;
+            }
+
+            Invoke(nameof(StopWallJumping), wallJumpingDuration);
+        }
+    }
+
+    private void StopWallJumping()
+    {
+        isWallJumping = false;
     }
 
     private void TurnCheck()
     {
-        // ê³µê²© ì¤‘ì—ëŠ” í‚¤ ìž…ë ¥ìœ¼ë¡œ íšŒì „í•˜ì§€ ì•Šë„ë¡ ë°©ì§€
         if (isAttacking) return;
 
-        if (xAxis > 0 && !isFacingRight)
-        {
-            Turn();
-        }
-        else if (xAxis < 0 && isFacingRight)
-        {
-            Turn();
-        }
+        Turn();
     }
 
     public void LookAtMouse()
@@ -264,49 +203,71 @@ public partial class Player
 
     private void Turn()
     {
-        isFacingRight = !isFacingRight;
-        Vector3 rotator = transform.rotation.eulerAngles;
-        rotator.y = isFacingRight ? 0f : 180f;
-        transform.rotation = Quaternion.Euler(rotator);
+        if (isFacingRight && horizontal < 0f || !isFacingRight && horizontal > 0f)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
 
-        if (cameraFollowObject != null) cameraFollowObject.CallTurn();
+            if (cameraFollowObject != null) cameraFollowObject.CallTurn();
+        }
     }
 
-    private void TryDash()
+    private IEnumerator Dash()
     {
-        if (isSwimming || Time.time < lastDashTime + dashCooldown) return;
-        ChangeState(PlayerState.Dash);
-        StartCoroutine(DashCoroutine());
-    }
-
-    private IEnumerator DashCoroutine()
-    {
+        canDash = false;
         isDashing = true;
-        lastDashTime = Time.time;
 
-        float direction = xAxis;
-        if (direction == 0) direction = isFacingRight ? 1 : -1;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
 
-        rb.gravityScale = 0;
-        rb.velocity = new Vector2(direction * dashPower, 0f);
+        bool grounded = IsGrounded();
 
-        yield return new WaitForSeconds(dashTime);
+        if (grounded)
+        {
+            // Áö»ó ´ë½Ã
+            rb.velocity = new Vector2(transform.localScale.x * dashingPower, rb.velocity.y);
+            currentAirDashCount = maxAirDashCount; // Áö»ó¿¡ ´êÀ¸¸é °øÁß ´ë½Ã ÃÊ±âÈ­
+        }
+        else
+        {
+            // °øÁß ´ë½Ã °¡´É ¿©ºÎ Ã¼Å©
+            if (currentAirDashCount <= 0)
+            {
+                rb.gravityScale = originalGravity;
+                isDashing = false;
+                canDash = true;
+                yield break;
+            }
+
+            rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
+            currentAirDashCount--; // °øÁß ´ë½Ã »ç¿ë
+        }
+
+        yield return new WaitForSeconds(dashingTime);
+
+        rb.gravityScale = originalGravity;
+
+        // ´ë½Ã ÈÄ °ü¼º À¯Áö
+        postDashTimer = postDashDuration;
 
         isDashing = false;
-        ChangeState(PlayerState.Idle);
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
     }
 
-    private void EnterWater()
-    {
-        isSwimming = true;
-        rb.velocity = Vector2.zero;
-    }
+    //private void EnterWater()
+    //{
+    //    isSwimming = true;
+    //    rb.velocity = Vector2.zero;
+    //}
 
-    private void ExitWater()
-    {
-        isSwimming = false;
-        transform.rotation = Quaternion.identity;
-        rb.velocity = new Vector2(rb.velocity.x, 0f);
-        jumpCount = 0;
-    }
+    //private void ExitWater()
+    //{
+    //    isSwimming = false;
+    //    transform.rotation = Quaternion.identity;
+    //    rb.velocity = new Vector2(rb.velocity.x, 0f);
+    //    jumpCount = 0;
+    //}
 }

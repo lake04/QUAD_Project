@@ -31,7 +31,7 @@ public class UiManager : MonoBehaviour
 
     void PlayerHp()
     {
-        int hp = Player.instance.nowHp;
+        int hp = Player.instance.cuerHp;
 
         for (int i = 0; i < playerHeart.Length; i++)
         {

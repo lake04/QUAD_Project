@@ -56,7 +56,7 @@ Transform:
   m_GameObject: {fileID: 915503097799837831}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.215, y: 0.85, z: 0}
+  m_LocalPosition: {x: 0.439, y: 0.598, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 973413579443259418}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.9, y: 0.81, z: 0}
+  m_LocalPosition: {x: 1.584, y: 0.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -384,7 +384,7 @@ GameObject:
   - component: {fileID: 4492191388133054568}
   - component: {fileID: 4699276393568488134}
   - component: {fileID: 7572673419004866824}
-  - component: {fileID: 3164708373126734782}
+  - component: {fileID: -6979808381145095423}
   - component: {fileID: 2953361916202556581}
   - component: {fileID: 1556756605816915324}
   - component: {fileID: 4673288884559079792}
@@ -532,7 +532,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.74}
+  m_Offset: {x: 0.03, y: 0.74}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.23535112, y: 0.09633779}
@@ -543,9 +543,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.84, y: 1.57}
+  m_Size: {x: 0.74, y: 1.57}
   m_EdgeRadius: 0
---- !u!114 &3164708373126734782
+--- !u!114 &-6979808381145095423
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -561,48 +561,58 @@ MonoBehaviour:
   currentState: 0
   cameraFollowGo: {fileID: 0}
   fallSpeedYDampingChangeThreshold: 0
+  maxHp: 5
+  nowHp: 0
+  xAxis: 0
+  yAxis: 0
+  jumpDown: 0
+  jumpHeld: 0
+  jumpUp: 0
+  mousePos: {x: 0, y: 0}
   isAttacking: 0
   damage: 1
-  slashEffect: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+  slashEffect: {fileID: 7741151710058981893}
   leftAttackTransform: {fileID: 7672229615906163787}
   rightAttackTransform: {fileID: 7931249742927768831}
   upAttackTransform: {fileID: 2311648177592237144}
   downAttackTransform: {fileID: 6080831614479577162}
-  leftAttackArea: {x: 3.3, y: 2.5}
-  rightAttackArea: {x: 3.3, y: 2.5}
-  upAttackArea: {x: 2.5, y: 2}
-  downAttackArea: {x: 3.5, y: 3}
+  leftAttackArea: {x: 2, y: 2}
+  rightAttackArea: {x: 2, y: 2}
+  upAttackArea: {x: 0, y: 0}
+  downAttackArea: {x: 0, y: 0}
   attackableLayer:
     serializedVersion: 2
-    m_Bits: 512
-  effectPos1: {fileID: 8832997405036093734}
-  effectPos2: {fileID: 8421558034471447365}
-  moveSpeed: 5
+    m_Bits: 2560
+  speed: 12
+  jumpingPower: 20
   isFacingRight: 1
-  jumpForce: 5
-  jumpTime: 0.35
-  jumpCutMultiplier: 0.1
-  maxJumpCount: 1
-  isGrounded: 0
+  wallSlidingSpeed: 2
+  wallJumpingTime: 0.2
+  wallJumpingDuration: 0.4
+  coyoteTime: 0.2
+  jumpBufferTime: 0.2
+  canDash: 1
+  dashingPower: 30
+  dashingTime: 0.2
+  dashingCooldown: 0.2
+  postDashDuration: 0.3
+  maxAirDashCount: 1
+  rb: {fileID: 4699276393568488134}
   groundCheck: {fileID: 825587742930754778}
-  groundCheckRadius: 0.5
   groundLayer:
     serializedVersion: 2
-    m_Bits: 64
-  slopeCheckDistance: 0.5
-  maxSlopeAngle: 45
-  dashPower: 20
-  dashTime: 0.15
-  dashCooldown: 0.5
-  maxHp: 30
+    m_Bits: 320
+  wallCheck: {fileID: 2055712065769116071}
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 256
   swimSpeed: 3.5
   rotationSpeed: 500
   isSwimming: 0
   waterLayer:
     serializedVersion: 2
-    m_Bits: 16
+    m_Bits: 0
   sprite: {fileID: 0}
-  canDash: 0
 --- !u!95 &2953361916202556581
 Animator:
   serializedVersion: 5
@@ -794,5 +804,10 @@ PrefabInstance:
 --- !u!4 &7186033582465260863 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4263594660236520483, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
+  m_PrefabInstance: {fileID: 6382374424694812956}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7741151710058981893 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3746053493555845913, guid: 3314638eded14134eb60a0a063ef0f9a, type: 3}
   m_PrefabInstance: {fileID: 6382374424694812956}
   m_PrefabAsset: {fileID: 0}
