@@ -298,9 +298,6 @@ public partial class Player
 
         rb.gravityScale = originalGravity;
 
-        // 대시 후 관성 유지
-        postDashTimer = postDashDuration;
-
         isDashing = false;
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
