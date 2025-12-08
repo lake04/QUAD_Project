@@ -9,7 +9,9 @@ public partial class Player
     public bool isAttacking = false;
     private float timeBetweenAttack = 1f;
     public float damage;
-    [SerializeField] private GameObject slashEffect;
+
+    [SerializeField] private float preAttackDelay = 0.2f;
+    [SerializeField] private float afterAttackDelay = 0.4f;
 
     [SerializeField] private Transform leftAttackTransform, rightAttackTransform, upAttackTransform, downAttackTransform;
     [SerializeField] private Vector2 leftAttackArea, rightAttackArea, upAttackArea, downAttackArea;
@@ -23,15 +25,15 @@ public partial class Player
         LookAtMouse();
         anim.SetTrigger("Attacking");
 
-        bool isFacingLeft = !isFacingRight;
+        yield return new WaitForSeconds(preAttackDelay);
 
-        // 공격 방향에 따른 변수 설정: 왼쪽을 바라보면 leftAttackTransform 사용
+        bool isFacingLeft = !isFacingRight;
         Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
         Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
-        
-        yield return new WaitForSeconds(0.2f);
 
         Hit(currentAttackTransform, currentAttackArea);
+
+        yield return new WaitForSeconds(afterAttackDelay);
 
         isAttacking = false;
         isAttack = false;
