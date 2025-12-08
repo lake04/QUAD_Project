@@ -2,25 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 새로운 상태: Swim 추가
-public enum PlayerState
-{
-    Idle,
-    Run,
-    Jump,
-    Attack,
-    Dash,
-    Swim, // 수영 상태 추가
-}
-
 public partial class Player : MonoBehaviour
 {
     public static Player instance;
 
     public Animator anim;
-
-    // FSM 변수 추가
-    public PlayerState currentState;
 
     private CameraFollowObject cameraFollowObject;
     [SerializeField] private GameObject cameraFollowGo;
