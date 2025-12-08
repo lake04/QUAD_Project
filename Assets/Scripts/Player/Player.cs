@@ -2,25 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// 새로운 상태: Swim 추가
-public enum PlayerState
-{
-    Idle,
-    Run,
-    Jump,
-    Attack,
-    Dash,
-    Swim, // 수영 상태 추가
-}
-
 public partial class Player : MonoBehaviour
 {
     public static Player instance;
 
     public Animator anim;
-
-    // FSM 변수 추가
-    public PlayerState currentState;
 
     private CameraFollowObject cameraFollowObject;
     [SerializeField] private GameObject cameraFollowGo;
@@ -32,16 +18,20 @@ public partial class Player : MonoBehaviour
 
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
-    [HideInInspector] public bool jumpDown;
-    [HideInInspector] public bool jumpHeld;
-    [HideInInspector] public bool jumpUp;
 
     [HideInInspector] public Vector2 mousePos;
     private Camera mainCam;
 
+    [Header("Swim Dash Attack Settings")]
+    public GameObject dashDirectionIndicator;
+    [Range(0.01f, 1f)] public float swimBulletTimeScale = 0.1f; // 불렛타임 느려지는 정도
+    public bool isAimingSwimDash = false; // 현재 조준 중인지 여부
+    private float defaultFixedDeltaTime; // 원래 물리 업데이트 시간 저장용
+
     private void Awake()
     {
         if (instance == null) instance = this;
+        else Destroy(gameObject);
     }
     void Start()
     {
@@ -50,27 +40,38 @@ public partial class Player : MonoBehaviour
         originalGravityScale = rb.gravityScale;
         mainCam = Camera.main;
 
+        defaultFixedDeltaTime = Time.fixedDeltaTime;
+
         cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
         fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
     }
 
     void Update()
     {
         GetInputs();
 
+        if (isAimingSwimDash)
+        {
+            UpdateAimingIndicator();
+        }
+
+        if (!isSwimming && !isAimingSwimDash) // 조준 중이 아닐 때만 카메라 댐핑 적용
+        {
+            if (rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.lerpedFromPlayerFalling)
+            {
+                CameraManager.instance.LerpYDamping(true);
+            }
+
+            if (rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.lerpedFromPlayerFalling)
+            {
+                CameraManager.instance.lerpedFromPlayerFalling = false;
+                CameraManager.instance.LerpYDamping(false);
+            }
+        }
+
         Movement();
-
-        if (rb.velocity.y < fallSpeedYDampingChangeThreshold && !CameraManager.instance.isLerpingYDamping && !CameraManager.instance.lerpedFromPlayerFalling)
-        {
-            CameraManager.instance.LerpYDamping(true);
-        }
-
-        if (rb.velocity.y >= 0f && !CameraManager.instance.isLerpingYDamping && CameraManager.instance.lerpedFromPlayerFalling)
-        {
-            CameraManager.instance.lerpedFromPlayerFalling = false;
-
-            CameraManager.instance.LerpYDamping(false);
-        }
     }
 
     void FixedUpdate()
@@ -81,10 +82,14 @@ public partial class Player : MonoBehaviour
 
     private void Movement()
     {
-        Jump();
+        if (isAimingSwimDash) return;
 
-        WallSlide();
-        WallJump();
+        if (!isSwimming)
+        {
+            Jump();
+            WallSlide();
+            WallJump();
+        }
 
         if (!isWallJumping)
             TurnCheck();
@@ -92,25 +97,62 @@ public partial class Player : MonoBehaviour
 
     private void GetInputs()
     {
-        horizontal = Input.GetAxis("Horizontal");
-        vertical = Input.GetAxis("Vertical");
-
-        Debug.Log("xAxis: " + horizontal + ", yAxis: " + vertical);
-
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
-            StartCoroutine(Dash());
-
-        isAttack = Input.GetMouseButtonDown(0);
-
-        if (isAttack && !isAttacking)
+        // 조준 중에는 이동 입력 무시 (선택 사항)
+        if (!isAimingSwimDash)
         {
-            StartCoroutine(Attack());
+            horizontal = Input.GetAxisRaw("Horizontal");
+            vertical = Input.GetAxisRaw("Vertical");
+        }
+        else
+        {
+            horizontal = 0;
+            vertical = 0;
         }
 
         mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-    }
 
-    // --- OnTrigger 로직 (수영 상태 진입/이탈) ---
+        if (isSwimming && (canDash || isAimingSwimDash))
+        {
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                if (!isAimingSwimDash)
+                {
+                    StartSwimDashAim();
+                }
+                else
+                {
+                    UpdateSwimAiming();
+                }
+            }
+
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                CancelSwimDashAim();
+            }
+        }
+        else if (isAimingSwimDash)
+        {
+            CancelSwimDashAim();
+        }
+
+        isAttack = Input.GetMouseButtonDown(0);
+        if (isAttack)
+        {
+            if (isAimingSwimDash)
+            {
+                StartCoroutine(ExecuteSwimDashAttack());
+            }
+            else if (!isAttacking && !isSwimming)
+            {
+                StartCoroutine(Attack());
+            }
+        }
+
+        if (!isSwimming && Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        {
+            StartCoroutine(Dash());
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -119,23 +161,19 @@ public partial class Player : MonoBehaviour
             TakeDamage(1);
         }
 
-        // 물 진입 시 상태 변경
-        //if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState != PlayerState.Swim)
-        //{
-        //    EnterWater();
-        //    ChangeState(PlayerState.Swim);
-        //}
+        if (((1 << collision.gameObject.layer) & waterLayer) != 0 && !isSwimming)
+        {
+            EnterWater();
+        }
     }
 
-    //private void OnTriggerExit2D(Collider2D collision)
-    //{
-    //    // 물에서 이탈 시 상태 변경
-    //    if (((1 << collision.gameObject.layer) & waterLayer) != 0 && currentState == PlayerState.Swim)
-    //    {
-    //        ExitWater();
-    //        ChangeState(PlayerState.Idle); // 지상으로 복귀
-    //    }
-    //}
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & waterLayer) != 0 && isSwimming)
+        {
+            ExitWater();
+        }
+    }
 
     private bool IsGrounded()
     {
