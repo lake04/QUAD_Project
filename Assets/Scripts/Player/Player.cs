@@ -14,7 +14,7 @@ public partial class Player : MonoBehaviour
 
     [Header("Player Stat")]
     public int maxHp = 5;
-    public int nowHp;
+    public int cuerHp;
 
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
@@ -31,13 +31,7 @@ public partial class Player : MonoBehaviour
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-        originalGravityScale = rb.gravityScale;
-        mainCam = Camera.main;
-
-        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
-        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+        Initialized();
     }
 
     void Update()
@@ -136,7 +130,7 @@ public partial class Player : MonoBehaviour
 
     public void TakeDamage(int _damage)
     {
-        nowHp--;
+        cuerHp--;
         CameraShake.Instance.Shake(0.2f, 0.2f);
         StartCoroutine(FlashColorOnHit());
     }
@@ -153,5 +147,17 @@ public partial class Player : MonoBehaviour
         {
             transform.position = GameManager.Instance.respawnPoint.position;
         }
+    }
+
+    public void Initialized()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        originalGravityScale = rb.gravityScale;
+        mainCam = Camera.main;
+
+        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+        cuerHp = maxHp;
     }
 }
