@@ -115,23 +115,28 @@ public partial class Player : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                if (!isAimingSwimDash)
+                if (!aimInputLocked)
                 {
-                    StartSwimDashAim();
-                }
-                else
-                {
-                    UpdateSwimAiming();
+                    if (!isAimingSwimDash)
+                    {
+                        StartSwimDashAim();
+                    }
+                    else
+                    {
+                        UpdateSwimAiming();
+                    }
                 }
             }
 
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
+                aimInputLocked = false;
                 CancelSwimDashAim();
             }
         }
         else if (isAimingSwimDash)
         {
+            aimInputLocked = false;
             CancelSwimDashAim();
         }
 

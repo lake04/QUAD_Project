@@ -56,6 +56,7 @@ public partial class Player
     [SerializeField] private float swimDashCooldownTime = 1.5f;
     [SerializeField] private bool isSwimming = false;
     [SerializeField] private LayerMask waterLayer;
+    private bool aimInputLocked = false;
     private float originalGravityScale;
     public SpriteRenderer sprite;
 
@@ -307,7 +308,7 @@ public partial class Player
 
     private void StartSwimDashAim()
     {
-        if (isAimingSwimDash) return;
+        if (isAimingSwimDash || aimInputLocked) return;
 
         isAimingSwimDash = true;
         canDash = false;
@@ -336,12 +337,15 @@ public partial class Player
 
         if (currentAimTimer <= 0)
         {
+            aimInputLocked = true;
             CancelSwimDashAim();
         }
     }
 
     private void CancelSwimDashAim()
     {
+        if (!isAimingSwimDash) return;
+
         ResetBulletTime();
         isAimingSwimDash = false;
         canDash = true;
