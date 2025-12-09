@@ -15,6 +15,7 @@ public class RegionTrigger : MonoBehaviour
 
     [SerializeField] private float inFadeTime;
     [SerializeField] private float outFadeTime;
+    [SerializeField] private float waitScene = 1.3f;
 
     // 화면 암전 후 플레이어를 이동시키고 배경을 교체하는 코루틴
     public IEnumerator InvokeImgCoroutine()
@@ -26,7 +27,7 @@ public class RegionTrigger : MonoBehaviour
         image.color = new Color(0, 0, 0, 0);
         yield return image.DOFade(1.0f, inFadeTime).WaitForCompletion();
 
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(waitScene);
 
         // 배경 오브젝트 교체
         if (deactiveBackground != null) deactiveBackground.SetActive(false);

@@ -1339,8 +1339,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 958185604}
-  canva: {fileID: 1300957254}
   image: {fileID: 0}
+  spawnPos: {fileID: 0}
+  activeBackground: {fileID: 0}
+  deactiveBackground: {fileID: 0}
+  inFadeTime: 0
+  outFadeTime: 0
 --- !u!4 &536763198
 Transform:
   m_ObjectHideFlags: 0
@@ -1374,7 +1378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &601360223
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2578,7 +2582,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &868677350
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3433,8 +3437,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 745296435}
-  canva: {fileID: 1300957254}
   image: {fileID: 0}
+  spawnPos: {fileID: 0}
+  activeBackground: {fileID: 0}
+  deactiveBackground: {fileID: 0}
+  inFadeTime: 0
+  outFadeTime: 0
 --- !u!4 &1111933166
 Transform:
   m_ObjectHideFlags: 0
@@ -58092,7 +58100,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1921375634

@@ -40,6 +40,20 @@ public class SmallCursedTotem : GroundEnemy
     IEnumerator IEAttack()
     {
         isAttack = false;
+
+        float directionToPlayer = playerTarget.transform.position.x - transform.position.x;
+
+        if (directionToPlayer > 0)
+        {
+            nextMove = 1;
+            sp.flipX = true;
+        }
+        else if (directionToPlayer < 0)
+        {
+            nextMove = -1;
+            sp.flipX = false;
+        }
+
         ChangeState(EnemyState.Attacking);
         rb.velocity = Vector3.zero;
         anim.SetTrigger("Attack");
