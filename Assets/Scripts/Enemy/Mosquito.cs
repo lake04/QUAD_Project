@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// EnemyBase의 EnemyState가 Patrolling, Chasing, Attacking, Hurt, Dying을 포함한다고 가정합니다.
 
 public class Mosquito : EnemyBase
 {
@@ -64,10 +63,13 @@ public class Mosquito : EnemyBase
         if (transform.position.x <= startPos.x - xRange)
         {
             nextMove = 1;
+            sp.flipX = true;
         }
         else if (transform.position.x >= startPos.x + xRange)
         {
             nextMove = -1;
+            sp.flipX = false;
+
         }
     }
 
