@@ -10,7 +10,7 @@ public class AbyssRay : EnemyBase
     [SerializeField] private float waveFrequency = 2f;
 
     [SerializeField] private float xRange;
-    private int nextMove = 1;
+    [SerializeField] private int nextMove = 1;
 
     private float waveTimer = 0f;
     private Vector3 startPos;

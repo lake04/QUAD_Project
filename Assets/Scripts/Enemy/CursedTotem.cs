@@ -12,6 +12,19 @@ public class CursedTotem : EnemyBase
         
     }
 
+    protected override void Update()
+    {
+        float directionToPlayer = playerTarget.transform.position.x - transform.position.x;
+
+        if (directionToPlayer > 0)
+        {
+            sp.flipX = true;
+        }
+        else if (directionToPlayer < 0)
+        {
+            sp.flipX = false;
+        }
+    }
   
 
     protected override void Chasing()
@@ -31,13 +44,20 @@ public class CursedTotem : EnemyBase
    IEnumerator IEAttack()
     {
         isAttack = false;
-
-        Vector3 pos = playerTarget.transform.position;
-        pos.y = -  2f;          
-        GameObject rootClone = Instantiate(rootPrefab, pos, Quaternion.identity);
+     
+        anim.SetTrigger("attack");
+      
         yield return new WaitForSeconds(2f);
         
         isAttack = true;
+    }
+    
+    private void SpawnRoot()
+    {
+        Debug.Log("µ¢±¼ ¼ÒÈ¯");
+        Vector3 pos = playerTarget.transform.position;
+        pos.y = -2f;
+        GameObject rootClone = Instantiate(rootPrefab, pos, Quaternion.identity);
     }
 }
 

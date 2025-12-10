@@ -29,6 +29,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private bool isRecoiling = false;
 
     [SerializeField] protected SpriteRenderer sp;
+    [SerializeField] protected GameObject dieEffect;
 
     protected virtual void Awake()
     {
@@ -186,6 +187,7 @@ public class EnemyBase : MonoBehaviour
         {
             col.enabled = false;
         }
+        Instantiate(dieEffect,transform.position,Quaternion.identity);
 
         Destroy(gameObject);
 

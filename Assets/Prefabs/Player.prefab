@@ -700,6 +700,7 @@ MonoBehaviour:
   attackableLayer:
     serializedVersion: 2
     m_Bits: 2560
+  comboResetTime: 0.5
   speed: 12
   jumpingPower: 20
   isFacingRight: 1
