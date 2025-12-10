@@ -184,6 +184,7 @@ MonoBehaviour:
   recoilFactor: 0
   isRecoiling: 0
   sp: {fileID: 0}
+  dieEffect: {fileID: 5772206182110663871, guid: ade6ca64f9e95cb4aa74177f902648a4, type: 3}
   rootPrefab: {fileID: 6839203611091618034, guid: 30be0e476fa9a974095145c95e95f52d, type: 3}
 --- !u!95 &8762346552419434750
 Animator:

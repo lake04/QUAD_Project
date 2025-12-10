@@ -184,6 +184,7 @@ MonoBehaviour:
   recoilFactor: 0
   isRecoiling: 0
   sp: {fileID: 0}
+  dieEffect: {fileID: 5772206182110663871, guid: ade6ca64f9e95cb4aa74177f902648a4, type: 3}
   escapeSpeed: 3
   descentSpeed: 6
   waveAmplitude: 0.5
