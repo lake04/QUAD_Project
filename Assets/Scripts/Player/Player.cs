@@ -16,9 +16,9 @@ public partial class Player : MonoBehaviour
     public int maxHp = 5;
     public int curHp;
 
-    public bool isMove = true;
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
+    public bool isMove;
 
     [HideInInspector] public Vector2 mousePos;
     private Camera mainCam;
@@ -36,7 +36,17 @@ public partial class Player : MonoBehaviour
     }
     void Start()
     {
-        Initialized();
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        originalGravityScale = rb.gravityScale;
+        mainCam = Camera.main;
+
+        defaultFixedDeltaTime = Time.fixedDeltaTime;
+
+        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
     }
 
     void Update()
@@ -164,23 +174,6 @@ public partial class Player : MonoBehaviour
         }
     }
 
-    public void Initialized()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-        originalGravityScale = rb.gravityScale;
-        mainCam = Camera.main;
-        
-        defaultFixedDeltaTime = Time.fixedDeltaTime;
-
-        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
-        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
-
-        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
-
-        curHp = maxHp;
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
@@ -191,14 +184,6 @@ public partial class Player : MonoBehaviour
         if (((1 << collision.gameObject.layer) & waterLayer) != 0 && !isSwimming)
         {
             EnterWater();
-        }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            TakeDamage(1);
         }
     }
 
