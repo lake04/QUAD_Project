@@ -18,7 +18,6 @@ public partial class Player : MonoBehaviour
 
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
-    public bool isMove;
 
     [HideInInspector] public Vector2 mousePos;
     private Camera mainCam;
@@ -28,6 +27,8 @@ public partial class Player : MonoBehaviour
     [Range(0.01f, 1f)] public float swimBulletTimeScale = 0.1f; // 불렛타임 느려지는 정도
     public bool isAimingSwimDash = false; // 현재 조준 중인지 여부
     private float defaultFixedDeltaTime; // 원래 물리 업데이트 시간 저장용
+
+    public bool isMove;
 
     private void Awake()
     {
