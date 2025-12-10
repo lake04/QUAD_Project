@@ -18,6 +18,7 @@ public partial class Player : MonoBehaviour
 
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
+    public bool isMove;
 
     [HideInInspector] public Vector2 mousePos;
     private Camera mainCam;
