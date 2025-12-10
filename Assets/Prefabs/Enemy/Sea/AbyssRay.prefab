@@ -185,9 +185,11 @@ MonoBehaviour:
   recoilFactor: 0
   isRecoiling: 0
   sp: {fileID: 0}
+  dieEffect: {fileID: 5772206182110663871, guid: ade6ca64f9e95cb4aa74177f902648a4, type: 3}
   waveAmplitude: 0.5
   waveFrequency: 2
   xRange: 5
+  nextMove: 1
   electricShockWavePrefab: {fileID: 951954722353980010, guid: c3bc657984cd93a4e9d2b885140654cb, type: 3}
   spawnPos: {fileID: 4189670801708978689}
 --- !u!95 &2636304214254741685

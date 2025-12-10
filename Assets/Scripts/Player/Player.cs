@@ -46,7 +46,7 @@ public partial class Player : MonoBehaviour
 
         cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
         fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
-
+        curHp = maxHp;
         if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
     }
 
