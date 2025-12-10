@@ -5,10 +5,16 @@ using UnityEngine;
 public class Root : MonoBehaviour
 {
     [SerializeField] private int damage;
+    [SerializeField] private GameObject attackRangeSnow;
+
+    private Animator anim;
 
     private void OnEnable()
     {
-        Destroy(gameObject, 2f);
+        anim = GetComponent<Animator>();
+
+        //StartCoroutine(Init());
+        Destroy(gameObject, 1.5f);
     }
 
     void Start()
@@ -30,4 +36,14 @@ public class Root : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    //private IEnumerator Init()
+    //{
+    //    attackRangeSnow.SetActive(true);
+    //    yield return new WaitForSeconds(1);
+    //    attackRangeSnow.SetActive(false);
+
+    //    anim.SetTrigger("isAttack");
+    //    Destroy(gameObject, 1f);
+    //}
 }

@@ -183,7 +183,10 @@ MonoBehaviour:
   recoilFactor: 20
   isRecoiling: 0
   sp: {fileID: 0}
+  dieEffect: {fileID: 5772206182110663871, guid: ade6ca64f9e95cb4aa74177f902648a4, type: 3}
   checkLayer:
     serializedVersion: 2
     m_Bits: 320
   maxMoveDistance: 5
+  groundCheckLength: 1
+  wallCheckLength: 1

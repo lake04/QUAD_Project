@@ -13,6 +13,10 @@ public class RegionTrigger : MonoBehaviour
     [SerializeField] private GameObject activeBackground;   // 이동할 지역의 배경
     [SerializeField] private GameObject deactiveBackground; // 현재 지역의 배경
 
+    [SerializeField] private float inFadeTime;
+    [SerializeField] private float outFadeTime;
+    [SerializeField] private float waitScene = 1.3f;
+
     // 화면 암전 후 플레이어를 이동시키고 배경을 교체하는 코루틴
     public IEnumerator InvokeImgCoroutine()
     {
@@ -21,23 +25,26 @@ public class RegionTrigger : MonoBehaviour
         // 화면 페이드 인
         image.gameObject.SetActive(true);
         image.color = new Color(0, 0, 0, 0);
-        yield return image.DOFade(1.0f, 1.5f).WaitForCompletion();
+        yield return image.DOFade(1.0f, inFadeTime).WaitForCompletion();
 
-        // 플레이어 및 카메라 위치 이동
-        GameManager.Instance.player.transform.position = spawnPos.position;
-        Camera.main.transform.position = new Vector3(spawnPos.position.x, spawnPos.position.y, -10f);
+        yield return new WaitForSeconds(waitScene);
 
         // 배경 오브젝트 교체
         if (deactiveBackground != null) deactiveBackground.SetActive(false);
         if (activeBackground != null) activeBackground.SetActive(true);
 
         // 화면 페이드 아웃
-        image.DOFade(0f, 1.5f).OnComplete(() => {
+        image.DOFade(0f, outFadeTime).OnComplete(() => {
             image.gameObject.SetActive(false);
         });
 
         // 지역 이름 텍스트 출력
         StartCoroutine(text.InvokeTextCoroutine());
+
+        Camera.main.transform.position = new Vector3(spawnPos.position.x, spawnPos.position.y, -10f);
+
+        GameManager.Instance.player.transform.position = spawnPos.position;
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
