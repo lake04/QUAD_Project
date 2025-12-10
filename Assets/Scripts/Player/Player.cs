@@ -52,6 +52,20 @@ public partial class Player : MonoBehaviour
     {
         GetInputs();
 
+        if(anim != null)
+        {
+            anim.SetBool("IsGrounded", IsGrounded());
+
+            if(!isSwimming)
+            {
+                anim.SetFloat("VerticalVelocity", rb.velocity.y);
+            }
+            else
+            {
+                anim.SetFloat("VerticalVelocity", 0f);
+            }
+        }
+
         if (isAimingSwimDash)
         {
             UpdateAimingIndicator();
@@ -147,9 +161,9 @@ public partial class Player : MonoBehaviour
             {
                 StartCoroutine(ExecuteSwimDashAttack());
             }
-            else if (!isAttacking && !isSwimming)
+            else if (!isSwimming)
             {
-                StartCoroutine(Attack());
+                PerformAttack();
             }
         }
 
