@@ -105,13 +105,17 @@ public partial class Player
             if (inputDir.magnitude > 0.1f)
             {
                 rb.velocity = Vector2.Lerp(rb.velocity, inputDir * swimSpeed, Time.fixedDeltaTime * 5f);
-                anim.SetBool("Move", true);
             }
             else
             {
                 rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, Time.fixedDeltaTime * swimDeceleration);
-                anim.SetBool("Move", false);
             }
+
+            bool hasInput = inputDir.magnitude > 0.01f;       // 키보드를 누르고 있는가?
+            bool hasVelocity = rb.velocity.magnitude > 0.1f;  // 관성으로 움직이는 중인가? (0.5는 너무 커서 0.1로 낮춤)
+
+            anim.SetBool("Move", hasInput || hasVelocity);
+
             return;
         }
 
@@ -325,7 +329,6 @@ public partial class Player
             UpdateAimingIndicator();
         }
 
-        anim.speed = 0f;
     }
 
     public void UpdateSwimAiming()
@@ -358,7 +361,6 @@ public partial class Player
     {
         Time.timeScale = 1f;
         Time.fixedDeltaTime = defaultFixedDeltaTime;
-        anim.speed = 1f;
     }
 
     private void UpdateAimingIndicator()
@@ -430,7 +432,7 @@ public partial class Player
         rb.gravityScale = 0f;
         rb.velocity = rb.velocity * 0.5f;
 
-        anim.SetBool("isSwimming", true);
+        anim.SetBool("IsSwimming", true);
         currentAirDashCount = maxAirDashCount;
     }
 
@@ -444,7 +446,7 @@ public partial class Player
         transform.rotation = Quaternion.identity;
         rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
 
-        anim.SetBool("isSwimming", false);
+        anim.SetBool("IsSwimming", false);
     }
 
     // 대시 공격 범위 확인용 기즈모

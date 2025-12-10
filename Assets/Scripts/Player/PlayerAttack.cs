@@ -18,14 +18,71 @@ public partial class Player
 
     [SerializeField] private LayerMask attackableLayer;
 
-    // Attack 메서드를 단일 코루틴으로 변경 (지상/수영 공격 모두 사용)
-    private IEnumerator Attack()
+    [Header("Combo Settings")]
+    private int comboStep = 0;
+    private float lastAttackTime;
+    [SerializeField] private float comboResetTime = 0.8f;
+    private Coroutine comboResetCoroutine; // 콤보 리셋용
+
+    public void PerformAttack()
+    {
+        if (comboStep == 2 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        {
+            return;
+        }
+
+        // 공격할 때마다 기존 리셋 카운트다운을 취소
+        if (comboResetCoroutine != null) StopCoroutine(comboResetCoroutine);
+
+        // 콤보 유효 시간 지났으면 리셋
+        if (Time.time - lastAttackTime > comboResetTime)
+        {
+            comboStep = 0;
+        }
+
+        lastAttackTime = Time.time;
+
+        if (IsGrounded())
+        {
+            comboStep++;
+            if (comboStep > 2) comboStep = 1;
+
+            anim.SetInteger("Combo", comboStep);
+            anim.SetTrigger("Attacking");
+
+            LookAtMouse();
+
+            StopCoroutine(nameof(CheckAttackHit));
+            StartCoroutine(CheckAttackHit(comboStep));
+        }
+        else
+        {
+            // 점프 공격은 콤보 스텝 영향 안 받게
+            anim.SetTrigger("Attacking");
+            LookAtMouse();
+
+            StopCoroutine(nameof(CheckAttackHit));
+            StartCoroutine(CheckAttackHit(0));
+        }
+
+        comboResetCoroutine = StartCoroutine(ResetComboTimer());
+    }
+
+    private IEnumerator ResetComboTimer()
+    {
+        yield return new WaitForSeconds(comboResetTime);
+        comboStep = 0;
+        anim.SetInteger("Combo", 0);
+    }
+
+    private IEnumerator CheckAttackHit(int step)
     {
         isAttacking = true;
-        LookAtMouse();
-        anim.SetTrigger("Attacking");
 
-        yield return new WaitForSeconds(preAttackDelay);
+        float delay = 0.2f;
+        if (step == 0) delay = 0.1f;
+
+        yield return new WaitForSeconds(delay);
 
         bool isFacingLeft = !isFacingRight;
         Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
@@ -33,20 +90,18 @@ public partial class Player
 
         Hit(currentAttackTransform, currentAttackArea);
 
-        yield return new WaitForSeconds(afterAttackDelay);
+        yield return new WaitForSeconds(0.4f); // 후딜
 
         isAttacking = false;
-        isAttack = false;
     }
 
-    // Hit 메서드 (변화 없음)
     private void Hit(Transform _attackTransform, Vector2 _attackArea)
     {
         Collider2D[] objectsToHit = Physics2D.OverlapBoxAll(_attackTransform.position, _attackArea, 0, attackableLayer);
 
         if (objectsToHit.Length > 0)
         {
-            Debug.Log("Hit");
+            // Debug.Log("Hit");
         }
         for (int i = 0; i < objectsToHit.Length; i++)
         {
@@ -61,18 +116,15 @@ public partial class Player
 
     public void AttackShake()
     {
-        CameraShake.Instance.AttacShake(0.3f, 0.15f, 0.47f);
+        CameraShake.Instance.Shake(0.1f, 0.2f);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
-        Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
-        //Gizmos.DrawWireCube(upAttackTransform.position, upAttackArea);
-        //Gizmos.DrawWireCube(downAttackTransform.position, downAttackArea);
-        Gizmos.DrawSphere(groundCheck.position, 0.2f);
-        Gizmos.DrawSphere(wallCheck.position, 0.2f);
-
+        if (leftAttackTransform != null) Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
+        if (rightAttackTransform != null) Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
+        if (groundCheck != null) Gizmos.DrawSphere(groundCheck.position, 0.2f);
+        if (wallCheck != null) Gizmos.DrawSphere(wallCheck.position, 0.2f);
     }
 }
