@@ -70,10 +70,6 @@ public partial class Player
 
     private void Move()
     {
-        if (!isMove)
-        {
-            return;
-        }
         if (isAimingSwimDash)
         {
             rb.velocity = Vector2.zero;
