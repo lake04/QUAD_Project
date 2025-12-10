@@ -408,6 +408,13 @@ public partial class Player
                         hitEnemies.Add(hit);
                         AttackShake();
                     }
+                    SunkenWarrior boss  = hit.GetComponent<SunkenWarrior>();
+                    if (boss != null)
+                    {
+                        boss.TakeDamage(damage, dashDir, 15f);
+                        hitEnemies.Add(hit);
+                        AttackShake();
+                    }
                 }
             }
 

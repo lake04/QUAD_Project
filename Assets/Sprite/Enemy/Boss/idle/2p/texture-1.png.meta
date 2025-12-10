@@ -121,7 +121,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: texture-1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 8200
+        width: 5500
+        height: 4100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d516bf5d64d1294d92ea82cc259f680
+      internalID: 1510910424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texture-1_1
+      rect:
+        serializedVersion: 2
+        x: 5500
+        y: 8200
+        width: 5500
+        height: 4100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48f22612648f8b041992894498f002b0
+      internalID: 652782870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texture-1_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 4100
+        width: 5500
+        height: 4100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6fd39aadb408eae4da758537656f9077
+      internalID: -790684998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: texture-1_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 5500
+        height: 4100
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c4dda4a26f3e2841ac26d0e45c12cb4
+      internalID: 2121709031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -132,7 +216,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      texture-1_0: 1510910424
+      texture-1_1: 652782870
+      texture-1_2: -790684998
+      texture-1_3: 2121709031
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
