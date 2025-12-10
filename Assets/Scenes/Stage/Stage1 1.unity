@@ -61583,7 +61583,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1732729623882439052, guid: be8ec971740f29e419e3ac58358de556, type: 3}
       propertyPath: maxHp
-      value: 2
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 1732729623882439052, guid: be8ec971740f29e419e3ac58358de556, type: 3}
       propertyPath: dieEffect

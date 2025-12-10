@@ -273,7 +273,7 @@ MonoBehaviour:
   stat: 0
   phase: 0
   curHp: 0
-  maxHp: 15
+  maxHp: 7
   moveSpeed: 2
   moveRange: 15
   dashSpeed: 13
