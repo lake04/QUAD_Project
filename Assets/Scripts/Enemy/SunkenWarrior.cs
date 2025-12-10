@@ -102,23 +102,47 @@ public class SunkenWarrior : MonoBehaviour
     {
         switch (stat)
         {
+            case SunkenWarriorStat.Transform:
+                rb.velocity = Vector2.zero;
+                break;
+                
             case SunkenWarriorStat.Idle:
                 rb.velocity = Vector2.zero;
-                anim.SetBool("move", false);
+
+                if(phase == BossPhase.Phase1)
+                {
+                    anim.SetBool("1PMove", false);
+                    anim.SetBool("1PIdle", true);
+                }
+                else
+                {
+                    anim.SetBool("2PMove", false);
+                    anim.SetBool("2PIdle", true);
+                }
                 break;
 
             case SunkenWarriorStat.Move:
                 Move();
                 break;
             case SunkenWarriorStat.Attack:
-                anim.SetBool("move", false);
+           
                 break;
         }
     }
 
     private void Move()
     {
-        anim.SetBool("move", true);
+        if (phase == BossPhase.Phase1)
+        {
+            anim.SetBool("1PMove", true);
+            anim.SetBool("1PIdle", false);
+
+        }
+        else
+        {
+            anim.SetBool("2PMove", true);
+            anim.SetBool("2PIdle", false);
+        }
         transform.position = Vector3.MoveTowards(
             transform.position,
             playerTarget.transform.position,
@@ -262,6 +286,16 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator SkillHarpoon()
     {
+        if (phase == BossPhase.Phase1)
+        {
+            anim.SetBool("1PMove", false);
+            anim.SetBool("1PIdle", true);
+        }
+        else
+        {
+            anim.SetBool("2PMove", false);
+            anim.SetBool("2PIdle", true);
+        }
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -336,6 +370,16 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator Skill2WaterDrill()
     {
+        if (phase == BossPhase.Phase1)
+        {
+            anim.SetBool("1PMove", false);
+            anim.SetBool("1PIdle", true);
+        }
+        else
+        {
+            anim.SetBool("2PMove", false);
+            anim.SetBool("2PIdle", true);
+        }
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -353,6 +397,16 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator SkillHarpoonAndDash()
     {
+        if (phase == BossPhase.Phase1)
+        {
+            anim.SetBool("1PMove", false);
+            anim.SetBool("1PIdle", true);
+        }
+        else
+        {
+            anim.SetBool("2PMove", false);
+            anim.SetBool("2PIdle", true);
+        }
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -413,7 +467,6 @@ public class SunkenWarrior : MonoBehaviour
         isDead = true;
 
         ChangeState(SunkenWarriorStat.Die);
-        Instantiate(dieEffect, transform);
 
         if (anim != null)
         {
@@ -428,7 +481,11 @@ public class SunkenWarrior : MonoBehaviour
         {
             col.enabled = false;
         }
-        Destroy(gameObject, 1.5f);
+
+        Instantiate(dieEffect, transform.position, Quaternion.identity);
+
+
+        Destroy(gameObject);
 
     }
 
