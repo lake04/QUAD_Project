@@ -20,6 +20,7 @@ public class SunkenWarrior : MonoBehaviour
 {
     public SunkenWarriorStat stat;
     public BossPhase phase = BossPhase.Phase1;
+    private bool isStart = true;
 
     [SerializeField] private float curHp;
     [SerializeField] private float maxHp;
@@ -72,7 +73,6 @@ public class SunkenWarrior : MonoBehaviour
         anim = GetComponent<Animator>();
         ChangeState(SunkenWarriorStat.Idle);
 
-        StartCoroutine(PhaseController());
         startPos = transform;
         curHp = maxHp;
     }
@@ -90,6 +90,11 @@ public class SunkenWarrior : MonoBehaviour
 
         if (distanceToPlayer < moveRange && stat != SunkenWarriorStat.Attack)
         {
+            if(isStart)
+            {
+                StartCoroutine(PhaseController());
+                isStart = false;
+            }
             ChangeState(SunkenWarriorStat.Move);
         }
         else if (stat != SunkenWarriorStat.Attack)
@@ -211,6 +216,7 @@ public class SunkenWarrior : MonoBehaviour
         lastPhasePatternIndex = random;
 
         isAttack = false;
+
         switch (random)
         {
             case 0:
@@ -265,7 +271,6 @@ public class SunkenWarrior : MonoBehaviour
     {
         rb.velocity = Vector2.zero;
 
-
         //TODO : 애니메이션 실행
 
         yield return new WaitForSeconds(0.5f);
@@ -296,6 +301,8 @@ public class SunkenWarrior : MonoBehaviour
             anim.SetBool("2PMove", false);
             anim.SetBool("2PIdle", true);
         }
+
+        yield return new WaitForSeconds(0.6f);
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -303,15 +310,14 @@ public class SunkenWarrior : MonoBehaviour
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-
         //TODO : 작살 던지는 애니메이션 실행
-        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, rotation);
+        GameObject harpoonCIone = Instantiate(harpoonPrefab, harpoonSpawnPos.position, Quaternion.identity);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
+        harpoonCIone.transform.rotation =  Quaternion.Euler(0,0,angle);
         //TODO : 작살 회수하는 애니메이션 실행
 
-        yield return new WaitForSeconds(0.7f);
-        Destroy(harpoonCIone);
+        yield return new WaitForSeconds(1f);
+        //Destroy(harpoonCIone);
 
         ChangeState(SunkenWarriorStat.Move);
     }
@@ -383,11 +389,16 @@ public class SunkenWarrior : MonoBehaviour
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
         //TODO : 작살 던지는 애니메이션 실행
         GameObject waterDrillCIone = Instantiate(waterDrillPrefab, waterDrillSpawnPos1.position, Quaternion.identity);
         GameObject waterDrillCIone2 = Instantiate(waterDrillPrefab, waterDrillSpawnPos2.position, Quaternion.identity);
         waterDrillCIone.GetComponent<WaterDrill>().Init(direction);
         waterDrillCIone2.GetComponent<WaterDrill>().Init(direction);
+
+        waterDrillCIone.transform.rotation = Quaternion.Euler(0, 0, angle);
+        waterDrillCIone2.transform.rotation = Quaternion.Euler(0, 0, angle);
         //TODO : 작살 회수하는 애니메이션 실행
 
         yield return new WaitForSeconds(0.7f);
@@ -410,9 +421,12 @@ public class SunkenWarrior : MonoBehaviour
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
         //TODO : 작살 던지는 애니메이션 실행
         GameObject harpoonCIone = Instantiate(skill2HarpoonPrefab, harpoonSpawnPos.position,Quaternion.identity);
         harpoonCIone.GetComponent<Harpoon>().Init(direction, harpoonSpawnPos);
+        harpoonCIone.transform.rotation = Quaternion.Euler(0, 0, angle);
         //TODO : 작살 회수하는 애니메이션 실행
 
         yield return new WaitForSeconds(0.5f);

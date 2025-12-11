@@ -44,7 +44,7 @@ public partial class Player
 
         lastAttackTime = Time.time;
 
-        if (IsGrounded() || isSwimming)
+        if (IsGrounded())
         {
             comboStep++;
             if (comboStep > 2) comboStep = 1;
@@ -56,11 +56,25 @@ public partial class Player
 
             StopCoroutine(nameof(CheckAttackHit));
             StartCoroutine(CheckAttackHit(comboStep));
-        }
-        {
+
             anim.SetInteger("Combo", comboStep);
 
         }
+        else if(isSwimming)
+        {
+            comboStep++;
+            if (comboStep > 2) comboStep = 1;
+
+            anim.SetInteger("Combo", comboStep);
+            anim.SetTrigger("Attacking");
+
+
+            StopCoroutine(nameof(CheckAttackHit));
+            StartCoroutine(CheckAttackHit(comboStep));
+
+            anim.SetInteger("Combo", comboStep);
+        }
+        else
         {
             // 점프 공격은 콤보 스텝 영향 안 받게
             anim.SetTrigger("Attacking");
@@ -112,6 +126,13 @@ public partial class Player
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
                 AttackShake();
             }
+
+            if (objectsToHit[i].GetComponent<SunkenWarrior>() != null)
+            {
+                Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 10);
+                AttackShake();
+            }
         }
     }
 
@@ -123,7 +144,6 @@ public partial class Player
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        if (leftAttackTransform != null) Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
         if (rightAttackTransform != null) Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
         if (groundCheck != null) Gizmos.DrawSphere(groundCheck.position, 0.2f);
         if (wallCheck != null) Gizmos.DrawSphere(wallCheck.position, 0.2f);
