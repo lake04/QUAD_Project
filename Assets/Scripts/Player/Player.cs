@@ -1,6 +1,8 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public partial class Player : MonoBehaviour
 {
@@ -11,10 +13,19 @@ public partial class Player : MonoBehaviour
     private CameraFollowObject cameraFollowObject;
     [SerializeField] private GameObject cameraFollowGo;
     [SerializeField] private float fallSpeedYDampingChangeThreshold;
+    [SerializeField] private float aimCameraSize = 7f; 
+    [SerializeField] private float cameraZoomSpeed = 5f;
+
+    private float currentCameraDefaultSize;
 
     [Header("Player Stat")]
     public int maxHp = 5;
     public int curHp;
+    private bool isInvincible;
+    public float invincibleTime = 1.5f;     // 무적 유지 시간
+    public float blinkInterval = 0.6f;    // 깜빡임 간격
+    [SerializeField] private Image hitEffect;
+    [SerializeField] public GameObject playerHitEettct;
 
     [HideInInspector] public float horizontal;
     [HideInInspector] public float vertical;
@@ -37,17 +48,7 @@ public partial class Player : MonoBehaviour
     }
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        sprite = GetComponent<SpriteRenderer>();
-        originalGravityScale = rb.gravityScale;
-        mainCam = Camera.main;
-
-        defaultFixedDeltaTime = Time.fixedDeltaTime;
-
-        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
-        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
-        curHp = maxHp;
-        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+        InIt();
     }
 
     void Update()
@@ -72,6 +73,7 @@ public partial class Player : MonoBehaviour
         {
             UpdateAimingIndicator();
         }
+       
 
         if (!isSwimming && !isAimingSwimDash) // 조준 중이 아닐 때만 카메라 댐핑 적용
         {
@@ -88,6 +90,8 @@ public partial class Player : MonoBehaviour
         }
 
         Movement();
+
+        UpdateCameraZoom();
     }
 
     void FixedUpdate()
@@ -95,6 +99,29 @@ public partial class Player : MonoBehaviour
         if (!isDashing)
             Move();
     }
+
+    public void InIt()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        originalGravityScale = rb.gravityScale;
+        mainCam = Camera.main;
+
+        if (CameraManager.instance.curCamera != null)
+        {
+            currentCameraDefaultSize = CameraManager.instance.curCamera.m_Lens.OrthographicSize;
+        }
+
+        defaultFixedDeltaTime = Time.fixedDeltaTime;
+
+        cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+        fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
+        curHp = maxHp;
+        if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
+        moveEffect[1].SetActive(false);
+
+    }
+
 
     private void Movement()
     {
@@ -157,6 +184,7 @@ public partial class Player : MonoBehaviour
         }
 
         isAttack = Input.GetMouseButtonDown(0);
+
         if (isAttack)
         {
             if (isAimingSwimDash)
@@ -174,6 +202,108 @@ public partial class Player : MonoBehaviour
             StartCoroutine(Dash());
         }
     }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    }
+
+    private bool IsWalled()
+    {
+        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
+    }
+
+
+    public void TakeDamage(int _damage)
+    {
+        GameObject effect = Instantiate(playerHitEettct, gameObject.transform);
+        if (isInvincible == true)
+        {
+            return;
+        }
+        curHp--;
+        CameraShake.Instance.Shake(0.2f, 0.2f);
+        StartCoroutine(HitEffect());
+        StartCoroutine(InvincibleBlink());
+    }
+
+    private IEnumerator InvincibleBlink()
+    {
+        isInvincible = true;
+        float elapsed = 0f;
+
+        Color originalColor = sprite.color;
+
+        while (elapsed < invincibleTime)
+        {
+            sprite.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.4f);
+
+            yield return new WaitForSeconds(blinkInterval / 2);
+
+            sprite.color = originalColor; 
+
+            yield return new WaitForSeconds(blinkInterval / 2);
+
+            elapsed += blinkInterval;
+        }
+
+        isInvincible = false;
+
+        sprite.color = originalColor;
+    }
+
+
+    private IEnumerator HitEffect()
+    {
+        Color color = hitEffect.color;
+        color.a = 0.4f;
+        hitEffect.color = color;
+
+        while (color.a >= 0.0f)
+        {
+            color.a -= Time.deltaTime;
+            hitEffect.color = color;
+
+            yield return null;
+        }
+    }
+
+    public void Respawn()
+    {
+        if (GameManager.Instance.respawnPoint != null)
+        {
+            transform.position = GameManager.Instance.respawnPoint.position;
+        }
+    }
+
+    private void UpdateCameraZoom()
+    {
+        CinemachineVirtualCamera activeCamera = CameraManager.instance.curCamera;
+
+        if (activeCamera == null)
+        {
+            return;
+        }
+
+        float targetSize = isAimingSwimDash ? aimCameraSize : currentCameraDefaultSize;
+
+        float currentSize = activeCamera.m_Lens.OrthographicSize;
+
+        if (Mathf.Approximately(currentSize, targetSize))
+        {
+            return;
+        }
+
+        float newSize = Mathf.Lerp(currentSize, targetSize, Time.deltaTime * cameraZoomSpeed);
+
+        activeCamera.m_Lens.OrthographicSize = newSize;
+    }
+
+    public void OnCameraSwitched(CinemachineVirtualCamera newCamera)
+    {
+        currentCameraDefaultSize = newCamera.m_Lens.OrthographicSize;
+    }
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -196,35 +326,5 @@ public partial class Player : MonoBehaviour
         }
     }
 
-    private bool IsGrounded()
-    {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-    }
-
-    private bool IsWalled()
-    {
-        return Physics2D.OverlapCircle(wallCheck.position, 0.2f, wallLayer);
-    }
-
-
-    public void TakeDamage(int _damage)
-    {
-        curHp--;
-        CameraShake.Instance.Shake(0.2f, 0.2f);
-        StartCoroutine(FlashColorOnHit());
-    }
-    protected virtual IEnumerator FlashColorOnHit()
-    {
-        Color originalColor = sprite.color;
-        sprite.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        sprite.color = originalColor;
-    }
-    public void Respawn()
-    {
-        if (GameManager.Instance.respawnPoint != null)
-        {
-            transform.position = GameManager.Instance.respawnPoint.position;
-        }
-    }
+    
 }

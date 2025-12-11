@@ -19,7 +19,7 @@ public class CameraManager : MonoBehaviour
     private Coroutine lerpYPanCoroutine;
     private Coroutine panCameraCoroutine;
 
-    private CinemachineVirtualCamera curCamera;
+    public CinemachineVirtualCamera curCamera;
     private CinemachineFramingTransposer framingTransposer;
 
     private float normYPanAmount;
@@ -168,6 +168,8 @@ public class CameraManager : MonoBehaviour
 
             framingTransposer = curCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         }
+        Player.instance.OnCameraSwitched(curCamera);
+
     }
 
     #endregion
