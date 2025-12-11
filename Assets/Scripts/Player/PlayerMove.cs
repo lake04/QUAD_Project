@@ -440,7 +440,7 @@ public partial class Player
         transform.rotation = Quaternion.Euler(0f, 0f, finalAngle); 
 
         rb.velocity = dashDir * swimDashAttackPower;
-        anim.SetTrigger("Attacking");
+        anim.SetTrigger("WaterDash");
 
         float dashTimer = 0f;
 
@@ -448,22 +448,6 @@ public partial class Player
 
         while (dashTimer < dashingTime)
         {
-            RaycastHit2D wallHit = Physics2D.Raycast(
-            transform.position,
-            dashDir,
-            wallCheckDistance,
-            wallLayer
-        );
-
-            Debug.DrawRay(transform.position, dashDir * wallCheckDistance, Color.red);
-
-            //if (wallHit.collider != null)
-            //{
-            //    rb.velocity = Vector2.MoveTowards(rb.velocity, Vector2.zero, wallStopDeceleration * Time.deltaTime);
-
-            //    // break;
-            //}
-
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, dashAttackRadius, dashAttackLayer);
 
             foreach (Collider2D hit in hits)
@@ -475,9 +459,7 @@ public partial class Player
                     if (enemy != null)
                     {
                         enemy.TakeDamage(damage, dashDir, 15f);
-
                         hitEnemies.Add(hit);
-
                         AttackShake();
                     }
 
@@ -486,9 +468,7 @@ public partial class Player
                     if (boss != null)
                     {
                         boss.TakeDamage(damage, dashDir, 15f);
-
                         hitEnemies.Add(hit);
-
                         AttackShake();
                     }
                 }

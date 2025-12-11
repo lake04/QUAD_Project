@@ -9,6 +9,8 @@ public partial class Player
     public bool isAttacking = false;
     private float timeBetweenAttack = 1f;
     public float damage;
+    private bool isDashAttack = false;
+    private bool isCanDashAttack;
 
     [SerializeField] private float preAttackDelay = 0.2f;
     [SerializeField] private float afterAttackDelay = 0.4f;
@@ -26,7 +28,7 @@ public partial class Player
 
     public void PerformAttack()
     {
-        if (comboStep == 2 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if (comboStep == 2 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") || anim.GetCurrentAnimatorStateInfo(0).IsName("JumpAttack"))
         {
             return;
         }
@@ -42,7 +44,7 @@ public partial class Player
 
         lastAttackTime = Time.time;
 
-        if (IsGrounded())
+        if (IsGrounded() || isSwimming)
         {
             comboStep++;
             if (comboStep > 2) comboStep = 1;
@@ -55,7 +57,10 @@ public partial class Player
             StopCoroutine(nameof(CheckAttackHit));
             StartCoroutine(CheckAttackHit(comboStep));
         }
-        else
+        {
+            anim.SetInteger("Combo", comboStep);
+
+        }
         {
             // 점프 공격은 콤보 스텝 영향 안 받게
             anim.SetTrigger("Attacking");
@@ -84,11 +89,7 @@ public partial class Player
 
         yield return new WaitForSeconds(delay);
 
-        bool isFacingLeft = !isFacingRight;
-        Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
-        Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
-
-        Hit(currentAttackTransform, currentAttackArea);
+        Hit(rightAttackTransform, rightAttackArea);
 
         yield return new WaitForSeconds(0.4f); // 후딜
 

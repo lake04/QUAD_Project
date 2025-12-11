@@ -191,11 +191,12 @@ public partial class Player : MonoBehaviour
             {
                 StartCoroutine(ExecuteSwimDashAttack());
             }
-            else if (!isSwimming)
+            else
             {
                 PerformAttack();
             }
         }
+      
 
         if (!isSwimming && Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
