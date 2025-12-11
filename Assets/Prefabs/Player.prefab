@@ -677,14 +677,21 @@ MonoBehaviour:
   anim: {fileID: 2953361916202556581}
   cameraFollowGo: {fileID: 0}
   fallSpeedYDampingChangeThreshold: 0
+  aimCameraSize: 7
+  cameraZoomSpeed: 5
   maxHp: 5
-  nowHp: 0
+  curHp: 0
+  invincibleTime: 1.5
+  blinkInterval: 0.6
+  hitEffect: {fileID: 0}
+  playerHitEettct: {fileID: 0}
   horizontal: 0
   vertical: 0
   mousePos: {x: 0, y: 0}
   dashDirectionIndicator: {fileID: 7250372977779152836}
   swimBulletTimeScale: 0.771
   isAimingSwimDash: 0
+  isMove: 0
   isAttacking: 0
   damage: 1
   preAttackDelay: 0.2
@@ -710,6 +717,7 @@ MonoBehaviour:
   coyoteTime: 0.2
   jumpBufferTime: 0.2
   canDash: 1
+  currentAirDashCount: 1
   dashingPower: 30
   dashingTime: 0.2
   dashingCooldown: 0.2
@@ -739,6 +747,10 @@ MonoBehaviour:
     m_Bits: 2560
   maxAimDuration: 2
   currentAimTimer: 0
+  wallCheckDistance: 0.5
+  wallStopDeceleration: 50
+  moveEffect: []
+  curMoveEffectIndex: 0
 --- !u!95 &2953361916202556581
 Animator:
   serializedVersion: 5

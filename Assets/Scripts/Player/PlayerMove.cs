@@ -35,9 +35,9 @@ public partial class Player
     public bool canDash = true;
     private bool isDashing;
     private float postDashTimer = 0f;
-    private int currentAirDashCount;
+    [SerializeField] private int currentAirDashCount = 1;
     [SerializeField] private float dashingPower = 30f;
-    [SerializeField] private float dashingTime = 0.2f;
+    [SerializeField] private float dashingTime = 0.25f;
     [SerializeField] private float dashingCooldown = 0.2f;
     [SerializeField] private float postDashDuration = 0.3f;
     [SerializeField] private int maxAirDashCount = 1;
@@ -63,10 +63,18 @@ public partial class Player
     [Header("Swim Dash Attack Hit")]
     [SerializeField] private float dashAttackRadius = 0.8f;
     [SerializeField] private LayerMask dashAttackLayer;
+    Vector3 originalScale;
 
     [Header("Swim Dash Aim Settings")]
     public float maxAimDuration = 2.0f;
     [HideInInspector] public float currentAimTimer;
+
+    [Header("Dash Wall Check")]
+    [SerializeField] private float wallCheckDistance = 0.5f; 
+    [SerializeField] private float wallStopDeceleration = 50f;
+
+    [SerializeField] private GameObject[] moveEffect;
+    [SerializeField] private int curMoveEffectIndex = 0;
 
     private void Move()
     {
@@ -82,6 +90,7 @@ public partial class Player
             if (IsGrounded())
             {
                 rb.velocity = Vector2.zero;
+                
             }
             else
             {
@@ -107,6 +116,8 @@ public partial class Player
                 rb.velocity = Vector2.Lerp(rb.velocity, Vector2.zero, Time.fixedDeltaTime * swimDeceleration);
             }
 
+
+
             bool hasInput = inputDir.magnitude > 0.01f;       // 키보드를 누르고 있는가?
             bool hasVelocity = rb.velocity.magnitude > 0.1f;  // 관성으로 움직이는 중인가? (0.5는 너무 커서 0.1로 낮춤)
 
@@ -118,6 +129,9 @@ public partial class Player
         float targetSpeed = horizontal * speed;
 
         bool isRunning = Mathf.Abs(horizontal) > 0.01f; // 이동 중이면 true
+        if(isRunning)
+        {
+        }
         anim.SetBool("Move", isRunning);
 
         if (isWallJumping)
@@ -153,7 +167,11 @@ public partial class Player
 
     private void Jump()
     {
-        if (IsGrounded()) coyoteTimeCounter = coyoteTime;
+        if (IsGrounded())
+        {
+            coyoteTimeCounter = coyoteTime;
+            currentAirDashCount = maxAirDashCount;
+        }
         else coyoteTimeCounter -= Time.deltaTime;
 
         if (Input.GetButtonDown("Jump")) jumpBufferCounter = jumpBufferTime;
@@ -233,6 +251,8 @@ public partial class Player
 
     private void TurnCheck()
     {
+        if (isDashing) return;
+
         // 마우스 회전 충돌 방지
         if (isAttacking || isAimingSwimDash) return;
 
@@ -245,6 +265,8 @@ public partial class Player
 
     public void LookAtMouse()
     {
+        if (isDashing) return;
+
         // 마우스만 판단
         if (mousePos.x > transform.position.x && !isFacingRight)
         {
@@ -296,6 +318,8 @@ public partial class Player
 
             rb.velocity = new Vector2(transform.localScale.x * dashingPower, 0f);
             currentAirDashCount--; // 공중 대시 사용
+            Debug.Log("대쉬");
+
         }
 
         yield return new WaitForSeconds(dashingTime);
@@ -373,6 +397,7 @@ public partial class Player
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         dashDirectionIndicator.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+
     }
 
     private IEnumerator ExecuteSwimDashAttack()
@@ -380,21 +405,65 @@ public partial class Player
         isAimingSwimDash = false;
         isDashing = true;
 
+        isInvincible = true;
+
+        yield return new WaitForSeconds(0.05f);
         ResetBulletTime();
         if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
 
         Vector2 dashDir = (mousePos - (Vector2)transform.position).normalized;
-        if (dashDir == Vector2.zero) dashDir = new Vector2(transform.localScale.x, 0); 
+       
+        if (dashDir == Vector2.zero) dashDir = new Vector2(transform.localScale.x, 0);
+
+        originalScale = transform.localScale;
+
+        float angle = Mathf.Atan2(dashDir.y, dashDir.x) * Mathf.Rad2Deg;
+
+        Vector3 targetScale = originalScale;
+        float finalAngle = angle;
+
+        if (dashDir.x < 0)
+        {
+            targetScale.y = -Mathf.Abs(originalScale.y);
+
+            if (angle > 0)
+                finalAngle = angle - 180f;
+            else
+                finalAngle = angle + 180f;
+        }
+        else 
+        {
+            targetScale.y = Mathf.Abs(originalScale.y);
+            finalAngle = angle;
+        }
+        transform.localScale = targetScale;
+        transform.rotation = Quaternion.Euler(0f, 0f, finalAngle); 
 
         rb.velocity = dashDir * swimDashAttackPower;
-
         anim.SetTrigger("Attacking");
 
         float dashTimer = 0f;
-        List<Collider2D> hitEnemies = new List<Collider2D>(); 
+
+        List<Collider2D> hitEnemies = new List<Collider2D>();
 
         while (dashTimer < dashingTime)
         {
+            RaycastHit2D wallHit = Physics2D.Raycast(
+            transform.position,
+            dashDir,
+            wallCheckDistance,
+            wallLayer
+        );
+
+            Debug.DrawRay(transform.position, dashDir * wallCheckDistance, Color.red);
+
+            //if (wallHit.collider != null)
+            //{
+            //    rb.velocity = Vector2.MoveTowards(rb.velocity, Vector2.zero, wallStopDeceleration * Time.deltaTime);
+
+            //    // break;
+            //}
+
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, dashAttackRadius, dashAttackLayer);
 
             foreach (Collider2D hit in hits)
@@ -402,31 +471,44 @@ public partial class Player
                 if (hit != null && !hitEnemies.Contains(hit))
                 {
                     EnemyBase enemy = hit.GetComponent<EnemyBase>();
+
                     if (enemy != null)
                     {
                         enemy.TakeDamage(damage, dashDir, 15f);
+
                         hitEnemies.Add(hit);
+
                         AttackShake();
                     }
-                    SunkenWarrior boss  = hit.GetComponent<SunkenWarrior>();
+
+                    SunkenWarrior boss = hit.GetComponent<SunkenWarrior>();
+
                     if (boss != null)
                     {
                         boss.TakeDamage(damage, dashDir, 15f);
+
                         hitEnemies.Add(hit);
+
                         AttackShake();
                     }
                 }
             }
 
             dashTimer += Time.deltaTime;
+
             yield return null;
         }
-
-        isDashing = false;
-
         yield return new WaitForSeconds(swimDashCooldownTime);
 
         canDash = true;
+    }
+
+    public void SwimDashPos()
+    {
+        isDashing = false;
+        isInvincible = false;
+        transform.localScale = originalScale;
+        transform.rotation = Quaternion.identity;
     }
 
     private void EnterWater()
@@ -437,6 +519,10 @@ public partial class Player
 
         anim.SetBool("IsSwimming", true);
         currentAirDashCount = maxAirDashCount;
+
+        moveEffect[0].SetActive(false);
+
+        moveEffect[1].SetActive(true);
     }
 
     private void ExitWater()
@@ -450,6 +536,10 @@ public partial class Player
         rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
 
         anim.SetBool("IsSwimming", false);
+
+        moveEffect[0].SetActive(true);
+
+        moveEffect[1].SetActive(false);
     }
 
     // 대시 공격 범위 확인용 기즈모
