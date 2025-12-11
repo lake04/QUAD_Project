@@ -448,22 +448,6 @@ public partial class Player
 
         while (dashTimer < dashingTime)
         {
-            RaycastHit2D wallHit = Physics2D.Raycast(
-            transform.position,
-            dashDir,
-            wallCheckDistance,
-            wallLayer
-        );
-
-            Debug.DrawRay(transform.position, dashDir * wallCheckDistance, Color.red);
-
-            //if (wallHit.collider != null)
-            //{
-            //    rb.velocity = Vector2.MoveTowards(rb.velocity, Vector2.zero, wallStopDeceleration * Time.deltaTime);
-
-            //    // break;
-            //}
-
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, dashAttackRadius, dashAttackLayer);
 
             foreach (Collider2D hit in hits)
