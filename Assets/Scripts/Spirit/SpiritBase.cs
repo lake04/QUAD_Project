@@ -6,9 +6,9 @@ using UnityEngine;
 public class SpiritBase : MonoBehaviour
 {
     [SerializeField] protected int maxLevel = 2;
-    protected int curLevel = 0;
-    protected int spiritSoul = 0;
-    protected int[] needSpiritSoul =  { 5,8 };
+    [SerializeField] protected int curLevel = 0;
+    [SerializeField] protected int spiritSoul = 0;
+    [SerializeField] protected int[] needSpiritSoul =  { 5,8 };
 
     void Start()
     {

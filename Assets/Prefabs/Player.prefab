@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 973413579443259418}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.584, y: 0.81, z: 0}
+  m_LocalPosition: {x: 1.37, y: 0.81, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -503,7 +503,6 @@ GameObject:
   - component: {fileID: -6979808381145095423}
   - component: {fileID: 2953361916202556581}
   - component: {fileID: 1556756605816915324}
-  - component: {fileID: 4673288884559079792}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -524,17 +523,17 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2311648177592237144}
   - {fileID: 825587742930754778}
   - {fileID: 5323652044894033854}
   - {fileID: 7931249742927768831}
   - {fileID: 7672229615906163787}
-  - {fileID: 2311648177592237144}
   - {fileID: 6080831614479577162}
   - {fileID: 7186033582465260863}
+  - {fileID: 2055712065769116071}
   - {fileID: 8832997405036093734}
   - {fileID: 8421558034471447365}
   - {fileID: 6757878457224420761}
-  - {fileID: 2055712065769116071}
   - {fileID: 2743921368363988626}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -579,12 +578,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: 1590973165, guid: 4bd0ed1c8188675439713a5b9508befe, type: 3}
+  m_Sprite: {fileID: 1084128480, guid: aa01369f0275fd04b95007d569cff0ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 6.613, y: 4.866109}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -652,9 +651,9 @@ BoxCollider2D:
   m_Offset: {x: 0.03, y: 0.74}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.23535112, y: 0.09633779}
-    oldSize: {x: 2.736, y: 1.928}
-    newSize: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 8.573, y: 4.9263477}
+    newSize: {x: 6.613, y: 4.866109}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -700,8 +699,8 @@ MonoBehaviour:
   rightAttackTransform: {fileID: 7931249742927768831}
   upAttackTransform: {fileID: 2311648177592237144}
   downAttackTransform: {fileID: 6080831614479577162}
-  leftAttackArea: {x: 2, y: 2}
-  rightAttackArea: {x: 2, y: 2}
+  leftAttackArea: {x: 3.8, y: 2}
+  rightAttackArea: {x: 3.8, y: 2}
   upAttackArea: {x: 0, y: 0}
   downAttackArea: {x: 0, y: 0}
   attackableLayer:
@@ -784,26 +783,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6637cc2a61f03ff4b851ec454a46fb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireSpirit: {fileID: 4673288884559079792}
+  fireSpirit: {fileID: 0}
   windSpirit: {fileID: 0}
   waterSpirit: {fileID: 0}
   groundSpirit: {fileID: 0}
---- !u!114 &4673288884559079792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8596985990300470085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab96ebf9c9b40fd47be58601e3e86ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxLevel: 2
-  fireBall: {fileID: 951954722353980010, guid: c7ba7fd1080073643a4ae29c7782aa6d, type: 3}
-  manaCostSkill1: 10
-  spawnPos: {fileID: 2425324574809469620}
 --- !u!1 &8641645928022451541
 GameObject:
   m_ObjectHideFlags: 0

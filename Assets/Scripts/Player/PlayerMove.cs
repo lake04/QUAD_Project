@@ -440,7 +440,7 @@ public partial class Player
         transform.rotation = Quaternion.Euler(0f, 0f, finalAngle); 
 
         rb.velocity = dashDir * swimDashAttackPower;
-        anim.SetTrigger("Attacking");
+        anim.SetTrigger("WaterDash");
 
         float dashTimer = 0f;
 
@@ -459,9 +459,7 @@ public partial class Player
                     if (enemy != null)
                     {
                         enemy.TakeDamage(damage, dashDir, 15f);
-
                         hitEnemies.Add(hit);
-
                         AttackShake();
                     }
 
@@ -470,9 +468,7 @@ public partial class Player
                     if (boss != null)
                     {
                         boss.TakeDamage(damage, dashDir, 15f);
-
                         hitEnemies.Add(hit);
-
                         AttackShake();
                     }
                 }
