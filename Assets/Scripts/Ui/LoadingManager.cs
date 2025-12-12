@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class LoadingManager : MonoBehaviour
 {
+    public static LoadingManager instance;
+
     public Slider loadingBar;
     public string nextSceneName;
     public float loadingDuration = 3f;
@@ -13,6 +15,12 @@ public class LoadingManager : MonoBehaviour
 
     void Start()
     {
+       
+    }
+
+    public void Loading(string _SceneName)
+    {
+        nextSceneName = _SceneName;
         StartCoroutine(FakeLoading());
         StartCoroutine(LoadingTextAnim());
     }

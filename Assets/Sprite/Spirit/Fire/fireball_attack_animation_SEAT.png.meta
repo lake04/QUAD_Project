@@ -1,0 +1,414 @@
+fileFormatVersion: 2
+guid: 791ab85d65448294faae03bcf18c66da
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 0
+    wrapV: 0
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1000
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_0
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 12947
+        width: 1700
+        height: 1387
+      alignment: 9
+      pivot: {x: 0.49399662, y: 0.14454322}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 676f51b7c832ada438448c0d616d1462
+      internalID: 470307363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_1
+      rect:
+        serializedVersion: 2
+        x: 5256
+        y: 12962
+        width: 1647
+        height: 1387
+      alignment: 9
+      pivot: {x: 0.52460706, y: 0.15353787}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc996edf88d13ac4f95ee3d9104c9255
+      internalID: -1226303669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_2
+      rect:
+        serializedVersion: 2
+        x: 10463
+        y: 12955
+        width: 1579
+        height: 1417
+      alignment: 9
+      pivot: {x: 0.5696662, y: 0.14452918}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59c73ea894a52de44a4a89d73987d287
+      internalID: 396427967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_3
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 10465
+        width: 1639
+        height: 1409
+      alignment: 9
+      pivot: {x: 0.52077323, y: 0.1496213}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a71c5d0b15601414790db666fe070470
+      internalID: 218581311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_4
+      rect:
+        serializedVersion: 2
+        x: 5286
+        y: 10457
+        width: 1961
+        height: 1371
+      alignment: 9
+      pivot: {x: 0.42686737, y: 0.13969332}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64c0ded41a9c20440ae0a8ebe79c90e8
+      internalID: 1088819097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_5
+      rect:
+        serializedVersion: 2
+        x: 10741
+        y: 10465
+        width: 1616
+        height: 1432
+      alignment: 9
+      pivot: {x: 0.384959, y: 0.13278659}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e51491ca4dc8cc149ad1614900c43c80
+      internalID: 2075333607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_6
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 7960
+        width: 1517
+        height: 1478
+      alignment: 9
+      pivot: {x: 0.29800686, y: 0.1256657}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46d98e6305f0fa64faa6b3a4aa18787d
+      internalID: 1838124085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_7
+      rect:
+        serializedVersion: 2
+        x: 5493
+        y: 7960
+        width: 1640
+        height: 1425
+      alignment: 9
+      pivot: {x: 0.3834038, y: 0.13470978}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5d6918ab443880046bb69cb166435448
+      internalID: -489069539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_8
+      rect:
+        serializedVersion: 2
+        x: 10672
+        y: 7960
+        width: 1662
+        height: 1394
+      alignment: 9
+      pivot: {x: 0.42010227, y: 0.14563811}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e4d199989ff29748b28e8f41e79d999
+      internalID: 355938869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_9
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 5447
+        width: 1670
+        height: 1448
+      alignment: 9
+      pivot: {x: 0.43374103, y: 0.15318038}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e6e371522dbf6943b8e256704ec973b
+      internalID: -26604145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3103
+        width: 1716
+        height: 1409
+      alignment: 9
+      pivot: {x: 0.42263857, y: 0.12867251}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5b46fe1e388f394482f71ed61c6e53e
+      internalID: -619155078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fireball_attack_animation_SEAT_11
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 841
+        width: 1220
+        height: 1189
+      alignment: 9
+      pivot: {x: 0.36409763, y: 0.32569262}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3431eaf70e160bf4483c44f89777cf66
+      internalID: -1708847574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      fireball_attack_animation_SEAT_0: 470307363
+      fireball_attack_animation_SEAT_1: -1226303669
+      fireball_attack_animation_SEAT_10: -619155078
+      fireball_attack_animation_SEAT_11: -1708847574
+      fireball_attack_animation_SEAT_12: 617114045
+      fireball_attack_animation_SEAT_13: 581597277
+      fireball_attack_animation_SEAT_14: -1493874779
+      fireball_attack_animation_SEAT_15: 740926069
+      fireball_attack_animation_SEAT_16: 515089795
+      fireball_attack_animation_SEAT_17: 1061886599
+      fireball_attack_animation_SEAT_18: -742271740
+      fireball_attack_animation_SEAT_19: 130042763
+      fireball_attack_animation_SEAT_2: 396427967
+      fireball_attack_animation_SEAT_20: 569940012
+      fireball_attack_animation_SEAT_21: -289986871
+      fireball_attack_animation_SEAT_3: 218581311
+      fireball_attack_animation_SEAT_4: 1088819097
+      fireball_attack_animation_SEAT_5: 2075333607
+      fireball_attack_animation_SEAT_6: 1838124085
+      fireball_attack_animation_SEAT_7: -489069539
+      fireball_attack_animation_SEAT_8: 355938869
+      fireball_attack_animation_SEAT_9: -26604145
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

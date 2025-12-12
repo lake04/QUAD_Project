@@ -223,6 +223,10 @@ public partial class Player : MonoBehaviour
             return;
         }
         curHp--;
+        if(curHp <=0)
+        {
+            
+        }
         CameraShake.Instance.Shake(0.2f, 0.2f);
         StartCoroutine(HitEffect());
         StartCoroutine(InvincibleBlink());
@@ -304,6 +308,9 @@ public partial class Player : MonoBehaviour
     {
         currentCameraDefaultSize = newCamera.m_Lens.OrthographicSize;
     }
+
+    //private void Die()
+
 
 
     private void OnTriggerEnter2D(Collider2D collision)

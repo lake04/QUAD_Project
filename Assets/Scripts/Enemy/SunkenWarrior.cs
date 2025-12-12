@@ -101,6 +101,18 @@ public class SunkenWarrior : MonoBehaviour
         {
             ChangeState(SunkenWarriorStat.Idle);
         }
+
+        float targetX = playerTarget.transform.position.x;
+        float myX = transform.position.x;
+
+        if (targetX < myX && isFacingRight)
+        {
+            Flip();
+        }
+        else if (targetX > myX && !isFacingRight)
+        {
+            Flip();
+        }
     }
 
     private void FixedUpdate()
@@ -154,17 +166,7 @@ public class SunkenWarrior : MonoBehaviour
             moveSpeed * Time.fixedDeltaTime 
         );
 
-        float targetX = playerTarget.transform.position.x;
-        float myX = transform.position.x;
-
-        if (targetX < myX && isFacingRight)
-        {
-            Flip();
-        }
-        else if (targetX > myX && !isFacingRight)
-        {
-            Flip();
-        }
+       
     }
 
     private void UpdatePhase()
@@ -217,6 +219,7 @@ public class SunkenWarrior : MonoBehaviour
 
         isAttack = false;
 
+
         switch (random)
         {
             case 0:
@@ -231,6 +234,7 @@ public class SunkenWarrior : MonoBehaviour
                 StartCoroutine(SkillHarpoon());
                 break;
         }
+
         yield return new WaitForSeconds(attackCooldown);
         isAttack = true;
     }
@@ -280,8 +284,11 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator Skill1AttackDash()
     {
+        anim.SetBool("1pIdle",true);
+        yield return new WaitForSeconds(0.3f);
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = direction * dashSpeed;
+        anim.SetTrigger("1pDash");
 
         yield return new WaitForSeconds(dashDuration);
 
@@ -386,6 +393,8 @@ public class SunkenWarrior : MonoBehaviour
             anim.SetBool("2PMove", false);
             anim.SetBool("2PIdle", true);
         }
+
+        yield return new WaitForSeconds(0.15f);
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -418,6 +427,8 @@ public class SunkenWarrior : MonoBehaviour
             anim.SetBool("2PMove", false);
             anim.SetBool("2PIdle", true);
         }
+
+        yield return new WaitForSeconds(0.15f);
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
@@ -438,9 +449,11 @@ public class SunkenWarrior : MonoBehaviour
 
     private IEnumerator DashToTarget(Vector3 targetPosition, float duration)
     {
+        anim.SetBool("2pIdle",true);
+        yield return new WaitForSeconds(0.1f);
         float elapsedTime = 0f;
         Vector3 startPos = transform.position;
-
+        anim.SetTrigger("2pDash");
         while (elapsedTime < duration)
         {
             transform.position = Vector3.Lerp(startPos, targetPosition, elapsedTime / duration);

@@ -503,7 +503,6 @@ GameObject:
   - component: {fileID: -6979808381145095423}
   - component: {fileID: 2953361916202556581}
   - component: {fileID: 1556756605816915324}
-  - component: {fileID: 4673288884559079792}
   m_Layer: 10
   m_Name: Player
   m_TagString: Player
@@ -579,7 +578,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1881417596, guid: a827ee49d4ad89d45ab72b86e2c03bdd, type: 3}
+  m_Sprite: {fileID: 1084128480, guid: aa01369f0275fd04b95007d569cff0ab, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 1
   m_FlipY: 0
@@ -652,8 +651,8 @@ BoxCollider2D:
   m_Offset: {x: 0.03, y: 0.74}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.49228862, y: 0.30083847}
-    oldSize: {x: 6.613, y: 4.866109}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 8.573, y: 4.9263477}
     newSize: {x: 6.613, y: 4.866109}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -784,26 +783,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6637cc2a61f03ff4b851ec454a46fb06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireSpirit: {fileID: 4673288884559079792}
+  fireSpirit: {fileID: 0}
   windSpirit: {fileID: 0}
   waterSpirit: {fileID: 0}
   groundSpirit: {fileID: 0}
---- !u!114 &4673288884559079792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8596985990300470085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab96ebf9c9b40fd47be58601e3e86ab3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxLevel: 2
-  fireBall: {fileID: 951954722353980010, guid: c7ba7fd1080073643a4ae29c7782aa6d, type: 3}
-  manaCostSkill1: 10
-  spawnPos: {fileID: 2425324574809469620}
 --- !u!1 &8641645928022451541
 GameObject:
   m_ObjectHideFlags: 0
