@@ -11,16 +11,36 @@ public class LoadingManager : MonoBehaviour
     public Slider loadingBar;
     public string nextSceneName;
     public float loadingDuration = 3f;
-    [SerializeField] private TMP_Text txt_loading;
+    [SerializeField] private Text txt_loading;
+    [SerializeField] private GameObject img_loading;
+    [SerializeField] private GameObject img_loadingBk;
+
+
+    private void Awake()
+    {
+        if(instance == null)
+        {
+            instance = this;
+        }
+    }
 
     void Start()
     {
-       
+        img_loadingBk.SetActive(false);
+        loadingBar.enabled = false;
+        txt_loading.enabled = false;
+        img_loading.SetActive(false);
     }
 
     public void Loading(string _SceneName)
     {
         nextSceneName = _SceneName;
+
+        img_loadingBk.SetActive(true);
+        loadingBar.enabled = true;
+        txt_loading.enabled = true;
+        img_loading.SetActive(true);
+
         StartCoroutine(FakeLoading());
         StartCoroutine(LoadingTextAnim());
     }
