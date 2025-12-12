@@ -27,6 +27,13 @@ public class ProjectileBase : MonoBehaviour
     public void Init(Vector2 _Direction)
     {
         rb.AddForce(_Direction * speed, ForceMode2D.Impulse);
+
+        if(_Direction.x < 0)
+        {
+            Vector3 scale = transform.localScale;
+            scale.x *= -1;
+            transform.localScale = scale;
+        }
     }
 
     private void AutoDestroy()

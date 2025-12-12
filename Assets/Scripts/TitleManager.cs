@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class TitleManager : MonoBehaviour
 {
     public Animator fadeAnim;
+    [SerializeField] private GameObject setting;
+
 
     private void Start()
     {
@@ -29,6 +31,7 @@ public class TitleManager : MonoBehaviour
     {
         SoundManager.instance.ButtonSound();
         //설정 유아이 팝업
+        setting.SetActive(!setting.activeSelf);
     }
 
     public void Credit()
@@ -41,5 +44,6 @@ public class TitleManager : MonoBehaviour
     {
         SoundManager.instance.ButtonSound();
         //나가기
+        LoadingManager.instance.Loading("Title");
     }
 }

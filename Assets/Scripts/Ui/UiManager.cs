@@ -8,6 +8,9 @@ public class UiManager : MonoBehaviour
     [Header("PlayerHp")]
     public GameObject[] playerHeart;
 
+    [SerializeField] private GameObject setting;
+    [SerializeField] private GameObject popUp;
+
     private void Start()
     {
         for (int i = 0; i < playerHeart.Length; i++) //전체 비활성화
@@ -27,6 +30,11 @@ public class UiManager : MonoBehaviour
     private void Update()
     {
         PlayerHp();
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            PopUp();
+        }
     }
 
     void PlayerHp()
@@ -44,4 +52,29 @@ public class UiManager : MonoBehaviour
                 playerHeart[i].GetComponent<Image>().color= new Color(0,0,0,0.3f);
         }
     }
+
+    public void PopUp()
+    {
+        popUp.SetActive(!popUp.activeSelf);
+    }
+
+    public void Setting()
+    {
+        setting.SetActive(!setting.activeSelf);
+    }
+
+    public void Exit()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit(); // 어플리케이션 종료
+#endif
+    }
+
+    public void Title()
+    {
+        LoadingManager.instance.Loading("Title");
+    }
 }
+

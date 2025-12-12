@@ -22,6 +22,7 @@ public partial class Player : MonoBehaviour
     public int maxHp = 5;
     public int curHp;
     private bool isInvincible;
+    [SerializeField] private bool isDie = true;
     public float invincibleTime = 1.5f;     // 무적 유지 시간
     public float blinkInterval = 0.6f;    // 깜빡임 간격
     [SerializeField] private Image hitEffect;
@@ -191,15 +192,21 @@ public partial class Player : MonoBehaviour
             {
                 StartCoroutine(ExecuteSwimDashAttack());
             }
-            else if (!isSwimming)
+            else
             {
                 PerformAttack();
             }
         }
+      
 
         if (!isSwimming && Input.GetKeyDown(KeyCode.LeftShift) && canDash)
         {
             StartCoroutine(Dash());
+        }
+
+        if(Input.GetKeyDown(KeyCode.F1))
+        {
+            isDie = false;
         }
     }
 
@@ -222,6 +229,10 @@ public partial class Player : MonoBehaviour
             return;
         }
         curHp--;
+        if(curHp <=0 && isDie)
+        {
+            Die();
+        }
         CameraShake.Instance.Shake(0.2f, 0.2f);
         StartCoroutine(HitEffect());
         StartCoroutine(InvincibleBlink());
@@ -303,6 +314,12 @@ public partial class Player : MonoBehaviour
     {
         currentCameraDefaultSize = newCamera.m_Lens.OrthographicSize;
     }
+
+    private void Die()
+    {
+        LoadingManager.instance.Loading("Title");
+    }
+
 
 
     private void OnTriggerEnter2D(Collider2D collision)

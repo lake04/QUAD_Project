@@ -9,6 +9,8 @@ public partial class Player
     public bool isAttacking = false;
     private float timeBetweenAttack = 1f;
     public float damage;
+    private bool isDashAttack = false;
+    private bool isCanDashAttack;
 
     [SerializeField] private float preAttackDelay = 0.2f;
     [SerializeField] private float afterAttackDelay = 0.4f;
@@ -23,10 +25,11 @@ public partial class Player
     private float lastAttackTime;
     [SerializeField] private float comboResetTime = 0.8f;
     private Coroutine comboResetCoroutine; // ÄÞº¸ ¸®¼Â¿ë
+    [SerializeField] private GameObject attackHitEffect;
 
     public void PerformAttack()
     {
-        if (comboStep == 2 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if (comboStep == 2 && anim.GetCurrentAnimatorStateInfo(0).IsName("Attack") || anim.GetCurrentAnimatorStateInfo(0).IsName("JumpAttack"))
         {
             return;
         }
@@ -54,6 +57,23 @@ public partial class Player
 
             StopCoroutine(nameof(CheckAttackHit));
             StartCoroutine(CheckAttackHit(comboStep));
+
+            anim.SetInteger("Combo", comboStep);
+
+        }
+        else if(isSwimming)
+        {
+            comboStep++;
+            if (comboStep > 2) comboStep = 1;
+
+            anim.SetInteger("Combo", comboStep);
+            anim.SetTrigger("Attacking");
+
+
+            StopCoroutine(nameof(CheckAttackHit));
+            StartCoroutine(CheckAttackHit(comboStep));
+
+            anim.SetInteger("Combo", comboStep);
         }
         else
         {
@@ -84,11 +104,7 @@ public partial class Player
 
         yield return new WaitForSeconds(delay);
 
-        bool isFacingLeft = !isFacingRight;
-        Transform currentAttackTransform = isFacingLeft ? leftAttackTransform : rightAttackTransform;
-        Vector2 currentAttackArea = isFacingLeft ? leftAttackArea : rightAttackArea;
-
-        Hit(currentAttackTransform, currentAttackArea);
+        Hit(rightAttackTransform, rightAttackArea);
 
         yield return new WaitForSeconds(0.4f); // ÈÄµô
 
@@ -108,7 +124,16 @@ public partial class Player
             if (objectsToHit[i].GetComponent<EnemyBase>() != null)
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
+                AttackShake();
+            }
+
+            if (objectsToHit[i].GetComponent<SunkenWarrior>() != null)
+            {
+                Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
+                objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 10);
                 AttackShake();
             }
         }
@@ -122,7 +147,6 @@ public partial class Player
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        if (leftAttackTransform != null) Gizmos.DrawWireCube(leftAttackTransform.position, leftAttackArea);
         if (rightAttackTransform != null) Gizmos.DrawWireCube(rightAttackTransform.position, rightAttackArea);
         if (groundCheck != null) Gizmos.DrawSphere(groundCheck.position, 0.2f);
         if (wallCheck != null) Gizmos.DrawSphere(wallCheck.position, 0.2f);

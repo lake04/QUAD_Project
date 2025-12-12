@@ -12,6 +12,9 @@ public class SpiritManager : MonoBehaviour
     [SerializeField] private WaterSpirit waterSpirit;
     [SerializeField] private GroundSpirit groundSpirit;
 
+    [SerializeField] private GameObject fireSpiritPrefab;
+    public GameObject fireSpiritSpawnPos;
+
     void Start()
     {
         if(Instance == null)
