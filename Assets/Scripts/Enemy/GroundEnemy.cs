@@ -6,6 +6,7 @@ public class GroundEnemy : EnemyBase
 {
     protected int nextMove = 1;
     public LayerMask checkLayer;
+    public LayerMask groundLayer;
     [SerializeField] protected float maxMoveDistance = 5f;
     protected Vector3 startPosition;
     [SerializeField] protected float groundCheckLength = 1;
@@ -64,7 +65,7 @@ public class GroundEnemy : EnemyBase
         rb.velocity = new Vector2(nextMove * moveSpeed, rb.velocity.y);
 
         Vector2 downVec = new Vector2(rb.position.x + nextMove * 0.3f, rb.position.y);
-        RaycastHit2D groundRayHit = Physics2D.Raycast(downVec, Vector3.down, groundCheckLength, LayerMask.GetMask("Ground"));
+        RaycastHit2D groundRayHit = Physics2D.Raycast(downVec, Vector3.down, groundCheckLength, groundLayer);
 
         Vector2 frontVec = new Vector2(rb.position.x + nextMove * wallCheckLength, rb.position.y);
         RaycastHit2D wallRayHit = Physics2D.Raycast(frontVec, Vector2.right * nextMove, 0.4f, checkLayer);

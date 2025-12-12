@@ -161,7 +161,6 @@ public class EnemyBase : MonoBehaviour
             flashSprite.Flash();
         }
 
-        StartCoroutine(FlashColorOnHit());
         StartCoroutine(Recoiling(_hitDirecticon,_hitForce));
         if (curHealth <= 0)
         {
@@ -200,6 +199,7 @@ public class EnemyBase : MonoBehaviour
         }
         Instantiate(dieEffect,transform.position,Quaternion.identity);
 
+        Debug.Log("¸ó½ºÅÍ Á×À½");
         Destroy(gameObject);
 
         DropItems();

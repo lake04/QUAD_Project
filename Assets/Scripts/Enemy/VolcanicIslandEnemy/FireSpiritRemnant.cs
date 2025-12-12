@@ -70,6 +70,32 @@ public class FireSpiritRemnant : GroundEnemy
         isAttack = true;
     }
 
+    protected override void Die()
+    {
+        if (isDead) return;
+        isDead = true;
+
+        if (anim != null)
+        {
+            anim.SetTrigger("Die");
+        }
+
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.isKinematic = true;
+        }
+
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        foreach (Collider2D col in colliders)
+        {
+            col.enabled = false;
+        }
+
+        Destroy(gameObject);
+
+    }
+
     protected override void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
