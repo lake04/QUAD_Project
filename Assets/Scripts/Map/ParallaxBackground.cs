@@ -1,13 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ParallaxBackground : MonoBehaviour
+public class ParallaxLayer : MonoBehaviour
 {
+    [Header("패럴랙스 설정")]
+    [Range(-1f, 1f)]
+    public float parallaxFactor; // 1: 원경(느림), 0: 정지, 음수: 전경(빠름)
 
+    [Tooltip("체크하면 위아래(Y축)로는 움직이지 않음")]
+    public bool lockYAxis = false; // Y축 고정 옵션 (여기 체크하면 위아래 무시)
+
+    [Header("무한 스크롤 옵션")]
+    public bool useInfiniteScroll = true; // 체크 해제 시 위치 이동만 하고 반복 안 함
     public float backgroundSize;
-    [Range(0f, 1f)] public float parallaxSpeed; // 1이면 카메라와 같이 이동(고정된 느낌), 0이면 안 움직임
-    public float viewZone = 10;
+    public float viewZone = 15;
 
     private Transform cameraTransform;
     private Transform[] layers;
@@ -29,29 +34,28 @@ public class ParallaxBackground : MonoBehaviour
             layers[i] = transform.GetChild(i);
         }
 
-        leftIndex = 0;
-        rightIndex = layers.Length - 1;
+        if (layers.Length > 0)
+        {
+            leftIndex = 0;
+            rightIndex = layers.Length - 1;
+        }
 
-        // 시작 시 위치 초기화
-        ResetParallax();
+        if (cameraTransform != null)
+        {
+            lastCameraX = cameraTransform.position.x;
+            lastCameraY = cameraTransform.position.y;
+        }
     }
 
-    // 지역이 바뀌어서 오브젝트가 다시 켜질 때 카메라 위치 갱신
     private void OnEnable()
     {
         if (cameraTransform != null)
         {
-            ResetParallax();
+            lastCameraX = cameraTransform.position.x;
+            lastCameraY = cameraTransform.position.y;
         }
     }
 
-    private void ResetParallax()
-    {
-        lastCameraX = cameraTransform.position.x;
-        lastCameraY = cameraTransform.position.y;
-    }
-
-    // 카메라 이동 후 배경을 움직이기 위해 LateUpdate 사용
     private void LateUpdate()
     {
         if (cameraTransform == null) return;
@@ -59,52 +63,52 @@ public class ParallaxBackground : MonoBehaviour
         float deltaX = cameraTransform.position.x - lastCameraX;
         float deltaY = cameraTransform.position.y - lastCameraY;
 
-        // 배경 이동 (시차 적용)
-        transform.position += Vector3.right * (deltaX * parallaxSpeed);
-        transform.position += Vector3.up * (deltaY * parallaxSpeed);
+        // Y축 고정 로직
+        // lockYAxis가 켜져 있으면 Y축 변화량(deltaY)을 0으로 만들어버림
+        if (lockYAxis)
+        {
+            deltaY = 0f;
+        }
+
+        // 이동 적용
+        transform.position += new Vector3(deltaX * parallaxFactor, deltaY * parallaxFactor, 0);
 
         lastCameraX = cameraTransform.position.x;
         lastCameraY = cameraTransform.position.y;
 
-        // 무한 스크롤 로직
-        if (cameraTransform.position.x < (layers[leftIndex].position.x + viewZone))
+        // 무한 스크롤 (X축 기준)
+        if (useInfiniteScroll && layers.Length > 0)
         {
-            ScrollLeft();
-        }
+            if (cameraTransform.position.x < (layers[leftIndex].position.x + viewZone))
+                ScrollLeft();
 
-        if (cameraTransform.position.x > (layers[rightIndex].position.x - viewZone))
-        {
-            ScrollRight();
+            if (cameraTransform.position.x > (layers[rightIndex].position.x - viewZone))
+                ScrollRight();
         }
     }
 
     private void ScrollLeft()
     {
-        float currentZ = layers[leftIndex].position.z;
-        float currentY = layers[leftIndex].position.y;
+        Vector3 newPos = layers[rightIndex].position;
+        // Y축은 그대로 유지하고 X축만 이동
+        newPos.x = layers[leftIndex].position.x - backgroundSize;
 
-        layers[rightIndex].position = new Vector3(layers[leftIndex].position.x - backgroundSize, currentY, currentZ);
+        layers[rightIndex].position = newPos;
 
         leftIndex = rightIndex;
         rightIndex--;
-        if (rightIndex < 0)
-        {
-            rightIndex = layers.Length - 1;
-        }
+        if (rightIndex < 0) rightIndex = layers.Length - 1;
     }
 
     private void ScrollRight()
     {
-        float currentZ = layers[rightIndex].position.z;
-        float currentY = layers[leftIndex].position.y;
+        Vector3 newPos = layers[leftIndex].position;
+        newPos.x = layers[rightIndex].position.x + backgroundSize;
 
-        layers[leftIndex].position = new Vector3(layers[rightIndex].position.x + backgroundSize, currentY, currentZ);
+        layers[leftIndex].position = newPos;
 
         rightIndex = leftIndex;
         leftIndex++;
-        if (leftIndex == layers.Length)
-        {
-            leftIndex = 0;
-        }
+        if (leftIndex == layers.Length) leftIndex = 0;
     }
 }
