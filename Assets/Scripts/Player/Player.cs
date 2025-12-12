@@ -229,13 +229,16 @@ public partial class Player : MonoBehaviour
             return;
         }
         curHp--;
-        if(curHp <=0 && isDie)
-        {
-            Die();
-        }
+      
         CameraShake.Instance.Shake(0.2f, 0.2f);
         StartCoroutine(HitEffect());
         StartCoroutine(InvincibleBlink());
+        UiManager.Instance.PlayerHp();
+
+        if (curHp <= 0 && isDie)
+        {
+            Die();
+        }
     }
 
     private IEnumerator InvincibleBlink()
@@ -320,7 +323,18 @@ public partial class Player : MonoBehaviour
         LoadingManager.instance.Loading("Title");
     }
 
-
+    public void Heal(int _heal)
+    {
+        if(_heal+curHp > maxHp)
+        {
+            curHp = maxHp;
+        }
+        else
+        {
+            curHp += _heal;
+        }
+        UiManager.Instance.PlayerHp();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

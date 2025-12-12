@@ -5,11 +5,22 @@ using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
 {
+
+    public static UiManager Instance;
+
     [Header("PlayerHp")]
     public GameObject[] playerHeart;
 
     [SerializeField] private GameObject setting;
     [SerializeField] private GameObject popUp;
+
+    private void Awake()
+    {
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
@@ -29,15 +40,13 @@ public class UiManager : MonoBehaviour
 
     private void Update()
     {
-        PlayerHp();
-
         if(Input.GetKeyDown(KeyCode.Escape))
         {
             PopUp();
         }
     }
 
-    void PlayerHp()
+    public void PlayerHp()
     {
         int hp = Player.instance.curHp;
 
@@ -47,7 +56,9 @@ public class UiManager : MonoBehaviour
                 continue;
 
             if (i < hp)
+            {
                 playerHeart[i].GetComponent<Image>().color = Color.white;
+            }
             else
                 playerHeart[i].GetComponent<Image>().color= new Color(0,0,0,0.3f);
         }
