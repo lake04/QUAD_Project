@@ -30,6 +30,11 @@ public class UiManager : MonoBehaviour
     private void Update()
     {
         PlayerHp();
+
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            PopUp();
+        }
     }
 
     void PlayerHp()
@@ -48,14 +53,14 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public void PopUp(bool active)
+    public void PopUp()
     {
-        popUp.SetActive(active);
+        popUp.SetActive(!popUp.activeSelf);
     }
 
-    public void Setting(bool active)
+    public void Setting()
     {
-        setting.SetActive(active);
+        setting.SetActive(!setting.activeSelf);
     }
 
     public void Exit()
@@ -65,6 +70,11 @@ public class UiManager : MonoBehaviour
 #else
         Application.Quit(); // 어플리케이션 종료
 #endif
+    }
+
+    public void Title()
+    {
+        LoadingManager.instance.Loading("Title");
     }
 }
 

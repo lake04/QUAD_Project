@@ -27,6 +27,7 @@ public class EnemyBase : MonoBehaviour
     [SerializeField] private float recoilLength;
     [SerializeField] private float recoilFactor;
     [SerializeField] private bool isRecoiling = false;
+    private FlashSprite flashSprite;
 
     [SerializeField] protected SpriteRenderer sp;
     [SerializeField] protected GameObject dieEffect;
@@ -34,6 +35,11 @@ public class EnemyBase : MonoBehaviour
     protected virtual void Awake()
     {
         Init();
+    }
+
+    private void Start()
+    {
+        flashSprite = GetComponent<FlashSprite>();
     }
 
 
@@ -149,7 +155,12 @@ public class EnemyBase : MonoBehaviour
         if (isDead) return;
 
         curHealth -= _damage;
-  
+
+        if (flashSprite != null)
+        {
+            flashSprite.Flash();
+        }
+
         StartCoroutine(FlashColorOnHit());
         StartCoroutine(Recoiling(_hitDirecticon,_hitForce));
         if (curHealth <= 0)

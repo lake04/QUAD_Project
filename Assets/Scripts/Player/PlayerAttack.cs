@@ -25,6 +25,7 @@ public partial class Player
     private float lastAttackTime;
     [SerializeField] private float comboResetTime = 0.8f;
     private Coroutine comboResetCoroutine; // ÄÞº¸ ¸®¼Â¿ë
+    [SerializeField] private GameObject attackHitEffect;
 
     public void PerformAttack()
     {
@@ -123,6 +124,7 @@ public partial class Player
             if (objectsToHit[i].GetComponent<EnemyBase>() != null)
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
                 objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
                 AttackShake();
             }
@@ -130,6 +132,7 @@ public partial class Player
             if (objectsToHit[i].GetComponent<SunkenWarrior>() != null)
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
+                GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
                 objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 10);
                 AttackShake();
             }

@@ -65,12 +65,13 @@ public class SunkenWarrior : MonoBehaviour
     [SerializeField] private Transform waterDrillSpawnPos1;
     [SerializeField] private Transform waterDrillSpawnPos2;
     [SerializeField] private GameObject dieEffect;
-
+    private FlashSprite flashSprite;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerTarget = GameManager.Instance.player;
         anim = GetComponent<Animator>();
+        flashSprite = GetComponent<FlashSprite>();
         ChangeState(SunkenWarriorStat.Idle);
 
         startPos = transform;
@@ -480,7 +481,10 @@ public class SunkenWarrior : MonoBehaviour
         Debug.Log("공격 받음");
         curHp -= _damage;
 
-        StartCoroutine(FlashColorOnHit());
+        if (flashSprite != null)
+        {
+            flashSprite.Flash();
+        }
         UpdatePhase();
         if (curHp <= 0)
         {
@@ -514,27 +518,6 @@ public class SunkenWarrior : MonoBehaviour
 
         Destroy(gameObject);
 
-    }
-
-    protected virtual IEnumerator FlashColorOnHit()
-    {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr != null)
-        {
-            Color originalColor = sr.color;
-            sr.color = Color.red;
-            yield return new WaitForSeconds(0.1f);
-            sr.color = originalColor;
-        }
-
-        if (!isDead)
-        {
-            if(stat != SunkenWarriorStat.Transform)
-            {
-                ChangeState(SunkenWarriorStat.Idle);
-
-            }
-        }
     }
 
     private void Flip()
