@@ -102,11 +102,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events:
-  - time: 0.6666667
-    functionName: AddAttackVelocity
-    data: 
-    objectReferenceParameter: {fileID: 8596985990300470085, guid: ef5ee4c0c67551e46b6e97382dc8b64a, type: 3}
-    floatParameter: 8
-    intParameter: 0
-    messageOptions: 0
+  m_Events: []
