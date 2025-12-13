@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour
     private void BoossRoomMove()
     {
         player.transform.position = bossRoom.position;
-        //CameraManager.instance.curCamera = boosRoom;
+        CameraManager.instance.curCamera = boosRoom;
+        boosRoom.enabled = true;
     }
 }

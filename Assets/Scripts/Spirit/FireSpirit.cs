@@ -10,6 +10,7 @@ public class FireSpirit : SpiritBase
     [SerializeField] private GameObject spawnPos;
 
     private Animator animator;
+    float playerScaleX;
 
     void Start()
     {
@@ -19,8 +20,15 @@ public class FireSpirit : SpiritBase
 
     private void OnEnable()
     {
-        transform.position = SpiritManager.Instance.fireSpiritSpawnPos.transform.position;
-        float playerScaleX = GameManager.Instance.player.GetComponent<Player>().transform.localScale.x;
+        if(SpiritManager.Instance !=null)
+        {
+            transform.position = SpiritManager.Instance.fireSpiritSpawnPos.transform.position;
+
+        }
+        if(GameManager.Instance != null)
+        {
+           playerScaleX = GameManager.Instance.player.GetComponent<Player>().transform.localScale.x;
+        }
 
         Vector3 spiritScale = transform.localScale;
 
