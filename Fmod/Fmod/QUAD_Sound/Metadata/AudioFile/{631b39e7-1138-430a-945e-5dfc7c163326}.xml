@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{631b39e7-1138-430a-945e-5dfc7c163326}">
+		<property name="assetPath">
+			<value>Splashing Water.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>99.657142857142858</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{621c53ac-f247-4444-9d5b-b17a9eccb6bb}</destination>
+		</relationship>
+	</object>
+</objects>

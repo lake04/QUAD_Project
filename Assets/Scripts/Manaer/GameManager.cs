@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,8 @@ public class GameManager : MonoBehaviour
     public Transform[] canoePoss;
 
     public GameObject player;
+    public Transform bossRoom;
+    public CinemachineVirtualCamera boosRoom;
 
     private void Awake()
     {
@@ -30,6 +33,15 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
-        
+        if(Input.GetKeyDown(KeyCode.F12))
+        {
+            BoossRoomMove();
+        }
+    }
+
+    private void BoossRoomMove()
+    {
+        player.transform.position = bossRoom.position;
+        //CameraManager.instance.curCamera = boosRoom;
     }
 }

@@ -19,7 +19,9 @@ public enum SoundType
     SFX_OPENDOOR,
     SFX_SHOOT,
     SFX_Attack,
-    BOSS_BGM
+    BOSS_BGM,
+    SFX_Walk,
+    SFX_swwing
 }
 
 [System.Serializable]
@@ -35,16 +37,30 @@ public class SoundManager : MonoBehaviour
 
     [Header("ui 소리")]
     public EventReference buttonSound;
-    public EventReference bgm;
+
+    [Header("배경 음악")]
+    public EventReference bgmEventRef;
+
+    private EventInstance bgmInstance;
+
+    private EventInstance walkInstance;
 
     public List<SoundEntry> soundList;
 
-    [SerializeField] EventReference[] sfx;
     private Dictionary<SoundType, EventReference> sfxs = new Dictionary<SoundType, EventReference>();
 
     void Awake()
     {
-        if (instance == null) instance = this;
+        if (instance == null)
+        {
+            instance = this;
+             DontDestroyOnLoad(gameObject);
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         foreach (var entry in soundList)
         {
@@ -57,8 +73,33 @@ public class SoundManager : MonoBehaviour
 
     private void Start()
     {
-        RuntimeManager.CreateInstance(bgm).start();
+        PlayBGM(bgmEventRef);
     }
+
+    // BGM 재생 메서드
+    public void PlayBGM(EventReference eventRef)
+    {
+        if (bgmInstance.isValid())
+        {
+            bgmInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            bgmInstance.release();
+        }
+
+        bgmInstance = RuntimeManager.CreateInstance(eventRef);
+
+        bgmInstance.start();
+
+    }
+
+    public void StopBGM()
+    {
+        if (bgmInstance.isValid())
+        {
+            bgmInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            bgmInstance.release(); 
+        }
+    }
+
 
     public void ButtonSound()
     {
@@ -70,8 +111,34 @@ public class SoundManager : MonoBehaviour
         if (sfxs.TryGetValue(esfx, out EventReference fmodEvent))
         {
             RuntimeManager.CreateInstance(fmodEvent).start();
+            
         }
     }
 
-    //테스트용 주석
+    public void PlayWalkSFX()
+    {
+        if (sfxs.TryGetValue(SoundType.SFX_Walk, out EventReference fmodEvent))
+        {
+            if (!walkInstance.isValid())
+            {
+                walkInstance = RuntimeManager.CreateInstance(fmodEvent);
+            }
+
+            FMOD.Studio.PLAYBACK_STATE state;
+            walkInstance.getPlaybackState(out state);
+
+            if (state != FMOD.Studio.PLAYBACK_STATE.PLAYING)
+            {
+                walkInstance.start();
+            }
+        }
+    }
+
+    public void StopWalkSFX()
+    {
+        if (walkInstance.isValid())
+        {
+            walkInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        }
+    }
 }

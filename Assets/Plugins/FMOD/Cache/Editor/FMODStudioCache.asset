@@ -27,6 +27,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-4998211506488992142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/walking
+  m_EditorClassIdentifier: 
+  Path: event:/walking
+  Guid:
+    Data1: 846137739
+    Data2: 1154350021
+    Data3: 37780891
+    Data4: -2069752451
+  Banks:
+  - {fileID: -4868734375704041136}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-4868734375704041136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42,10 +69,10 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639011997983582645
+  lastModified: 639012159963397709
   FileSizes:
   - Name: Desktop
-    Value: 13888
+    Value: 1276192
   Exists: 1
 --- !u!114 &-1105528859653114831
 MonoBehaviour:
@@ -98,13 +125,15 @@ MonoBehaviour:
   - {fileID: -1105528859653114831}
   - {fileID: -8506149733550372550}
   - {fileID: 4404912616568655967}
+  - {fileID: 7551299022297960140}
+  - {fileID: -4998211506488992142}
   EditorParameters: []
   MasterBanks:
   - {fileID: 3672783413374134539}
   StringsBanks:
   - {fileID: 4315884630608846048}
   cacheVersion: 131857
-  cacheTime: 639011997984211720
+  cacheTime: 639012159963397709
   SerializableEventsDict:
   - key: event:/BossBGM
     index: 0
@@ -116,6 +145,10 @@ MonoBehaviour:
     index: 3
   - key: event:/Button
     index: 4
+  - key: event:/swwing
+    index: 5
+  - key: event:/walking
+    index: 6
 --- !u!114 &2730402303569340159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -151,7 +184,7 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639011997982522554
+  lastModified: 639012139994983637
   FileSizes:
   - Name: Desktop
     Value: 1074
@@ -198,10 +231,10 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639011997982531795
+  lastModified: 639012159963209511
   FileSizes:
   - Name: Desktop
-    Value: 1054
+    Value: 1128
   Exists: 1
 --- !u!114 &4404912616568655967
 MonoBehaviour:
@@ -250,6 +283,33 @@ MonoBehaviour:
   - Name: Desktop
     Value: 3348192
   Exists: 1
+--- !u!114 &7551299022297960140
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/swwing
+  m_EditorClassIdentifier: 
+  Path: event:/swwing
+  Guid:
+    Data1: -1251754681
+    Data2: 1168778587
+    Data3: 141048225
+    Data4: 1204940508
+  Banks:
+  - {fileID: -4868734375704041136}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &7733833803198027087
 MonoBehaviour:
   m_ObjectHideFlags: 0
