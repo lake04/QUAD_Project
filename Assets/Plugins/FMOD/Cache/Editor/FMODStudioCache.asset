@@ -69,7 +69,7 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639012159963397709
+  lastModified: 639012162424377809
   FileSizes:
   - Name: Desktop
     Value: 1276192
@@ -133,7 +133,7 @@ MonoBehaviour:
   StringsBanks:
   - {fileID: 4315884630608846048}
   cacheVersion: 131857
-  cacheTime: 639012159963397709
+  cacheTime: 639012162424377809
   SerializableEventsDict:
   - key: event:/BossBGM
     index: 0
@@ -231,7 +231,7 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639012159963209511
+  lastModified: 639012162424193537
   FileSizes:
   - Name: Desktop
     Value: 1128
