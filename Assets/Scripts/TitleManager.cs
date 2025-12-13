@@ -16,7 +16,7 @@ public class TitleManager : MonoBehaviour
     
     public void Play()
     {
-        SoundManager.instance.ButtonSound();
+        //SoundManager.instance.ButtonSound();
         Invoke("PlaySceneChange", 1);
 
         fadeAnim.SetBool("On", false);
@@ -29,20 +29,20 @@ public class TitleManager : MonoBehaviour
 
     public void Opition()
     {
-        SoundManager.instance.ButtonSound();
+        //SoundManager.instance.ButtonSound();
         //설정 유아이 팝업
         setting.SetActive(!setting.activeSelf);
     }
 
     public void Credit()
     {
-        SoundManager.instance.ButtonSound();
+        //SoundManager.instance.ButtonSound();
         //크레딧
     }
 
     public void Leave()
     {
-        SoundManager.instance.ButtonSound();
+        //SoundManager.instance.ButtonSound();
         //나가기
         LoadingManager.instance.Loading("Title");
     }
