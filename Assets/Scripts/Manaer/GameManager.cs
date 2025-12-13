@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     public Transform bossRoom;
     public CinemachineVirtualCamera boosRoom;
 
+    [SerializeField] private GameObject forestBackgroundObject;
+
     private void Awake()
     {
         if(Instance == null)
@@ -28,7 +30,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        
+        RegionTrigger.currentActiveMap = forestBackgroundObject;
     }
 
     void Update()

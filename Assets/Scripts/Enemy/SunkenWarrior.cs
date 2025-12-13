@@ -314,7 +314,7 @@ public class SunkenWarrior : MonoBehaviour
         Vector2 direction = (playerTarget.transform.position - transform.position).normalized;
         rb.velocity = Vector2.zero;
 
-        SoundManager.instance.PlaySFX(SoundType.SFX_SHOOT);
+        //SoundManager.instance.PlaySFX(SoundType.SFX_SHOOT);
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
