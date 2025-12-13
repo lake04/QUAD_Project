@@ -52,7 +52,7 @@ public partial class Player
 
             anim.SetInteger("Combo", comboStep);
             anim.SetTrigger("Attacking");
-
+            SoundManager.instance.PlaySFX(SoundType.SFX_Attack);
             LookAtMouse();
 
             StopCoroutine(nameof(CheckAttackHit));

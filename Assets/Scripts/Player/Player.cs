@@ -116,6 +116,7 @@ public partial class Player : MonoBehaviour
         defaultFixedDeltaTime = Time.fixedDeltaTime;
 
         cameraFollowObject = cameraFollowGo.GetComponent<CameraFollowObject>();
+        sfxController = GetComponent<CharacterSFXController>();
         fallSpeedYDampingChangeThreshold = CameraManager.instance.fallSpeedYDampingChangeThreshold;
         curHp = maxHp;
         if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);

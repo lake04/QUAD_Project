@@ -76,6 +76,8 @@ public partial class Player
     [SerializeField] private GameObject[] moveEffect;
     [SerializeField] private int curMoveEffectIndex = 0;
 
+    [SerializeField] private CharacterSFXController sfxController;
+
     private void Move()
     {
         if (isAimingSwimDash)
@@ -123,6 +125,11 @@ public partial class Player
 
             anim.SetBool("Move", hasInput || hasVelocity);
 
+            if (hasInput)
+            {
+                sfxController.SetMovementState(false,true);
+            }
+
             return;
         }
 
@@ -131,8 +138,13 @@ public partial class Player
         bool isRunning = Mathf.Abs(horizontal) > 0.01f; // 이동 중이면 true
         if(isRunning)
         {
+            sfxController.SetMovementState(true, false);
         }
-        anim.SetBool("Move", isRunning);
+        else
+        {
+            sfxController.SetMovementState(false, false);
+        }
+            anim.SetBool("Move", isRunning);
 
         if (isWallJumping)
         {
