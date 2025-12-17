@@ -19,6 +19,7 @@ public class SceneCameraSwich : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         Player.instance.isMove = false;
         // 화면 페이드 인
+       
         image.gameObject.SetActive(true);
         image.color = new Color(0, 0, 0, 0);
         yield return image.DOFade(1.0f, inFadeTime).WaitForCompletion();

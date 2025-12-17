@@ -25,7 +25,7 @@ public partial class Player : MonoBehaviour
     [SerializeField] private bool isDie = true;
     public float invincibleTime = 1.5f;     // 무적 유지 시간
     public float blinkInterval = 0.6f;    // 깜빡임 간격
-    [SerializeField] private Image hitEffect;
+    [SerializeField] private Image hitEffectImg;
     [SerializeField] public GameObject playerHitEettct;
 
     [HideInInspector] public float horizontal;
@@ -108,6 +108,7 @@ public partial class Player : MonoBehaviour
         originalGravityScale = rb.gravityScale;
         mainCam = Camera.main;
 
+        
         if (CameraManager.instance.curCamera != null)
         {
             currentCameraDefaultSize = CameraManager.instance.curCamera.m_Lens.OrthographicSize;
@@ -121,7 +122,7 @@ public partial class Player : MonoBehaviour
         curHp = maxHp;
         if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
         moveEffect[1].SetActive(false);
-
+        playerHitEettct.SetActive(false);
     }
 
 
@@ -231,7 +232,7 @@ public partial class Player : MonoBehaviour
         }
         curHp--;
       
-        CameraShake.Instance.Shake(0.2f, 0.2f);
+        //CameraManager.instance.AttackShake(0.2f, 0.2f);
         StartCoroutine(HitEffect());
         StartCoroutine(InvincibleBlink());
         UiManager.Instance.PlayerHp();
@@ -270,17 +271,19 @@ public partial class Player : MonoBehaviour
 
     private IEnumerator HitEffect()
     {
-        Color color = hitEffect.color;
+        playerHitEettct.SetActive(true);
+        Color color = hitEffectImg.color;
         color.a = 0.4f;
-        hitEffect.color = color;
+        hitEffectImg.color = color;
 
         while (color.a >= 0.0f)
         {
             color.a -= Time.deltaTime;
-            hitEffect.color = color;
+            hitEffectImg.color = color;
 
             yield return null;
         }
+        //hitEffectImg.enabled = true;
     }
 
     public void Respawn()

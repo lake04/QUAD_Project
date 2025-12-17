@@ -125,7 +125,7 @@ public partial class Player
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
                 GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
-                objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 10);
+                objectsToHit[i].GetComponent<EnemyBase>().TakeDamage(damage, dir, 1f);
                 AttackShake();
             }
 
@@ -133,7 +133,7 @@ public partial class Player
             {
                 Vector2 dir = (transform.position - objectsToHit[i].transform.position).normalized;
                 GameObject _hitEffect = Instantiate(attackHitEffect, objectsToHit[i].transform);
-                objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 10);
+                objectsToHit[i].GetComponent<SunkenWarrior>().TakeDamage(damage, dir, 1f);
                 AttackShake();
             }
         }
@@ -141,7 +141,7 @@ public partial class Player
 
     public void AttackShake()
     {
-        CameraShake.Instance.Shake(0.1f, 0.2f);
+        //CameraManager.instance.AttackShake(0.1f,0.2f);
     }
 
     private void OnDrawGizmos()

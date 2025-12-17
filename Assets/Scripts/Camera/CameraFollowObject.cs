@@ -25,7 +25,7 @@ public class CameraFollowObject : MonoBehaviour
 
     void Update()
     {
-        transform.position = playerTransform.position + CameraShake.Instance.shakeOffset;
+        transform.position = player.transform.position;
     }
 
     public void CallTurn()

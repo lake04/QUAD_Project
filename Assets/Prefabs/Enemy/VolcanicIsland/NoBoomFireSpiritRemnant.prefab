@@ -142,14 +142,14 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5352145088063644281}
-  m_BodyType: 1
+  m_BodyType: 0
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -205,8 +205,11 @@ MonoBehaviour:
   recoilLength: 0
   recoilFactor: 0
   isRecoiling: 0
+  flashSprite: {fileID: 0}
   sp: {fileID: 0}
   dieEffect: {fileID: 6413865151993466208, guid: 4294a588ad4b6b74bbf48fca8ab68e73, type: 3}
+  impulseSource: {fileID: 0}
+  profile: {fileID: 0}
   checkLayer:
     serializedVersion: 2
     m_Bits: 256

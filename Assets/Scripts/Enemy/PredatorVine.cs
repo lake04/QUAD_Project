@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,7 @@ public class PredatorVine : EnemyBase
 
     private void Start()
     {
+        Init();
         startPosition = transform.position;
     }
 
@@ -53,7 +55,7 @@ public class PredatorVine : EnemyBase
 
     protected void PatrollingMove()
     {
-        if (!isActive)
+        if (!isActive && isRecoiling)
         {
             return;
         }

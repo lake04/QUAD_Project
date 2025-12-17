@@ -1,7 +1,8 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
-using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
@@ -169,6 +170,7 @@ public class CameraManager : MonoBehaviour
             framingTransposer = curCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
         }
         Player.instance.OnCameraSwitched(curCamera);
+        CameraShake.Instance.impulseListener = curCamera.GetComponent<CinemachineImpulseListener>();
 
     }
 

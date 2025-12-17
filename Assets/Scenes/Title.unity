@@ -2067,74 +2067,6 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
---- !u!1 &573580543
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 573580545}
-  - component: {fileID: 573580544}
-  m_Layer: 0
-  m_Name: SoundManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &573580544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573580543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 78de2d1d31789b54db2b3454360deef0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonSound:
-    Guid:
-      Data1: -973729337
-      Data2: 1275849083
-      Data3: -1510837838
-      Data4: 1549234780
-    Path: event:/button
-  bgm:
-    Guid:
-      Data1: 0
-      Data2: 0
-      Data3: 0
-      Data4: 0
-    Path: 
-  soundList:
-  - type: 4
-    fmodEvent:
-      Guid:
-        Data1: -973729337
-        Data2: 1275849083
-        Data3: -1510837838
-        Data4: 1549234780
-      Path: event:/button
-  sfx: []
---- !u!4 &573580545
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 573580543}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5038863, y: -0.17009945, z: 2.273795}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &602108943
 GameObject:
   m_ObjectHideFlags: 0
@@ -4106,6 +4038,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1893488267}
   m_CullTransparentMesh: 1
+--- !u!1 &1905497771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1905497773}
+  - component: {fileID: 1905497772}
+  m_Layer: 0
+  m_Name: SoundManager (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1905497772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905497771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78de2d1d31789b54db2b3454360deef0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonSound:
+    Guid:
+      Data1: -973729337
+      Data2: 1275849083
+      Data3: -1510837838
+      Data4: 1549234780
+    Path: event:/button
+  bgmEventRef:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  soundList:
+  - type: 4
+    fmodEvent:
+      Guid:
+        Data1: -22750159
+        Data2: 1115937062
+        Data3: -1890858826
+        Data4: -1028006848
+      Path: event:/HarpoonShot
+--- !u!4 &1905497773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1905497771}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.5038863, y: -0.17009945, z: 2.273795}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2054399008
 GameObject:
   m_ObjectHideFlags: 0
@@ -4394,8 +4393,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 86398740}
   - {fileID: 479795746}
-  - {fileID: 573580545}
   - {fileID: 918598282}
   - {fileID: 1555678760}
   - {fileID: 370930478}
   - {fileID: 2348603387009134018}
+  - {fileID: 1905497773}

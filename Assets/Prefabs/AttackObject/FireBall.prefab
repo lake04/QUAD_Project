@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 2454852059775753711}
   m_Layer: 0
   m_Name: FireBall
-  m_TagString: Untagged
+  m_TagString: FitrBall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,6 +104,7 @@ MonoBehaviour:
   damage: 1
   rb: {fileID: 0}
   speed: 17
+  destroyEffect: {fileID: 8109436675332155202, guid: c6d137022aee26842bbd027cab2df6ea, type: 3}
 --- !u!50 &1018571277215832721
 Rigidbody2D:
   serializedVersion: 4

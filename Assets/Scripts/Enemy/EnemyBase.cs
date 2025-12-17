@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -26,11 +27,14 @@ public class EnemyBase : MonoBehaviour
     [Header("피격 처리")]
     [SerializeField] private float recoilLength;
     [SerializeField] private float recoilFactor;
-    [SerializeField] private bool isRecoiling = false;
-    private FlashSprite flashSprite;
+    [SerializeField] protected bool isRecoiling = false;
+    [SerializeField] private FlashSprite flashSprite;
 
     [SerializeField] protected SpriteRenderer sp;
     [SerializeField] protected GameObject dieEffect;
+
+    [SerializeField] private CinemachineImpulseSource impulseSource;
+    [SerializeField] private ScreenShakeProfile profile;
 
     protected virtual void Awake()
     {
@@ -39,7 +43,7 @@ public class EnemyBase : MonoBehaviour
 
     private void Start()
     {
-        flashSprite = GetComponent<FlashSprite>();
+    
     }
 
 
@@ -67,7 +71,7 @@ public class EnemyBase : MonoBehaviour
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTarget.transform.position);
 
-        if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die || enemyState != EnemyState.Attacking)
+        if (enemyState != EnemyState.Hurt && enemyState != EnemyState.Die && enemyState != EnemyState.Attacking)
         {
             if (distanceToPlayer <= attackRange)
             {
@@ -75,15 +79,14 @@ public class EnemyBase : MonoBehaviour
             }
             else if (distanceToPlayer <= detectionRange)
             {
-                ChangeState(EnemyState.Chasing);
-
+                //ChangeState(EnemyState.Chasing);
             }
             else
             {
                 ChangeState(EnemyState.Patrolling);
             }
         }
-        else if (enemyState == EnemyState.Hurt || enemyState == EnemyState.Die || enemyState == EnemyState.Attacking)
+        else if (enemyState == EnemyState.Die || enemyState == EnemyState.Attacking)
         {
             rb.velocity = Vector2.zero;
         }
@@ -119,6 +122,11 @@ public class EnemyBase : MonoBehaviour
         anim = GetComponent<Animator>();
         sp = GetComponent<SpriteRenderer>();
 
+        flashSprite = GetComponent<FlashSprite>();
+        flashSprite = GetComponentInChildren<FlashSprite>();
+
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+
         if (GameManager.Instance != null)
         {
             playerTarget = GameManager.Instance.player;
@@ -153,27 +161,45 @@ public class EnemyBase : MonoBehaviour
     public virtual void TakeDamage(float _damage,Vector2 _hitDirecticon,float _hitForce)
     {
         if (isDead) return;
-
+        Debug.Log("공격");
         curHealth -= _damage;
-
+        //CameraShake.Instance.Shake(impulseSource);
+        CameraShake.Instance.ScreenShakeFromProfile(profile,impulseSource);
         if (flashSprite != null)
         {
+            Debug.Log("Flash");
             flashSprite.Flash();
         }
-
-        StartCoroutine(Recoiling(_hitDirecticon,_hitForce));
+        else
+        {
+            flashSprite = GetComponent<FlashSprite>();
+            flashSprite.Flash();
+        }
+        StartCoroutine(Recoiling(_hitDirecticon, _hitForce));
         if (curHealth <= 0)
         {
             Die();
         }
+     
     }
 
-    private IEnumerator Recoiling(Vector2 _hitDirecticon, float _hitForce)
+    
+
+    private IEnumerator Recoiling(Vector2 _hitDirection, float _hitForce) 
     {
         isRecoiling = true;
-        rb.AddForce(_hitDirecticon * recoilFactor * _hitDirecticon);
+        ChangeState(EnemyState.Hurt);
+
+        rb.velocity = Vector2.zero;
+
+        rb.AddForce(-_hitDirection.normalized * _hitForce * recoilFactor, ForceMode2D.Impulse);
+
         yield return new WaitForSeconds(recoilLength);
+
+        rb.velocity = Vector2.zero;
+
         isRecoiling = false;
+        ChangeState(EnemyState.Patrolling);
     }
 
     protected virtual void Die()

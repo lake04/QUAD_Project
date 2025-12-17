@@ -27,33 +27,6 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
---- !u!114 &-4998211506488992142
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/walking
-  m_EditorClassIdentifier: 
-  Path: event:/walking
-  Guid:
-    Data1: 846137739
-    Data2: 1154350021
-    Data3: 37780891
-    Data4: -2069752451
-  Banks:
-  - {fileID: -4868734375704041136}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &-4868734375704041136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,10 +42,10 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 639012162424377809
+  lastModified: 639012272191762410
   FileSizes:
   - Name: Desktop
-    Value: 1276192
+    Value: 332576
   Exists: 1
 --- !u!114 &-1105528859653114831
 MonoBehaviour:
@@ -125,15 +98,15 @@ MonoBehaviour:
   - {fileID: -1105528859653114831}
   - {fileID: -8506149733550372550}
   - {fileID: 4404912616568655967}
-  - {fileID: 7551299022297960140}
-  - {fileID: -4998211506488992142}
+  - {fileID: 4365896265150901542}
+  - {fileID: 2698778466872674907}
   EditorParameters: []
   MasterBanks:
   - {fileID: 3672783413374134539}
   StringsBanks:
   - {fileID: 4315884630608846048}
   cacheVersion: 131857
-  cacheTime: 639012162424377809
+  cacheTime: 639012272191762410
   SerializableEventsDict:
   - key: event:/BossBGM
     index: 0
@@ -145,10 +118,37 @@ MonoBehaviour:
     index: 3
   - key: event:/Button
     index: 4
-  - key: event:/swwing
+  - key: event:/walik
     index: 5
-  - key: event:/walking
+  - key: event:/water
     index: 6
+--- !u!114 &2698778466872674907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/water
+  m_EditorClassIdentifier: 
+  Path: event:/water
+  Guid:
+    Data1: 351979745
+    Data2: 1220509948
+    Data3: -586654534
+    Data4: 1346792392
+  Banks:
+  - {fileID: -4868734375704041136}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &2730402303569340159
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +184,7 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 639012139994983637
+  lastModified: 639012268298007300
   FileSizes:
   - Name: Desktop
     Value: 1074
@@ -231,11 +231,38 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 639012162424193537
+  lastModified: 639012268298022502
   FileSizes:
   - Name: Desktop
-    Value: 1128
+    Value: 1136
   Exists: 1
+--- !u!114 &4365896265150901542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/walik
+  m_EditorClassIdentifier: 
+  Path: event:/walik
+  Guid:
+    Data1: 1990988712
+    Data2: 1142758586
+    Data3: 1752571271
+    Data4: -994221550
+  Banks:
+  - {fileID: -4868734375704041136}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &4404912616568655967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,38 +305,11 @@ MonoBehaviour:
   Path: Fmod/Fmod/QUAD_Sound/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 639011997982476560
+  lastModified: 639012272191424854
   FileSizes:
   - Name: Desktop
     Value: 3348192
   Exists: 1
---- !u!114 &7551299022297960140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
-  m_Name: event:/swwing
-  m_EditorClassIdentifier: 
-  Path: event:/swwing
-  Guid:
-    Data1: -1251754681
-    Data2: 1168778587
-    Data3: 141048225
-    Data4: 1204940508
-  Banks:
-  - {fileID: -4868734375704041136}
-  IsStream: 1
-  Is3D: 0
-  IsOneShot: 1
-  Parameters: []
-  MinDistance: 1
-  MaxDistance: 20
-  Length: 0
 --- !u!114 &7733833803198027087
 MonoBehaviour:
   m_ObjectHideFlags: 0

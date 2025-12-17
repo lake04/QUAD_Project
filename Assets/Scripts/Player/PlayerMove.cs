@@ -206,14 +206,14 @@ public partial class Player
     {
         if (IsWalled() && horizontal != 0f)
         {
-            //anim.SetBool("isWallSliding", true);
+            anim.SetBool("isWallSliding", true);
 
             isWallSliding = true;
             rb.velocity = new Vector2(rb.velocity.x, Mathf.Clamp(rb.velocity.y, -wallSlidingSpeed, float.MaxValue));
         }
         else
         {
-            //anim.SetBool("isWallSliding", false);
+            anim.SetBool("isWallSliding", false);
 
             isWallSliding = false;
         }

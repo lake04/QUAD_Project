@@ -11,6 +11,7 @@ TagManager:
   - Ground
   - Undefined
   - Spirit
+  - FitrBall
   layers:
   - Default
   - TransparentFX
