@@ -11,7 +11,6 @@ public class FireBall : ProjectileBase
         if(collision.CompareTag("Enemy"))
         {
             collision.GetComponent<EnemyBase>().TakeDamage(damage,Vector2.zero,0.5f);
-            Destroy(gameObject);
         }
         else if(collision.CompareTag("DestroyWall"))
         {
@@ -20,5 +19,21 @@ public class FireBall : ProjectileBase
        
         Instantiate(destroyEffect,transform.position,Quaternion.identity);
         Destroy(gameObject,0.7f);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<EnemyBase>().TakeDamage(damage, Vector2.zero, 0.5f);
+            Destroy(gameObject);
+        }
+        else if (collision.gameObject.CompareTag("DestroyWall"))
+        {
+            collision.gameObject.GetComponent<Wall>().TakeDamage(1f);
+        }
+
+        Instantiate(destroyEffect, transform.position, Quaternion.identity);
+        Destroy(gameObject, 0.7f);
     }
 }

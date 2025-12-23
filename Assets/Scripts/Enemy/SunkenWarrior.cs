@@ -514,7 +514,7 @@ public class SunkenWarrior : MonoBehaviour
         }
 
         Instantiate(dieEffect, transform.position, Quaternion.identity);
-
+        StartCoroutine(End());
 
         Destroy(gameObject);
 
@@ -526,5 +526,11 @@ public class SunkenWarrior : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    private IEnumerator End()
+    {
+        yield return new WaitForSeconds(1f);
+        LoadingManager.instance.Loading("End");
     }
 }

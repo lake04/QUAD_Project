@@ -12,6 +12,7 @@ TagManager:
   - Undefined
   - Spirit
   - FitrBall
+  - DestroyWall
   layers:
   - Default
   - TransparentFX
@@ -25,8 +26,8 @@ TagManager:
   - Attackable
   - Player
   - Boss
-  - 
-  - 
+  - FireBall
+  - Transparency
   - 
   - 
   - 

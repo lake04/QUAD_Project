@@ -13,10 +13,12 @@ public class DeepSeaFish : MonoBehaviour
 
     private float waveTimer = 0f;
     private Vector3 startPos;
+    private SpriteRenderer sp;
 
     void Start()
     {
         startPos = transform.position;
+        sp = GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -41,10 +43,13 @@ public class DeepSeaFish : MonoBehaviour
         if (transform.position.x <= startPos.x - xRange)
         {
             nextMove = 1;
+            sp.flipX = true;
         }
         else if (transform.position.x >= startPos.x + xRange)
         {
             nextMove = -1;
+            sp.flipX = false;
         }
+
     }
 }

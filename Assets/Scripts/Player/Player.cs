@@ -122,7 +122,7 @@ public partial class Player : MonoBehaviour
         curHp = maxHp;
         if (dashDirectionIndicator != null) dashDirectionIndicator.SetActive(false);
         moveEffect[1].SetActive(false);
-        playerHitEettct.SetActive(false);
+        hitEffectImg.enabled = false;
     }
 
 
@@ -271,7 +271,7 @@ public partial class Player : MonoBehaviour
 
     private IEnumerator HitEffect()
     {
-        playerHitEettct.SetActive(true);
+        hitEffectImg.enabled = true;
         Color color = hitEffectImg.color;
         color.a = 0.4f;
         hitEffectImg.color = color;

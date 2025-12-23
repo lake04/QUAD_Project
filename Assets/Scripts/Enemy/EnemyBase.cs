@@ -79,7 +79,7 @@ public class EnemyBase : MonoBehaviour
             }
             else if (distanceToPlayer <= detectionRange)
             {
-                //ChangeState(EnemyState.Chasing);
+                ChangeState(EnemyState.Chasing);
             }
             else
             {

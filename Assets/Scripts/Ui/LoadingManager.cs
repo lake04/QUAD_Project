@@ -15,7 +15,6 @@ public class LoadingManager : MonoBehaviour
     [SerializeField] private GameObject img_loading;
     [SerializeField] private GameObject img_loadingBk;
 
-
     private void Awake()
     {
         if(instance == null)

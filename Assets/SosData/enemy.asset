@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9efe3ec9dffabe1419a8f0eb5296072e, type: 3}
   m_Name: enemy
   m_EditorClassIdentifier: 
-  impactTime: 0.2
-  impactForce: 0.3
-  defaulteVelocity: {x: 0, y: 0.2, z: 0}
+  impactTime: 0.3
+  impactForce: 2
+  defaulteVelocity: {x: 0, y: 0.5, z: 0}
   impulaseCurve:
     serializedVersion: 2
     m_Curve:
@@ -48,6 +48,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  listenerAmplitude: 0.5
-  listenerFrequency: 0.5
+  listenerAmplitude: 3
+  listenerFrequency: 2
   listenerDuration: 0.1

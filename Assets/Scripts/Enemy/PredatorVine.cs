@@ -34,9 +34,13 @@ public class PredatorVine : EnemyBase
     {
         if (isActive)
         {
+            anim.SetBool("move", true);
             return;
         }
-        anim.SetTrigger("ready");
+        else
+        {
+            anim.SetTrigger("ready");
+        }
     }
 
     //protected override void Patrolling()
@@ -55,7 +59,7 @@ public class PredatorVine : EnemyBase
 
     protected void PatrollingMove()
     {
-        if (!isActive && isRecoiling)
+        if (!isActive || isRecoiling)
         {
             return;
         }
