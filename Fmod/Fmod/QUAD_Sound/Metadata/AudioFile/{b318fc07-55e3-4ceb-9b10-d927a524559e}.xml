@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{b318fc07-55e3-4ceb-9b10-d927a524559e}">
+		<property name="assetPath">
+			<value>806296_물을 가르며 수영하는 소리.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>71.444897959183677</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{621c53ac-f247-4444-9d5b-b17a9eccb6bb}</destination>
+		</relationship>
+	</object>
+</objects>

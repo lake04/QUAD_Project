@@ -10,6 +10,8 @@ public class UiManager : MonoBehaviour
     [SerializeField] private GameObject setting;
     [SerializeField] private GameObject popUp;
 
+    public GameObject[] playerHeart;
+
     private void Awake()
     {
         if(Instance == null)
@@ -20,7 +22,11 @@ public class UiManager : MonoBehaviour
 
     private void Start()
     {
-        
+        for (int i = 0; i < playerHeart.Length; i++)
+        {
+            playerHeart[i].SetActive(false);
+        }
+        MaxHpUpdate();
     }
   
 
@@ -49,6 +55,36 @@ public class UiManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    public void MaxHpUpdate()
+    {
+        for (int i = 0; i < Player.instance.maxHp; i++)
+        {
+            playerHeart[i].SetActive(true);
+        }
+    }
+
+    public void PlayerHp()
+    {
+        int hp = Mathf.FloorToInt(Player.instance.curHp);
+
+        for (int i = 0; i < playerHeart.Length; i++)
+        {
+            if (!playerHeart[i].gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            if (i < hp)
+            {
+                playerHeart[i].GetComponent<Image>().color = Color.white;
+            }
+            else
+            {
+                playerHeart[i].GetComponent<Image>().color = new Color(0, 0, 0, 0.3f);
+            }
+        }
     }
 
 }
